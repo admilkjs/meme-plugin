@@ -3,7 +3,7 @@ name: 项目版本更新
 on:
   push:
     branches:
-      - main
+      - dev
 
 jobs:
   update-version:
@@ -21,40 +21,45 @@ jobs:
       - name: 更新版本号
         id: bump_version
         run: |
-          current_version=$(grep -oP '"version":\s*"\K[0-9]+\.[0-9]+\.[0-9]+' package.json)
+          current_version=$(jq -r '.version' package.json)
           IFS='.' read -r major minor patch <<< "$current_version"
           minor=$((minor + 1))
           patch=0
           new_version="$major.$minor.$patch"
-          sed -i "s/\"version\": \"$current_version\"/\"version\": \"$new_version\"/" package.json
+          jq ".version = \"$new_version\"" package.json > package.json.tmp && mv package.json.tmp package.json
           echo "new_version=$new_version" >> $GITHUB_ENV
+          echo "branch_name=version/v$new_version" >> $GITHUB_ENV
 
-      - name: 提交并推送更改到 dev
+      - name: 提交并推送更改
         id: commit_and_push
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git checkout dev
-          git pull origin dev
+          git checkout -b "${{ env.branch_name }}"
           git add package.json
           git commit -m "版本更新至 ${{ env.new_version }} 🎉"
           git tag -f "v${{ env.new_version }}"
-          git push origin -f dev
+          git push origin -f "${{ env.branch_name }}"
           git push origin -f "v${{ env.new_version }}"
 
-      - name: 创建 Pull Request
+      - name: 检查是否已有 PR
+        id: check_pr
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          curl -s \
-            -X POST \
-            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            -H "Accept: application/vnd.github.v3+json" \
-            https://api.github.com/repos/${{ github.repository }}/pulls \
-            -d "$(cat << EOF
-          {
-            "title": "版本更新至 ${{ env.new_version }} 🎉",
-            "head": "dev",
-            "base": "main",
-            "body": "项目版本更新\n此 PR 是自动更新内容。\n请审核并合并。"
-          }
-          EOF
-          )" && echo "Pull Request 创建指令执行完成。" || echo "Pull Request 创建指令执行失败。"
+          existing_pr=$(gh pr list --state open --head "${{ env.branch_name }}" --base main --json number | jq '.[0].number')
+          if [ -n "$existing_pr" ] && [ "$existing_pr" != "null" ]; then
+            echo "pr_number=$existing_pr" >> $GITHUB_ENV
+          fi
+
+      - name: 创建 Pull Request
+        if: env.pr_number == ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr create \
+            --title "版本更新至 ${{ env.new_version }} 🎉" \
+            --body "项目版本更新\n此 PR 是自动更新内容。\n请审核并合并。" \
+            --head "${{ env.branch_name }}" \
+            --base "main" \
+            --fill
