@@ -6,8 +6,8 @@ import Args from './args.js'
 
 const Rule = {
   /**
-   * 表情处理逻辑
-   */
+  * 表情处理逻辑
+  */
   async meme (e, memeKey, memeInfo, userText) {
     const { params_type } = memeInfo || {}
 
@@ -27,8 +27,8 @@ const Rule = {
 
     try {
       /**
-       * 针对仅图片类型表情作特殊处理
-       */
+      * 针对仅图片类型表情作特殊处理
+      */
       if (min_texts === 0 && max_texts === 0 && args_type === null && userText) {
         const isValidInput = /^@\s*\d+(\s*@\s*\d+)*$/.test(userText.trim())
         if (!isValidInput) {
@@ -37,8 +37,8 @@ const Rule = {
       }
 
       /**
-       * 通用处理
-       */
+      * 通用处理
+      */
       let userAvatars = []
       const atMatches = userText.matchAll(/@\s*(\d+)/g)
       for (const match of atMatches) {
@@ -47,8 +47,8 @@ const Rule = {
       userText = userText.replace(/@\s*\d+/g, '').trim()
 
       /**
-       * 处理 args 参数类型表情
-       */
+      * 处理 args 参数类型表情
+      */
       if (args_type !== null) {
         const argsMatch = userText.match(/#(.+)/)
         if (argsMatch) {
@@ -62,25 +62,80 @@ const Rule = {
       }
 
       /**
-       * 处理图片类型表情
-       */
+      * 处理图片类型表情
+      */
       if (!(min_images === 0 && max_images === 0)) {
+
         if (userAvatars.length > 0) {
-          for (const userAvatar of userAvatars) {
-            const avatarBuffer = await Utils.getAvatar(userAvatar)
-            if (avatarBuffer) images.push(...avatarBuffer)
+          const avatarBuffers = await Utils.getAvatar(userAvatars)
+          if (avatarBuffers) {
+            avatarBuffers.forEach(avatarList => {
+              if (Array.isArray(avatarList)) {
+                avatarList.forEach(avatar => {
+                  if (avatar) images.push(avatar)
+                })
+              } else if (avatarList) {
+                images.push(avatarList)
+              }
+            })
           }
 
           if (images.length < min_images) {
-            const triggerAvatar = await Utils.getAvatar(e.user_id)
-            if (triggerAvatar) images.unshift(...triggerAvatar)
+            const triggerAvatar = await Utils.getAvatar([e.user_id])
+            if (triggerAvatar && Array.isArray(triggerAvatar) && triggerAvatar[0]) images.unshift(triggerAvatar[0])
           }
         } else {
-          images = await Utils.getImage(e, userText, max_images, min_images)
+          const fetchedImages = await Utils.getImage(e, userText, max_images)
+          images = fetchedImages
           if (images.length < min_images) {
-            const triggerAvatar = await Utils.getAvatar(e.user_id)
-            if (triggerAvatar) images.unshift(...triggerAvatar)
+            const triggerAvatar = await Utils.getAvatar([e.user_id])
+            if (triggerAvatar && Array.isArray(triggerAvatar) && triggerAvatar[0]) images.unshift(triggerAvatar[0])
           }
+        }
+
+        if (Config.protect.enable && min_images === 2) {
+          const ats = e.message.filter((m) => m.type === 'at').map((at) => at.qq)
+          const manualAtQQs = [...userText.matchAll(/@(\d{5,11})/g)].map(
+            (match) => match[1]
+          )
+          const allAtQQs = [...new Set([...ats, ...manualAtQQs])]
+
+          let isMaster = false
+          let isUserAuthorized = false
+          let isProtectedMeme = false
+
+          if (Config.protect.master) {
+            const masterQQ = Array.isArray(Config.protect.MasterQQ)
+              ? Config.protect.MasterQQ
+              : [Config.protect.MasterQQ]
+
+            isMaster = allAtQQs.some((userId) => masterQQ.includes(userId))
+          }
+
+          if (Config.protect.userEnable) {
+            const authorizedUsers = Config.protect.user || []
+            isUserAuthorized = allAtQQs.some((userId) => authorizedUsers.includes(userId))
+          }
+
+
+          const protectedMemeKeys = await Promise.all(
+            Config.protect.list.map(async (item) => await Tools.keywordToKey(item) || item)
+          )
+          isProtectedMeme = protectedMemeKeys.includes(memeKey)
+
+          if (isProtectedMeme && (isMaster || isUserAuthorized)) {
+            images.reverse().forEach((buffer, index) => {
+              formData.append('images', buffer, `image${index}.jpg`)
+            })
+          } else {
+            images.forEach((buffer, index) => {
+              formData.append('images', buffer, `image${index}.jpg`)
+            })
+          }
+        } else {
+          images.forEach((buffer, index) => {
+            formData.append('images', buffer, `image${index}.jpg`)
+          })
         }
 
         if (images.length < min_images) {
@@ -88,15 +143,11 @@ const Rule = {
         }
 
         images = images.slice(0, max_images)
-
-        images.forEach((buffer, index) => {
-          formData.append('images', buffer, `image${index}.jpg`)
-        })
       }
 
       /**
-       * 处理文本类型表情
-       */
+      * 处理文本类型表情
+      */
       if (!(min_texts === 0 && max_texts === 0)) {
         if (userText) {
           const splitTexts = userText.split('/').map((text) => text.trim())
@@ -116,8 +167,8 @@ const Rule = {
           }
         } else if (
           finalTexts.length === 0 &&
-          default_texts &&
-          default_texts.length > 0
+         default_texts &&
+         default_texts.length > 0
         ) {
           const randomIndex = Math.floor(Math.random() * default_texts.length)
           finalTexts.push(default_texts[randomIndex])
@@ -133,8 +184,8 @@ const Rule = {
       }
 
       /**
-       * 检查是否包含所需的内容
-       */
+      * 检查是否包含所需的内容
+      */
       if (min_images > 0 && images.length === 0) {
         return e.reply(`该表情至少需要 ${min_images} 张图片`, true)
       }

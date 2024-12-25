@@ -1,0 +1,20 @@
+ name: 删除自动更新版本PR分支
+
+ on:
+   pull_request:
+     types: [closed]
+
+ jobs:
+   delete_branch:
+     if: github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'version/')
+     runs-on: ubuntu-latest
+     permissions:
+       contents: write
+     steps:
+       - name: Checkout code
+         uses: actions/checkout@v4
+
+       - name: Delete branch
+         run: |
+           git push origin --delete ${{ github.event.pull_request.head.ref }}
+
