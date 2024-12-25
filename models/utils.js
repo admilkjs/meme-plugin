@@ -184,7 +184,7 @@ const Utils = {
      * 艾特用户头像(长按艾特)
      */
     if (quotedImagesOrAvatar.length === 0 && ats.length > 0) {
-      const avatarBuffers = await Promise.all(ats.map((qq) => this.getAvatar(qq)))
+      const avatarBuffers = await this.getAvatar(ats)
       avatarBuffers.forEach(avatarList => {
         if (Array.isArray(avatarList)) {
           avatarList.forEach(avatar => {
@@ -200,7 +200,7 @@ const Utils = {
      * 手动输入的艾特(@+数字)
      */
     if (manualAtQQs.length > 0) {
-      const avatarBuffers = await Promise.all(manualAtQQs.map((qq) => this.getAvatar(qq)))
+      const avatarBuffers = await this.getAvatar(manualAtQQs)
       avatarBuffers.forEach(avatarList => {
         if (Array.isArray(avatarList)) {
           avatarList.forEach(avatar => {
