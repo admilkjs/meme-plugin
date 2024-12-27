@@ -30,7 +30,7 @@ export function supportGuoba () {
       // 配置项 schemas
       schemas: [
         {
-          component: 'Divider',
+          component: 'SOFT_GROUP_BEGIN',
           label: '表情设置'
         },
         {
@@ -43,7 +43,7 @@ export function supportGuoba () {
           field: 'meme.url',
           label: '自定义地址',
           component: 'Input',
-          bottomHelpMessage: '自定义表情包地址,为空时使用自带'
+          bottomHelpMessage: '自定义表情包地址,为空时使用插件自带'
         },
         {
           field: 'meme.cache',
@@ -70,7 +70,7 @@ export function supportGuoba () {
           bottomHelpMessage: '是否强制使用#触发, 开启后必须使用#触发'
         },
         {
-          component: 'Divider',
+          component: 'SOFT_GROUP_BEGIN',
           label: '名单设置'
         },
         {
@@ -123,13 +123,13 @@ export function supportGuoba () {
           componentProps: {
             options: Array.from(new Set(
               Object.values(Meme.infoMap || {}).flatMap(info => info.keywords)
-            )).map(keyword => ({ label: keyword, value: keyword })),
+            )).map(keyword => ({ label: keyword, value: Meme.getKey(keyword) })),
             mode: 'multiple',
             allowClear: true
           }
         },
         {
-          component: 'Divider',
+          component: 'SOFT_GROUP_BEGIN',
           label: '表情保护设置'
         },
         {
@@ -164,13 +164,13 @@ export function supportGuoba () {
           componentProps: {
             options: Array.from(new Set(
               Object.values(Meme.infoMap || {}).flatMap(info => info.keywords)
-            )).map(keyword => ({ label: keyword, value: keyword })),
+            )).map(keyword => ({ label: keyword, value: Meme.getKey(keyword) })),
             mode: 'multiple',
             allowClear: true
           }
         },
         {
-          component: 'Divider',
+          component: 'SOFT_GROUP_BEGIN',
           label: '其他设置'
         },
         {
@@ -185,12 +185,6 @@ export function supportGuoba () {
             max: 200,
             placeholder: '请输入渲染精度'
           }
-        },
-        {
-          field: 'other.restart',
-          label: '重启',
-          component: 'Switch',
-          bottomHelpMessage: '是否开启资源更新默认重启'
         },
         {
           field: 'other.checkRepo',
