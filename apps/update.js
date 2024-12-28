@@ -20,7 +20,7 @@ export class update extends plugin {
           fnc: 'updateLog'
         },
         {
-          reg: /^#?(清语表情|clarity-meme)?更新资源$/i,
+          reg: /^#?(清语表情|clarity-meme)?更新(表情包)?(资源|数据)$/i,
           fnc: 'updateRes'
         },
         {
@@ -64,7 +64,7 @@ export class update extends plugin {
       await e.reply('只有主人才能更新表情包数据')
       return
     }
-
+    await e.reply('开始更新表情包数据中, 请稍后...')
     try {
       if (!Config.meme.url) {
         await Tools.downloadMemeData(true)
@@ -106,7 +106,6 @@ export class update extends plugin {
       })
       meme.rulesInitialized = false
       await Plugin.initRules()
-      logger.debug(`[${this.name}] 动态规则生成完成，共生成规则数量: ${PluginRule.length}`)
       await e.reply('表情包数据更新完成')
     } catch (error) {
       logger.error(`表情包数据更新出错: ${error.message}`)

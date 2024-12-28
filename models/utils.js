@@ -10,11 +10,8 @@ const Utils = {
   async getImageBuffer (imageUrl) {
     if (!imageUrl) throw new Error('图片地址不能为空')
 
-    logger.debug(`[清语表情] 开始下载图片: ${imageUrl}`)
-
     try {
       const buffer = await Request.get(imageUrl, {}, 'arraybuffer')
-      logger.debug(`[清语表情] 图片下载完成: ${imageUrl}`)
       return buffer
     } catch (error) {
       logger.error(`[清语表情] 图片下载失败: ${error.message}`)
@@ -28,10 +25,8 @@ const Utils = {
   async bufferToBase64 (buffer) {
     if (!buffer) throw new Error('图片 Buffer 不能为空')
 
-    logger.debug('[清语表情] 开始转换 Buffer 为 Base64')
     try {
       const base64Data = buffer.toString('base64')
-      logger.debug('[清语表情] Base64 转换完成')
       return base64Data
     } catch (error) {
       logger.error(`[清语表情] Base64 转换失败: ${error.message}`)
@@ -40,37 +35,50 @@ const Utils = {
   },
 
   /**
-   * 获取用户 QQ 头像
+   * 获取用户头像
    */
-  async getAvatar (qqList) {
-    if (!qqList) throw new Error('QQ 号不能为空')
-    if (!Array.isArray(qqList)) qqList = [qqList]
-
-    const avatarUrl = (qq) => `https://q1.qlogo.cn/g?b=qq&nk=${qq}&s=640`
-
-    if (!Config.meme.cache) {
-      return
-    }
+  async getAvatar (userList, e) {
+    if (!userList) throw new Error('QQ 号不能为空')
+    if (!Array.isArray(userList)) userList = [userList]
 
     const cacheDir = `${Version.Plugin_Path}/data/avatar`
     if (!fs.existsSync(cacheDir)) {
       Data.createDir('data/avatar', '', false)
-      logger.debug(`[清语表情] 创建头像缓存目录: ${cacheDir}`)
+    }
+
+    const getAvatarUrl = async (qq) => {
+      try {
+        if (e?.group) {
+          const member = Bot.pickGroup(e.group_id).pickMember(qq)
+          return await member.getAvatarUrl()
+        } else {
+          const friend = Bot.pickFriend(qq)
+          return await friend.getAvatarUrl()
+        }
+      } catch (error) {
+        logger.error(`[清语表情] 获取头像 URL 失败: QQ=${qq}, 错误: ${error.message}`)
+        throw error
+      }
     }
 
     const downloadAvatar = async (qq) => {
       const cachePath = `${cacheDir}/avatar_${qq}.jpg`
-      const remoteAvatarUrl = avatarUrl(qq)
+      let avatarUrl
+
+      try {
+        avatarUrl = await getAvatarUrl(qq)
+      } catch (error) {
+        throw new Error(`无法获取头像 URL: QQ=${qq}, 错误: ${error.message}`)
+      }
 
       if (fs.existsSync(cachePath)) {
         try {
           const localStats = fs.statSync(cachePath)
-          const remoteHeaders = await Request.head(remoteAvatarUrl)
+          const remoteHeaders = await Request.head(avatarUrl)
           const remoteLastModified = new Date(remoteHeaders['last-modified'])
           const localLastModified = localStats.mtime
 
           if (localLastModified >= remoteLastModified) {
-            logger.debug(`[清语表情] 使用已缓存头像: QQ=${qq}, Path=${cachePath}`)
             return fs.readFileSync(cachePath)
           }
         } catch (error) {
@@ -78,9 +86,8 @@ const Utils = {
         }
       }
 
-      logger.debug(`[清语表情] 开始下载头像: QQ=${qq}, URL: ${remoteAvatarUrl}`)
       try {
-        const buffer = await Request.get(remoteAvatarUrl, {}, 'arraybuffer')
+        const buffer = await Request.get(avatarUrl, {}, 'arraybuffer')
         if (buffer && Buffer.isBuffer(buffer)) {
           fs.writeFileSync(cachePath, buffer)
           return buffer
@@ -93,10 +100,10 @@ const Utils = {
       }
     }
 
-
-    const results = await Promise.all(qqList.map((qq) => downloadAvatar(qq)))
+    const results = await Promise.all(userList.map((qq) => downloadAvatar(qq)))
     return results
   },
+
 
   /**
  * 获取用户昵称
