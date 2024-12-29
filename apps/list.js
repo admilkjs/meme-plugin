@@ -49,9 +49,13 @@ export class list extends plugin {
         {
           emojiList,
           total
+        },
+        {
+          type: 'base64'
         }
       )
       await e.reply(img)
+      return true
     } catch (error) {
       logger.error('加载表情列表失败:', error)
       await e.reply('加载表情列表失败，请稍后重试', true)

@@ -74,9 +74,13 @@ export class help extends plugin {
         helpGroup,
         ...themeData,
         element: 'default'
+      },
+      {
+        type: 'base64'
       }
     )
     await e.reply(img)
+    return true
   }
 
   async versionInfo (e) {
@@ -86,8 +90,12 @@ export class help extends plugin {
         currentVersion: Version.ver,
         changelogs: Version.logs,
         elem: 'elem'
+      },
+      {
+        type: 'base64'
       }
     )
     await e.reply(img)
+    return true
   }
 }
