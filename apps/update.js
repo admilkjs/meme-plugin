@@ -1,6 +1,6 @@
-import { Version, Config } from '../components/index.js'
+import { Version, Config, Render } from '../components/index.js'
 import { update as Update } from '../../other/update.js'
-import { Tools, checkRepo, Meme } from '../models/index.js'
+import { Tools, Code, Meme } from '../models/index.js'
 import { meme } from './meme.js'
 import pluginsLoader from '../../../lib/plugins/loader.js'
 
@@ -29,20 +29,16 @@ export class update extends plugin {
         }
       ]
     })
-    if(Config.other.checkRepo){
+    if (Config.other.checkRepo) {
       this.task = {
         name: '清语表情:仓库更新检测',
         cron: '0 0/20 * * * ?',
         log: false,
         fnc: () => {
-          this.check(true)
+          this.checkUpdate(true)
         }
       }
     }
-  }
-
-  async checkUpdate (e = this.e) {
-    await this.check(false, e)
   }
   async update (e = this.e) {
     const Type = e.msg.includes('强制') ? '#强制更新' : '#更新'
@@ -90,34 +86,39 @@ export class update extends plugin {
       await e.reply(`表情包数据更新失败: ${error.message}`)
     }
   }
-
-  async check (isTask = false, e = this.e) {
+  async checkUpdate (isTask = false, e = this.e) {
     try {
-      const result = await checkRepo.isUpToDate()
+      const { owner, repo, currentBranch } = await Code.gitRepo.getRepo()
+      const result = await Code.check.version(Version.Plugin_Path, owner, repo, currentBranch)
       const latestCommit = result.latestCommit
       const remoteSHA = latestCommit.sha
       const shaKey = `Yz:clarity-meme:update:commit:${result.branchName}`
       let storedSHA = await redis.get(shaKey)
 
       if (!storedSHA) {
-        storedSHA = result.localVersion
-        await redis.set(shaKey, storedSHA)
+        await redis.set(shaKey, remoteSHA)
+        return
       }
 
       if (storedSHA === remoteSHA) {
-        if (!isTask) {
+        if (isTask) {
           await e.reply('当前已是最新版本，无需更新。')
         }
         return
       }
 
-      const commitInfo = [
-        '[清语表情更新推送]',
-        `提交者：${latestCommit.committer.login}`,
-        `时间：${latestCommit.commitTime}`,
-        `提交信息：${latestCommit.message.title}`,
-        `地址：${latestCommit.commitUrl}`
-      ].join('\n')
+      const commitInfo = {
+        committer: latestCommit.committer.login,
+        commitTime: latestCommit.commitTime,
+        title: latestCommit.message.title,
+        content: latestCommit.message.content,
+        commitUrl: latestCommit.commitUrl
+      }
+
+      const img = await Render.render('code/index', {
+        commitInfo,
+        branchName: result.branchName
+      })
 
       if (isTask) {
         const masterQQs = Config.masterQQ.filter(qq => {
@@ -131,15 +132,15 @@ export class update extends plugin {
 
         for (let qq of masterQQs) {
           try {
-            await Bot.pickUser(qq).sendMsg(commitInfo)
+            await Bot.pickUser(qq).sendMsg(img)
             break
           } catch (sendError) {
+            logger.info(`发送消息给 ${qq} 失败: ${sendError.message}`)
           }
         }
       } else {
-        await e.reply(commitInfo)
+        await e.reply(img)
       }
-
       await redis.set(shaKey, remoteSHA)
     } catch (error) {
       logger.error(`检测版本时出错: ${error.message}`)
