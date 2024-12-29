@@ -48,6 +48,14 @@ export const cfgSchema = {
         desc: '是否开启使用用户昵称，不开则默认使用表情名称',
         type: 'boolean',
         fileName: 'meme'
+      },
+      autoRes: {
+        title: '自动更新资源',
+        key: '自动更新资源',
+        def: true,
+        desc: '是否自动更新表情包资源，开启后每日凌晨会自动更新',
+        type: 'boolean',
+        fileName: 'meme'
       }
     }
   },
@@ -142,25 +150,38 @@ export const cfgSchema = {
       }
     }
   },
-  other: {
-    title: '其他设置',
+  stats: {
+    title: '统计设置',
     cfg: {
-      checkRepo: {
-        title: '仓库更新检测',
-        key: '仓库更新检测',
-        type: 'boolean',
+      enable: {
+        title: '表情统计',
+        key: '表情统计',
+        desc: '是否开启表情统计',
         def: true,
-        desc: '是否开启仓库更新检测',
-        fileName: 'other'
-      },
-      renderScale: {
-        title: '渲染精度',
-        key: '渲染精度',
-        type: 'number',
-        def: 100,
-        input: (n) => Math.min(200, Math.max(50, n * 1 || 100)),
-        desc: '可选值50~200，建议100。设置高精度会提高图片的精细度，但因图片较大可能会影响渲染与发送速度',
-        fileName: 'other'
+        type: 'boolean',
+        fileName: 'meme'
+      }
+    },
+    other: {
+      title: '其他设置',
+      cfg: {
+        checkRepo: {
+          title: '仓库更新检测',
+          key: '仓库更新检测',
+          type: 'boolean',
+          def: true,
+          desc: '是否开启仓库更新检测',
+          fileName: 'other'
+        },
+        renderScale: {
+          title: '渲染精度',
+          key: '渲染精度',
+          type: 'number',
+          def: 100,
+          input: (n) => Math.min(200, Math.max(50, n * 1 || 100)),
+          desc: '可选值50~200，建议100。设置高精度会提高图片的精细度，但因图片较大可能会影响渲染与发送速度',
+          fileName: 'other'
+        }
       }
     }
   }
