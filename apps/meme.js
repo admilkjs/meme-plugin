@@ -48,7 +48,7 @@ export class meme extends plugin {
         matchedKeyword = match[1]
         return true
       }
-      return true
+      return false
     })
 
     if (!matchedKeyword) return true
