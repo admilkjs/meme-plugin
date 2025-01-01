@@ -9,7 +9,7 @@ export class stats extends plugin {
       priority: -Infinity,
       rule: [
         {
-          reg: /^#?(清语表情|表情|clarity-meme|meme)调用?统计$/i,
+          reg: /^#?(清语表情|表情|clarity-meme|meme)(调用)?统计$/i,
           fnc: 'stats'
         }
       ]

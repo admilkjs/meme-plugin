@@ -30,7 +30,6 @@ export class update extends plugin {
       ]
     })
 
-
     this.task = []
 
     if (Config.other.checkRepo) {
@@ -38,8 +37,8 @@ export class update extends plugin {
         name: '清语表情:仓库更新检测',
         cron: '0 0/20 * * * ?',
         log: false,
-        fnc: () => {
-          this.checkUpdate(true)
+        fnc: async () => {
+          await this.checkUpdate(null, true)
         }
       })
     }
@@ -49,35 +48,35 @@ export class update extends plugin {
         name: '清语表情:表情包数据每日更新',
         cron: '0 0 0 * * ?',
         log: false,
-        fnc: () => {
-          this.updateRes(true)
+        fnc: async () => {
+          await this.updateRes(null, true)
         }
       })
     }
   }
 
   async update (e = this.e) {
-    const Type = e.msg.includes('强制') ? '#强制更新' : '#更新'
-    e.msg = Type + Version.Plugin_Name
+    const Type = e?.msg.includes('强制') ? '#强制更新' : '#更新'
+    if (e) e.msg = Type + Version.Plugin_Name
     const up = new Update(e)
     up.e = e
     return up.update()
   }
 
   async updateLog (e = this.e) {
-    e.msg = '#更新日志' + Version.Plugin_Name
+    if (e) e.msg = '#更新日志' + Version.Plugin_Name
     const up = new Update(e)
     up.e = e
     return up.updateLog()
   }
 
   async updateRes (e, isTask = false) {
-    if (!isTask && !e.isMaster) {
+    if (!isTask && e && !e.isMaster) {
       await e.reply('只有主人才能更新表情包数据')
       return
     }
 
-    if (!isTask) {
+    if (!isTask && e) {
       await e.reply('开始更新表情包数据中, 请稍后...')
     }
 
@@ -98,17 +97,17 @@ export class update extends plugin {
 
       await pluginKey.plugin.initRules()
 
-      if (!isTask) {
+      if (!isTask && e) {
         await e.reply('表情包数据更新完成')
       }
       logger.mark('表情包数据更新完成')
       return true
     } catch (error) {
-      if (!isTask) {
+      if (!isTask && e) {
         await e.reply(`表情包数据更新失败: ${error.message}`)
       }
       logger.error(`表情包数据更新出错: ${error.message}`)
-      return true
+      return false
     }
   }
 
@@ -127,7 +126,7 @@ export class update extends plugin {
       }
 
       if (storedSHA === remoteSHA) {
-        if (!isTask) {
+        if (!isTask && e) {
           await e.reply('当前已是最新版本，无需更新。')
         }
         return
@@ -164,7 +163,7 @@ export class update extends plugin {
             logger.info(`发送消息给 ${qq} 失败: ${sendError.message}`)
           }
         }
-      } else {
+      } else if (e) {
         await e.reply(img)
       }
       await redis.set(shaKey, remoteSHA)
