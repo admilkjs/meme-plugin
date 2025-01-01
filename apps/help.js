@@ -74,9 +74,6 @@ export class help extends plugin {
         helpGroup,
         ...themeData,
         element: 'default'
-      },
-      {
-        type: 'base64'
       }
     )
     await e.reply(img)
@@ -88,11 +85,7 @@ export class help extends plugin {
       'help/version-info',
       {
         currentVersion: Version.ver,
-        changelogs: Version.logs,
-        elem: 'elem'
-      },
-      {
-        type: 'base64'
+        changelogs: Version.logs
       }
     )
     await e.reply(img)

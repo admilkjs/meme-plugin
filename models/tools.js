@@ -3,9 +3,8 @@ import Meme from './meme.js'
 import { Data, Version, Config } from '../components/index.js'
 import Request from './request.js'
 
-
 const Tools = {
-  async isAbroad (){
+  async isAbroad () {
     const urls = [
       'https://blog.cloudflare.com/cdn-cgi/trace',
       'https://developers.cloudflare.com/cdn-cgi/trace'
@@ -78,6 +77,21 @@ const Tools = {
   },
 
   /**
+   * 获取 Meme.infoMap
+   */
+  getInfoMap () {
+    return Meme.infoMap
+  },
+
+  /**
+   * 获取表情包信息
+   */
+  getInfo (memeKey) {
+    const infoMap = this.getInfoMap()
+    return infoMap?.[memeKey] || null
+  },
+
+  /**
    * 将关键字转换为表情包键
    */
   getKey (keyword) {
@@ -88,10 +102,15 @@ const Tools = {
     }
     return null
   },
+
+  /**
+   * 获取表情包关键字
+   */
   getKeywords (memeKey) {
     const memeInfo = Meme.infoMap?.[memeKey]
     return memeInfo?.keywords || null
   },
+
   /**
    * 检查是否在禁用表情列表中
    */
@@ -109,6 +128,6 @@ const Tools = {
     const memeKey = await this.getKey(input)
     return blacklistedKeys.includes(memeKey)
   }
-
 }
+
 export default Tools

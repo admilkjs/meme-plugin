@@ -1,4 +1,4 @@
-import { Meme, Rule } from '../models/index.js'
+import { Meme, Rule, Tools } from '../models/index.js'
 import { Config } from '../components/index.js'
 
 export class random extends plugin {
@@ -19,13 +19,13 @@ export class random extends plugin {
   async random (e) {
     if (!Config.meme.Enable) return false
     try {
-      const memeKeys = Object.keys(Meme.infoMap)
+      const memeKeys = Object.keys(Tools.getInfoMap())
       if (memeKeys.length === 0) {
         return true
       }
 
       const memeKey = memeKeys[Math.floor(Math.random() * memeKeys.length)]
-      const memeInfo = Meme.getInfo(memeKey)
+      const memeInfo = Tools.getInfo(memeKey)
 
       if (!memeInfo) {
         return true

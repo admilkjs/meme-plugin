@@ -65,16 +65,6 @@ const Meme = {
   },
 
   /**
- * 获取表情包信息
- */
-  getInfo (memeKey) {
-    if (!this.loaded) {
-      this.load()
-    }
-    return this.infoMap?.[memeKey] || null
-  },
-
-  /**
    * 发送表情包请求
    * @param {string} endpoint 请求地址
    * @param {object} params 请求参数
@@ -99,9 +89,9 @@ const Meme = {
   },
 
   /**
- * 获取表情包预览图片地址
- * @param {string} memeKey
- */
+   * 获取表情包预览图片地址
+   * @param {string} memeKey
+   */
   async getPreviewUrl (memeKey) {
     if (!memeKey) {
       logger.error('表情键值不能为空')

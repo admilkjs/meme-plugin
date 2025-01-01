@@ -9,7 +9,7 @@ export class stats extends plugin {
       priority: -Infinity,
       rule: [
         {
-          reg: /^#?(清语表情|clarity-meme|meme)?统计$/i,
+          reg: /^#?(清语表情|表情|clarity-meme|meme)调用?统计$/i,
           fnc: 'stats'
         }
       ]
@@ -30,15 +30,19 @@ export class stats extends plugin {
 
       const keywords = await Tools.getKeywords(memeKey)
       if (!keywords || keywords.length === 0) continue
-      statsData.push({ keywords, count })
+
+      const keywordsString = keywords.join(', ')
+      statsData.push({ keywords: keywordsString, count })
     }
 
     statsData.sort((a, b) => b.count - a.count)
 
-    const img = await Render.render('meme/stats', {
-      total,
-      emojiList: statsData
-    })
+    const img = await Render.render('meme/stats',
+      {
+        total,
+        emojiList: statsData
+      })
+
     await e.reply(img)
     return true
   }
