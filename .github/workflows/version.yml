@@ -13,6 +13,7 @@ permissions:
 jobs:
   auto-release:
     runs-on: ubuntu-latest
+    if: github.actor != 'github-actions[bot]' 
 
     steps:
       - name: 检出代码
@@ -59,7 +60,7 @@ jobs:
           CHANGELOG=$(awk 'BEGIN {flag=0}
             /^## / {if (flag) exit; flag=1}
             flag {print}' CHANGELOG.md)
-          BODY=$(printf "### 更新日志\n\n%s\n" "$CHANGELOG")
+          BODY=$(printf "# 更新日志\n\n%s\n" "$CHANGELOG")
           EXISTING_PR=$(gh pr list --head "$RELEASE_BRANCH" --base main --json number --jq '.[0].number')
 
           if [ -z "$EXISTING_PR" ]; then
