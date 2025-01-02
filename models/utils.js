@@ -1,6 +1,7 @@
 import fs from 'fs'
 import { Version, Data } from '../components/index.js'
 import Request from './request.js'
+import Tools from './tools.js'
 
 const Utils = {
 
@@ -8,14 +9,19 @@ const Utils = {
    * 获取图片 Buffer
    */
   async getImageBuffer (imageUrl) {
-    if (!imageUrl) throw new Error('图片地址不能为空')
+    if (!imageUrl) throw {
+      status: 400,
+      message: '图片地址不能为空'
+    }
 
     try {
       const buffer = await Request.get(imageUrl, {}, 'arraybuffer')
       return buffer
     } catch (error) {
-      logger.error(`[清语表情] 图片下载失败: ${error.message}`)
-      throw error
+      throw {
+        status: 500,
+        message: '图片请求失败'
+      }
     }
   },
 
@@ -35,14 +41,19 @@ const Utils = {
   },
 
   /**
-   * 获取用户头像
-   */
+ * 获取用户头像
+ */
   async getAvatar (userList, e) {
-    if (!userList) throw new Error('QQ 号不能为空')
+    if (!userList) {
+      throw {
+        status: 400,
+        message: 'QQ 号不能为空'
+      }
+    }
     if (!Array.isArray(userList)) userList = [userList]
 
     const cacheDir = `${Version.Plugin_Path}/data/avatar`
-    if (!fs.existsSync(cacheDir)) {
+    if (!await Tools.fileExistsAsync(cacheDir)) {
       Data.createDir('data/avatar', '', false)
     }
 
@@ -56,8 +67,10 @@ const Utils = {
           return await friend.getAvatarUrl()
         }
       } catch (error) {
-        logger.error(`[清语表情] 获取头像 URL 失败: QQ=${qq}, 错误: ${error.message}`)
-        throw error
+        throw {
+          status: 404,
+          message: '无法获取头像地址'
+        }
       }
     }
 
@@ -68,10 +81,10 @@ const Utils = {
       try {
         avatarUrl = await getAvatarUrl(qq)
       } catch (error) {
-        throw new Error(`无法获取头像 URL: QQ=${qq}, 错误: ${error.message}`)
+        throw error
       }
 
-      if (fs.existsSync(cachePath)) {
+      if (await Tools.fileExistsAsync(cachePath)) {
         try {
           const localStats = fs.statSync(cachePath)
           const remoteHeaders = await Request.head(avatarUrl)
@@ -82,29 +95,46 @@ const Utils = {
             return fs.readFileSync(cachePath)
           }
         } catch (error) {
-          logger.error(`[清语表情] 检查远程头像文件信息失败: QQ=${qq}, 错误: ${error.message}`)
+          throw {
+            status: 500,
+            message: '检查远程头像文件信息失败'
+          }
         }
       }
-
       try {
         const buffer = await Request.get(avatarUrl, {}, 'arraybuffer')
         if (buffer && Buffer.isBuffer(buffer)) {
           fs.writeFileSync(cachePath, buffer)
           return buffer
         } else {
-          throw new Error('头像下载返回了无效的数据')
+          throw {
+            status: 500,
+            message: '头像下载返回了无效的数据'
+          }
         }
       } catch (error) {
-        logger.error(`[清语表情] 下载头像失败: QQ=${qq}, 错误: ${error.message}`)
-        throw error
+        throw {
+          status: 500,
+          message: '下载头像失败'
+        }
       }
     }
 
-    const results = await Promise.all(userList.map((qq) => downloadAvatar(qq)))
+    const results = await Promise.all(
+      userList.map(async (qq) => {
+        try {
+          return await downloadAvatar(qq)
+        } catch (error) {
+          throw {
+            status: 500,
+            message: '下载头像失败'
+          }
+        }
+      })
+    )
+
     return results
   },
-
-
   /**
  * 获取用户昵称
  */
@@ -278,9 +308,25 @@ const Utils = {
     }
 
     return []
+  },
+
+  /**
+   * 处理错误异常信息
+   */
+  async handleError (error) {
+    const { status, message } = error
+
+    switch (status) {
+      case 404:
+        return message || '资源不存在'
+      case 532:
+        return '文本内容过长，请减少输入内容。'
+      case 500:
+        return message || '表情服务请求失败，请稍后再试。'
+      default:
+        return message || '网络连接失败，请检查网络后重试。'
+    }
   }
-
-
 }
 
 export default Utils

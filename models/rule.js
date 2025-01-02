@@ -218,12 +218,11 @@ const Rule = {
       }
       return true
     } catch (error) {
-      logger.error(`[清语表情] 表情生成失败: ${error.message}`)
-      await e.reply(`生成表情包失败: ${error.message}`)
+      const errorMessage = await Utils.handleError(error)
+      await e.reply(`[清语表情]生成表情包失败, 状态码: ${error.status}, 错误信息: ${errorMessage}`)
       return true
     }
   }
-
 }
 
 export default Rule

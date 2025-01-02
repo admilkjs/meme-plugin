@@ -46,23 +46,29 @@ const Meme = {
     }
 
     try {
+
       if (!Config.meme.url) {
-        await Tools.downloadMemeData()
+        if (!(await Tools.fileExistsAsync('data/meme.json'))) {
+          await Tools.downloadMemeData()
+        }
         this.infoMap = Data.readJSON('data/meme.json')
       } else {
-        await Tools.generateMemeData()
+        if (!(await Tools.fileExistsAsync('data/custom/meme.json'))) {
+          await Tools.generateMemeData()
+        }
         this.infoMap = Data.readJSON('data/custom/meme.json')
       }
-
       if (!this.infoMap || typeof this.infoMap !== 'object') {
         logger.error('加载表情包详情失败')
         return
       }
+
       this.loaded = true
     } catch (error) {
       logger.error(`加载表情包数据出错: ${error.message}`)
     }
   },
+
 
   /**
    * 发送表情包请求
@@ -70,20 +76,15 @@ const Meme = {
    * @param {object} params 请求参数
    * @param {string} method 请求方法
    * @param {string} responseType 响应类型
+   * @returns {Promise<any>}
    */
-  async request (endpoint, params = {}, method = 'GET', responseType) {
+  async request (endpoint, params = {}, method = 'GET', responseType = null) {
+    const baseUrl = await this.getBaseUrl()
+    const url = `${baseUrl}/${endpoint}`
+
     try {
-      const baseUrl = await this.getBaseUrl()
-      const url = `${baseUrl}/${endpoint}`
-      if (method.toUpperCase() === 'GET') {
-        return await Request.get(url, params)
-      } else if (method.toUpperCase() === 'POST') {
-        return await Request.post(url, params, responseType)
-      } else {
-        throw new Error('不支持的请求方法')
-      }
+      return await Request.request(url, method, params, responseType)
     } catch (error) {
-      logger.error(`请求 ${endpoint} 失败: ${error.message}`)
       throw error
     }
   },
@@ -91,15 +92,20 @@ const Meme = {
   /**
    * 获取表情包预览图片地址
    * @param {string} memeKey
+   * @returns {Promise<string|null>}
    */
   async getPreviewUrl (memeKey) {
     if (!memeKey) {
       logger.error('表情键值不能为空')
       return null
     }
-    const baseUrl = await this.getBaseUrl()
-    const previewUrl = `${baseUrl}/memes/${memeKey}/preview`
-    return previewUrl
+
+    try {
+      const baseUrl = await this.getBaseUrl()
+      return `${baseUrl}/memes/${memeKey}/preview`
+    } catch (error) {
+      throw error
+    }
   }
 }
 

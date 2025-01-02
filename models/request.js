@@ -3,82 +3,72 @@ import FormData from 'form-data'
 
 const Request = {
   /**
-   * 通用 GET 请求
+   * 通用请求方法
    */
-  get: async (url, params = {}, responseType) => {
+  async request (url, method = 'GET', params = {}, responseType = null) {
     try {
       const options = {
+        method: method.toUpperCase(),
+        url,
         headers: {
           'User-Agent': 'clarity-meme'
         },
         timeout: 5000,
         proxy: false
       }
-      if (params) {
+      if (method.toUpperCase() === 'GET' || method.toUpperCase() === 'HEAD') {
         options.params = params
+      } else if (method.toUpperCase() === 'POST') {
+        options.data = params
+        if (params instanceof FormData) {
+          options.headers = {
+            ...options.headers,
+            ...params.getHeaders()
+          }
+        }
       }
+
       if (responseType) {
         options.responseType = responseType
       }
 
-      const response = await axios.get(url, options)
+      const response = await axios(options)
       return responseType === 'arraybuffer' ? Buffer.from(response.data) : response.data
     } catch (error) {
-      logger.error(`请求 ${url} 失败: ${error.message}`)
-      throw error
+      if (error.response) {
+        throw {
+          status: error.response.status,
+          message: error.response.statusText || error.message,
+          data: error.response.data
+        }
+      } else {
+        throw {
+          status: 500,
+          message: '网络错误'
+        }
+      }
     }
   },
 
   /**
-   * 通用 HEAD 请求
+   * GET 请求
    */
-  head: async (url) => {
-    try {
-      const options = {
-        headers: {
-          'User-Agent': 'clarity-meme'
-        },
-        timeout: 5000,
-        proxy: false
-      }
-
-      const response = await axios.head(url, options)
-      return response.headers
-    } catch (error) {
-      logger.error(`请求 ${url} 的头部信息失败: ${error.message}`)
-      throw error
-    }
+  async get (url, params = {}, responseType = null) {
+    return await this.request(url, 'GET', params, responseType)
   },
 
   /**
-   * 通用 POST 请求
+   * POST 请求
    */
-  post: async (url, data = null, responseType) => {
-    try {
-      let formHeaders = {}
-      let postData = data
+  async post (url, params = {}, responseType = null) {
+    return await this.request(url, 'POST', params, responseType)
+  },
 
-      if (data instanceof FormData) {
-        formHeaders = data.getHeaders()
-      } else if (data === null) {
-        postData = undefined
-      }
-
-      const response = await axios.post(url, postData, {
-        headers: {
-          'User-Agent': 'clarity-meme',
-          ...formHeaders
-        },
-        timeout: 5000,
-        proxy: false,
-        ...(responseType && { responseType })
-      })
-
-      return responseType === 'arraybuffer' ? Buffer.from(response.data) : response.data
-    } catch (error) {
-      logger.error(`请求 ${url} 失败: ${error.message}`)
-      throw error
-    }
+  /**
+   * HEAD 请求
+   */
+  async head (url, params = {}) {
+    return await this.request(url, 'HEAD', params)
   }
 }
 

@@ -1,9 +1,21 @@
-import fs from 'fs'
+import fs from 'fs/promises'
 import Meme from './meme.js'
 import { Data, Version, Config } from '../components/index.js'
 import Request from './request.js'
 
 const Tools = {
+  /**
+   * 检查指定文件是否存在
+   */
+  async fileExistsAsync (filePath) {
+    try {
+      await fs.access(filePath)
+      return true
+    } catch {
+      return false
+    }
+  },
+
   async isAbroad () {
     const urls = [
       'https://blog.cloudflare.com/cdn-cgi/trace',
@@ -29,11 +41,11 @@ const Tools = {
     try {
       const filePath = `${Version.Plugin_Path}/data/meme.json`
       Data.createDir('data')
-      if (fs.existsSync(filePath) && !forceUpdate) {
+      if (await this.fileExistsAsync(filePath) && !forceUpdate) {
         return
       }
-      if (forceUpdate && fs.existsSync(filePath)) {
-        fs.unlinkSync(filePath)
+      if (forceUpdate && await this.fileExistsAsync(filePath)) {
+        await fs.unlink(filePath)
       }
       const response = await Request.get('https://pan.wuliya.cn/d/Yunzai-Bot/data/meme.json')
       Data.writeJSON('data/meme.json', response)
@@ -50,11 +62,11 @@ const Tools = {
     try {
       const filePath = `${Version.Plugin_Path}/data/custom/meme.json`
       Data.createDir('data/custom', '', false)
-      if (fs.existsSync(filePath) && !forceUpdate) {
+      if (await this.fileExistsAsync(filePath) && !forceUpdate) {
         return
       }
-      if (forceUpdate && fs.existsSync(filePath)) {
-        fs.unlinkSync(filePath)
+      if (forceUpdate && await this.fileExistsAsync(filePath)) {
+        await fs.unlink(filePath)
       }
 
       const baseUrl = await Meme.getBaseUrl()
