@@ -1,19 +1,17 @@
+import { exec } from 'node:child_process'
+import util from 'util'
 import gitRepo from './gitRepo.js'
 import commit from './commit.js'
+
+const execPromise = util.promisify(exec)
 
 const check = {
   async version (localPath) {
     try {
       const { owner, repo, currentBranch } = await gitRepo.getRepo()
       const localVersionCommand = `git -C "${localPath}" rev-parse HEAD`
-      const localVersionRaw = await Bot.exec(localVersionCommand, { quiet: true })
-
-      let localVersion = ''
-      if (typeof localVersionRaw === 'object') {
-        localVersion = localVersionRaw.stdout || JSON.stringify(localVersionRaw)
-      } else {
-        localVersion = String(localVersionRaw).trim()
-      }
+      const { stdout: localVersionRaw } = await execPromise(localVersionCommand)
+      const localVersion = localVersionRaw.trim()
 
       const latestCommit = await commit.getLatestCommit(owner, repo, currentBranch)
       const isUpToDate = localVersion === latestCommit.sha
