@@ -3,7 +3,7 @@ import _ from 'lodash'
 const Args = {
   descriptions: {
     look_flat: '看扁率，数字.如#3',
-    crawl: '爬的图片编号，1-92。如#33',
+    crawl: '爬的图片编号, 1-92。如#33',
     firefly_holdsign: '流萤举牌的图片编号，1-21。如#2',
     symmetric: '方向，上下左右。如#下',
     dog_dislike: '是否圆形头像，输入圆即可。如#圆',
@@ -21,9 +21,10 @@ const Args = {
     alipay: '二维码的内容链接或文本，如#https://github.com',
     wechat_pay: '二维码的内容链接或文本，如#https://github.com',
     panda_dragon_figure: '奇怪龙表情生成，如#原神龙',
-    jinhsi: '病娇的图片编号，1-13。如#10',
-    sick_delicate: '今汐的图片编号，1-4。如#1',
-    kokona_say: '消息框的位置，如#左#右 #随机'
+    jinhsi: '病娇的图片编号, 1-13。如#10',
+    sick_delicate: '今汐的图片编号, 1-4。如#1',
+    kokona_say: '消息框的位置，如#左',
+    keep_your_money: '角色名称(阿罗娜, 普拉娜)'
   },
 
   handle (key, args) {
@@ -154,6 +155,14 @@ const Args = {
           随机: 'random'
         }
         argsObj = { position: positionMap[args.trim()] || 'random' }
+        break
+      }
+      case 'keep_your_money': {
+        let roleMap = {
+          阿罗娜: 1,
+          普拉娜: 2
+        }
+        argsObj = { number: roleMap[args.trim()] || 0 }
         break
       }
     }
