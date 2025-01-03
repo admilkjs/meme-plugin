@@ -38,7 +38,6 @@ const Render = {
       pluResPath: `${Version.Plugin_Path}/resources/`,
       saveId: path.split('/').pop(),
       imgType: 'jpeg',
-      multiPage: true,
       multiPageHeight: 12000,
       ...params
     }
