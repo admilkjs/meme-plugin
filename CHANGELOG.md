@@ -1,5 +1,20 @@
 # 变更日志
 
+## [1.6.3](https://github.com/wuliya336/clarity-meme/compare/v1.6.2...v1.6.3) (2025-01-03)
+
+### 🐛 修复
+
+* **components:** 修复使用外置渲染karin-puppeteer无法正常输出 ([b6b910d](https://github.com/wuliya336/clarity-meme/commit/b6b910df24c6bfbb7bbe14438daa2138b43136ff))
+* **models/Code:** 修复在Miao-Yunzai下无法正常执行检查插件更新 ([53344f0](https://github.com/wuliya336/clarity-meme/commit/53344f0b06724e497d0fd688ebb40eb69eb488e5))
+
+### ♻️ 重构
+
+* **models:** 添加新的角色选择功能并优化描述文案 ([1b9dd6e](https://github.com/wuliya336/clarity-meme/commit/1b9dd6ec4b336fc6bd8fb5779b92f6f943113cc3))
+
+### 🔄 持续集成
+
+* 排除 GitHub Actions 机器人触发自动发布 ([49d3bc1](https://github.com/wuliya336/clarity-meme/commit/49d3bc1214bbe8a8d6062d5b42c5712dcbfbe510))
+
 ## [1.6.2](https://github.com/wuliya336/clarity-meme/compare/v1.6.1...v1.6.2) (2025-01-02)
 
 ### ♻️ 重构
