@@ -1,5 +1,15 @@
 # 变更日志
 
+## [1.7.0](https://github.com/wuliya336/clarity-meme/compare/v1.6.3...v1.7.0) (2025-01-04)
+
+### ✨ 新功能
+
+* **models:** 优化 args 参数处理逻辑, 适配多参数 ([d6119ff](https://github.com/wuliya336/clarity-meme/commit/d6119ffa921e114282679aaa7c750e785e39914d))
+
+### 🔄 持续集成
+
+* 优化自动发布版本的条件判断 ([619863c](https://github.com/wuliya336/clarity-meme/commit/619863cef37f61259c62973aefe68bf2aeed13f7))
+
 ## [1.6.3](https://github.com/wuliya336/clarity-meme/compare/v1.6.2...v1.6.3) (2025-01-03)
 
 ### 🐛 修复
