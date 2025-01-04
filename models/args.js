@@ -24,6 +24,7 @@ const Args = {
     jinhsi: '病娇的图片编号, 1-13。如#10',
     sick_delicate: '今汐的图片编号, 1-4。如#1',
     kokona_say: '消息框的位置，如#左',
+    pjsk: '角色名称(爱莉, 彰人, 杏, 梦, 绘名, 遥, 穗波, 一歌, KAITO, 奏, 心羽, 连, 流歌, 真冬, MEIKO, 初音未来, 实乃理, 瑞希, 宁宁, 铃, 类, 咲希, 志步, 雫, 冬弥, 司)，以及指定图片。如#爱莉#3',
     keep_your_money: '角色名称(阿罗娜, 普拉娜)'
   },
 
@@ -34,15 +35,15 @@ const Args = {
     let argsObj = {}
     switch (key) {
       case 'look_flat': {
-        argsObj = { ratio: parseInt(args || '2') }
+        argsObj = { ratio: parseInt(args[0] || '2') }
         break
       }
       case 'crawl': {
-        argsObj = { number: parseInt(args) ? parseInt(args) : _.random(1, 92, false) }
+        argsObj = { number: parseInt(args[0]) ? parseInt(args[0]) : _.random(1, 92, false) }
         break
       }
       case 'firefly_holdsign': {
-        argsObj = { number: parseInt(args) ? parseInt(args) : _.random(1, 21, false) }
+        argsObj = { number: parseInt(args[0]) ? parseInt(args[0]) : _.random(1, 21, false) }
         break
       }
       case 'symmetric': {
@@ -52,13 +53,13 @@ const Args = {
           上: 'top',
           下: 'bottom'
         }
-        argsObj = { direction: directionMap[args.trim()] || 'left' }
+        argsObj = { direction: directionMap[args[0]] || 'left' }
         break
       }
       case 'petpet':
       case 'jiji_king':
       case 'kirby_hammer': {
-        argsObj = { circle: args.startsWith('圆') }
+        argsObj = { circle: args[0].startsWith('圆') }
         break
       }
       case 'my_friend': {
@@ -66,7 +67,7 @@ const Args = {
         break
       }
       case 'looklook': {
-        argsObj = { mirror: args === '翻转' }
+        argsObj = { mirror: args[0] === '翻转' }
         break
       }
       case 'always': {
@@ -75,7 +76,7 @@ const Args = {
           循环: 'loop',
           套娃: 'circle'
         }
-        argsObj = { mode: modeMap[args] || 'normal' }
+        argsObj = { mode: modeMap[args[0]] || 'normal' }
         break
       }
       case 'gun':
@@ -85,25 +86,25 @@ const Args = {
           右: 'right',
           两边: 'both'
         }
-        argsObj = { position: directionMap[args.trim()] || 'right' }
+        argsObj = { position: directionMap[args[0]] || 'right' }
         break
       }
       case 'dog_dislike': {
-        argsObj = { circle: args.startsWith('圆') }
+        argsObj = { circle: args[0].startsWith('圆') }
         break
       }
       case 'clown': {
-        argsObj = { person: args.startsWith('爷') }
+        argsObj = { person: args[0].startsWith('爷') }
         break
       }
       case 'note_for_leave': {
         if (args) {
-          argsObj = { time: args }
+          argsObj = { time: args[0] }
         }
         break
       }
       case 'mourning': {
-        argsObj = { black: args.startsWith('黑白') || args.startsWith('灰') }
+        argsObj = { black: args[0].startsWith('黑白') || args.startsWith('灰') }
         break
       }
       case 'genshin_eat': {
@@ -115,22 +116,22 @@ const Args = {
           刻晴: 5,
           钟离: 6
         }
-        argsObj = { character: roleMap[args.trim()] || 0 }
+        argsObj = { character: roleMap[args[0]] || 0 }
         break
       }
       case 'clown_mask': {
-        argsObj = { mode: args === '前' ? 'front' : 'behind' }
+        argsObj = { mode: args[0] === '前' ? 'front' : 'behind' }
         break
       }
       case 'alipay': {
         argsObj = {
-          message: args ? args : ''
+          message: args[0] || ''
         }
         break
       }
       case 'wechat_pay': {
         argsObj = {
-          message: args ? args : ''
+          message: args[0] || ''
         }
         break
       }
@@ -141,7 +142,7 @@ const Args = {
         break
       }
       case 'jinhsi': {
-        argsObj = { number: Math.min(parseInt(args || '1'), 13) }
+        argsObj = { number: Math.min(parseInt(args[0] || '1'), 13) }
         break
       }
       case 'sick_delicate': {
@@ -154,7 +155,42 @@ const Args = {
           右: 'right',
           随机: 'random'
         }
-        argsObj = { position: positionMap[args.trim()] || 'random' }
+        argsObj = { position: positionMap[args[0]] || 'random' }
+        break
+      }
+      case 'pjsk': {
+        let roleMap = {
+          爱莉: 1,
+          彰人: 2,
+          杏: 3,
+          梦: 4,
+          绘名: 5,
+          遥: 6,
+          穗波: 7,
+          一歌: 8,
+          KAITO: 9,
+          奏: 10,
+          心羽: 11,
+          连: 12,
+          流歌: 13,
+          真冬: 14,
+          MEIKO: 15,
+          初音未来: 16,
+          实乃理: 17,
+          瑞希: 18,
+          宁宁: 19,
+          铃: 20,
+          类: 21,
+          咲希: 22,
+          志步: 23,
+          雫: 24,
+          冬弥: 25,
+          司: 26
+        }
+        argsObj = {
+          character: roleMap[args[0]] || 0,
+          number: parseInt(args[1] || '0')
+        }
         break
       }
       case 'keep_your_money': {
@@ -162,7 +198,7 @@ const Args = {
           阿罗娜: 1,
           普拉娜: 2
         }
-        argsObj = { number: roleMap[args.trim()] || 0 }
+        argsObj = { number: roleMap[args[0]] || 0 }
         break
       }
     }

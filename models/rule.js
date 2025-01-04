@@ -24,7 +24,6 @@ const Rule = {
     const formData = new FormData()
     let images = []
     let finalTexts = []
-    let argsString = null
 
     try {
       /**
@@ -51,16 +50,21 @@ const Rule = {
       * 处理 args 参数类型表情
       */
       if (args_type !== null) {
-        const argsMatch = userText.match(/#(.+)/)
-        if (argsMatch) {
-          const message = argsMatch[1].trim()
-          if (message) {
-            argsString = Args.handle(memeKey, message)
-            formData.append('args', argsString)
-          }
-          userText = userText.replace(/#.+/, '').trim()
+        const argsMatches = userText.match(/#([^#]+)/g)
+
+        if (argsMatches) {
+          const argsArray = argsMatches.map(arg => arg.slice(1).trim())
+          const argsString = Args.handle(memeKey, argsArray)
+          formData.append('args', argsString)
         }
+
+        userText = userText.replace(/#([^#]+)/g, '').trim()
+      } else {
+        const argsString = Args.handle(memeKey)
+        formData.append('args', argsString)
       }
+
+
 
       /**
       * 处理图片类型表情

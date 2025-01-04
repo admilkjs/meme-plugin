@@ -19,7 +19,7 @@ const Utils = {
       return buffer
     } catch (error) {
       throw {
-        status: 500,
+        status: 521,
         message: '图片请求失败'
       }
     }
@@ -96,7 +96,7 @@ const Utils = {
           }
         } catch (error) {
           throw {
-            status: 500,
+            status: 521,
             message: '检查远程头像文件信息失败'
           }
         }
@@ -108,13 +108,13 @@ const Utils = {
           return buffer
         } else {
           throw {
-            status: 500,
+            status: 521,
             message: '头像下载返回了无效的数据'
           }
         }
       } catch (error) {
         throw {
-          status: 500,
+          status: 521,
           message: '下载头像失败'
         }
       }
@@ -126,7 +126,7 @@ const Utils = {
           return await downloadAvatar(qq)
         } catch (error) {
           throw {
-            status: 500,
+            status: 521,
             message: '下载头像失败'
           }
         }
@@ -319,10 +319,16 @@ const Utils = {
     switch (status) {
       case 404:
         return message || '资源不存在'
+      case 500:
+        return '表情服务请求失败，请稍后再试。'
+      case 521:
+        return message
       case 532:
         return '文本内容过长，请减少输入内容。'
-      case 500:
-        return message || '表情服务请求失败，请稍后再试。'
+      case 543:
+        return '文本或数量不足'
+      case 560:
+        return '图片编号错误'
       default:
         return message || '网络连接失败，请检查网络后重试。'
     }
