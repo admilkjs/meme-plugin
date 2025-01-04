@@ -25,7 +25,8 @@ const Args = {
     sick_delicate: '今汐的图片编号, 1-4。如#1',
     kokona_say: '消息框的位置，如#左',
     pjsk: '角色名称(爱莉, 彰人, 杏, 梦, 绘名, 遥, 穗波, 一歌, KAITO, 奏, 心羽, 连, 流歌, 真冬, MEIKO, 初音未来, 实乃理, 瑞希, 宁宁, 铃, 类, 咲希, 志步, 雫, 冬弥, 司)，以及指定图片。如#爱莉#3',
-    keep_your_money: '角色名称(阿罗娜, 普拉娜)'
+    keep_your_money: '角色名称(阿罗娜, 普拉娜)',
+    police_warn: '警告的牌子的名称，如#警惕小南梁'
   },
 
   handle (key, args) {
@@ -63,7 +64,7 @@ const Args = {
         break
       }
       case 'my_friend': {
-        argsObj = { name: args }
+        argsObj = { name: args[0] }
         break
       }
       case 'looklook': {
@@ -137,7 +138,7 @@ const Args = {
       }
       case 'panda_dragon_figure': {
         argsObj = {
-          name: args || ''
+          name: args[0] || ''
         }
         break
       }
@@ -146,7 +147,7 @@ const Args = {
         break
       }
       case 'sick_delicate': {
-        argsObj = { number: Math.min(parseInt(args || '1'), 4) }
+        argsObj = { number: Math.min(parseInt(args[0] || '1'), 4) }
         break
       }
       case 'kokona_say': {
@@ -199,6 +200,12 @@ const Args = {
           普拉娜: 2
         }
         argsObj = { number: roleMap[args[0]] || 0 }
+        break
+      }
+      case 'police_warn': {
+        argsObj = {
+          name: args[0] || ''
+        }
         break
       }
     }
