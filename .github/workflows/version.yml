@@ -12,15 +12,19 @@ permissions:
 
 jobs:
   auto-release:
+    if: github.event_name == 'workflow_dispatch' || 
+        (!contains(join(github.event.push.commits.*.committer.name, ' '), 'github-actions[bot]') && 
+         !contains(join(github.event.push.commits.*.committer.name, ' '), 'GitHub') && 
+         !contains(join(github.event.push.commits.*.message, ' '), 'Merge pull request') && 
+         !contains(join(github.event.push.commits.*.message, ' '), '发布版本'))
     runs-on: ubuntu-latest
-    if: github.event_name == 'workflow_dispatch' || (github.actor != 'github-actions[bot]' && !contains(join(github.event.push.commits.*.message, ' '), 'Merge pull request') && !contains(join(github.event.push.commits.*.message, ' '), '发布版本'))
 
     steps:
       - name: 检出代码
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          tags: true
+          fetch-tags: true
 
       - name: 设置 pnpm
         uses: pnpm/action-setup@v4
