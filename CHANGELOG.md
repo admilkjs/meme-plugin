@@ -1,5 +1,19 @@
 # 变更日志
 
+## [1.7.1](https://github.com/wuliya336/clarity-meme/compare/v1.7.0...v1.7.1) (2025-01-06)
+
+### 🐛 修复
+
+* **list:** 修复表情总数计算逻辑 ([c642ae8](https://github.com/wuliya336/clarity-meme/commit/c642ae88f33d6dd20cf5b7434da889aefa8d1621))
+
+### 🔧 其他更新
+
+* **models:** 添加 police_warn 模型支持, 新增表情`警方提醒` ([696fab3](https://github.com/wuliya336/clarity-meme/commit/696fab30fd1e14bd0e96fbb5f0399e56d7685921))
+
+### 🔄 持续集成
+
+* 优化版本发布条件和代码检出 ([5b42d14](https://github.com/wuliya336/clarity-meme/commit/5b42d14fee1d21e7a2892563270e8c2fc25fd31b))
+
 ## [1.7.0](https://github.com/wuliya336/clarity-meme/compare/v1.6.3...v1.7.0) (2025-01-04)
 
 ### ✨ 新功能
