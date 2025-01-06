@@ -1,7 +1,7 @@
 {{extend defaultLayout}}
 
 {{block 'css'}}
-<link rel="stylesheet" type="text/css" href="{{_res_path}}/meme/index.css" />
+<link rel="stylesheet" type="text/css" href="{{_res_path}}/meme/list.css" />
 {{/block}}
 
 {{block 'main'}}
@@ -16,6 +16,10 @@
           <ul class="cfg-ul">
       {{/if}}
       <li class="cfg-li">
+        <span>
+          {{index + 1}}. 
+          {{item.name}}
+        </span>
         <div class="icons">
           {{if item.types.includes('text')}}
             <img src="{{_res_path}}/meme/imgs/icons/text.svg" alt="text" />
@@ -27,7 +31,6 @@
             <img src="{{_res_path}}/meme/imgs/icons/arg.svg" alt="arg" />
           {{/if}}
         </div>
-        <span>{{item.name}}</span>
       </li>
     {{/each}}
     </ul>

@@ -1,5 +1,5 @@
 import { Version, Init } from './components/index.js'
-import Meme from './models/meme.js'
+import { Meme } from './models/index.js'
 import chalk from 'chalk'
 
 const startTime = Date.now()

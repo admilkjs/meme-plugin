@@ -42,10 +42,10 @@ export class list extends plugin {
         }))
       })
 
-      const total = emojiList.length
+      const total = keys.length
 
       const img = await Render.render(
-        'meme/index',
+        'meme/list',
         {
           emojiList,
           total
