@@ -46,7 +46,7 @@ export class update extends plugin {
     if (Config.meme.autoRes) {
       this.task.push({
         name: '清语表情:表情包数据每日更新',
-        cron: '0 0 0/20 * * ?',
+        cron: '0 20 0 * * ?',
         log: false,
         fnc: async () => {
           await this.updateRes(null, true)

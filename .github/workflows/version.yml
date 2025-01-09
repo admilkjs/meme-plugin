@@ -12,14 +12,19 @@ permissions:
 
 jobs:
   auto-release:
-    if: github.event_name == 'workflow_dispatch' || 
-        (!contains(join(github.event.push.commits.*.committer.name, ' '), 'github-actions[bot]') && 
-         !contains(join(github.event.push.commits.*.committer.name, ' '), 'GitHub') && 
-         !contains(join(github.event.push.commits.*.message, ' '), 'Merge pull request') && 
-         !contains(join(github.event.push.commits.*.message, ' '), '发布版本'))
     runs-on: ubuntu-latest
 
     steps:
+      - name: 检查是否需要进行版本更新
+        run: |
+          for message in "${{ github.event.push.commits.*.message }}"; do
+            if [[ "$message" =~ ^chore:\ 发布版本.* ]]; then
+              echo "已有版本更新，跳过版本更新"
+              exit 0
+            fi
+          done
+          echo "进行版本更新"
+          exit 1
       - name: 检出代码
         uses: actions/checkout@v4
         with:
@@ -71,7 +76,7 @@ jobs:
             gh pr create \
               --head "$RELEASE_BRANCH" \
               --base main \
-              --title "发布版本 v$VERSION 🚀" \
+              --title "chore: 发布版本 v$VERSION 🚀" \
               --body "$BODY"
           else
             gh pr edit "$EXISTING_PR" \

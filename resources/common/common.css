@@ -1,20 +1,17 @@
 @font-face {
   font-family: "Number";
   src:
-    url("./font/tttgbnumber.woff") format("woff"),
-    url("./font/tttgbnumber.ttf") format("truetype");
+    url("https://static.wuliya.cn/font/TTTGB-Nmber.woff") format("woff"),
 }
 @font-face {
   font-family: "NZBZ";
   src:
-    url("./font/NZBZ.woff") format("woff"),
-    url("./font/NZBZ.ttf") format("truetype");
+    url("https://static.wuliya.cn/font/NZBZ.woff") format("woff"),
 }
 @font-face {
   font-family: "YS";
   src:
-    url("./font/HYWH-65W.woff") format("woff"),
-    url("./font/HYWH-65W.ttf") format("truetype");
+    url("https://static.wuliya.cn/font/HYWH-65W.woff") format("woff"),
 }
 .font-YS {
   font-family: Number, "汉仪文黑-65W", YS, PingFangSC-Medium, "PingFang SC",
