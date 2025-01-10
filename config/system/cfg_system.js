@@ -17,6 +17,22 @@ export const cfgSchema = {
         type: 'string',
         fileName: 'meme'
       },
+      retry: {
+        title: '重试次数',
+        key: '重试次数',
+        def: 3,
+        desc: '重试次数，默认为3次',
+        type: 'number',
+        fileName: 'meme'
+      },
+      timeout: {
+        title: '超时时间',
+        key: '超时时间',
+        def: 5,
+        desc: '超时时间，单位为秒',
+        type: 'number',
+        fileName: 'meme'
+      },
       forceSharp: {
         title: '强制触发',
         key: '强制触发',
