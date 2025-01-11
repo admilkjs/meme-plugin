@@ -13,7 +13,7 @@ const Utils = {
       return image
     }
 
-    if (!imageUrl) throw {
+    if (!image) throw {
       status: 400,
       message: '图片地址不能为空'
     }
@@ -47,7 +47,10 @@ const Utils = {
       return `base64://${base64Data}`
     } catch (error) {
       logger.error(`[清语表情] Base64 转换失败: ${error.message}`)
-      throw error
+      throw {
+        status: 521,
+        message: 'Base64 转换失败'
+      }
     }
   },
 

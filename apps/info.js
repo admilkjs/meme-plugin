@@ -53,7 +53,7 @@ export class meme extends plugin {
     try {
       const imageBuffer = await Utils.getImageBuffer(previewUrl)
       const base64Data = await Utils.bufferToBase64(imageBuffer)
-      previewImageBase64 = `base64://${base64Data}`
+      previewImageBase64 = base64Data
     } catch (error) {
       previewImageBase64 = '预览图片加载失败'
     }
@@ -72,7 +72,7 @@ export class meme extends plugin {
       replyMessage.push(`\n参数提示:\n${argsHint}`)
     }
 
-    if (previewImageBase64.startsWith('base64://')) {
+    if (previewImageBase64) {
       replyMessage.push('\n预览图片:\n')
       replyMessage.push(segment.image(previewImageBase64))
     } else {
