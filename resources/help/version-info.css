@@ -17,7 +17,7 @@ body {
   padding: 10px 0 10px 0;
 }
 .log-cont {
-  background: url("../common/bg/bg-anemo.jpg") top left repeat;
+  background: rgb(241, 239, 236, 0.6) top left repeat;
   background-size: cover;
   margin: 5px 15px 5px 10px;
   border-radius: 10px;

@@ -72,8 +72,7 @@ export class help extends plugin {
       {
         helpCfg: helpConfig,
         helpGroup,
-        ...themeData,
-        element: 'default'
+        ...themeData
       }
     )
     await e.reply(img)

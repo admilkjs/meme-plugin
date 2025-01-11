@@ -90,9 +90,6 @@ export class setting extends plugin {
       {
         schema,
         cfg
-      },
-      {
-        type: 'base64'
       }
     )
     await e.reply(img)
