@@ -1,5 +1,12 @@
 # 变更日志
 
+## [1.7.5](https://github.com/wuliya336/clarity-meme/compare/v1.7.3...v1.7.5) (2025-01-11)
+
+### ♻️ 重构
+
+* **admin:** 更新管理面板标题和背景 ([aecb932](https://github.com/wuliya336/clarity-meme/commit/aecb932445b0addd726050fa40724da1233fcd3b))
+* 重构版本发布流程并优化相关功能 ([3c8916d](https://github.com/wuliya336/clarity-meme/commit/3c8916d294e943f6679c030aa1f9ba8834a7defa))
+
 ## [1.7.4](https://github.com/wuliya336/clarity-meme/compare/v1.7.3...v1.7.4) (2025-01-10)
 
 ### ♻️ 重构
