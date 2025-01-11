@@ -1,6 +1,6 @@
 import Request from './request.js'
 import Utils from './utils.js'
-import Rule from './rule.js'
+import Rule from './Meme/index.js'
 import Args from './args.js'
 import Tools from './tools.js'
 import Guoba from './Guoba/index.js'

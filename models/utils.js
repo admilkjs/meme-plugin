@@ -8,14 +8,18 @@ const Utils = {
   /**
    * 获取图片 Buffer
    */
-  async getImageBuffer (imageUrl) {
+  async getImageBuffer (image) {
+    if (Buffer.isBuffer(image)) {
+      return image
+    }
+
     if (!imageUrl) throw {
       status: 400,
       message: '图片地址不能为空'
     }
 
     try {
-      const buffer = await Request.get(imageUrl, {}, 'arraybuffer')
+      const buffer = await Request.get(image, {}, 'arraybuffer')
       return buffer
     } catch (error) {
       throw {
@@ -29,11 +33,18 @@ const Utils = {
    * 将图片 Buffer 转换为 Base64
    */
   async bufferToBase64 (buffer) {
-    if (!buffer) throw new Error('图片 Buffer 不能为空')
+    if (typeof buffer === 'string' && buffer.startsWith('base64://')) {
+      return buffer
+    }
+
+    if (!buffer) throw {
+      status: 400,
+      message: '图片Buffer不能为空'
+    }
 
     try {
       const base64Data = buffer.toString('base64')
-      return base64Data
+      return `base64://${base64Data}`
     } catch (error) {
       logger.error(`[清语表情] Base64 转换失败: ${error.message}`)
       throw error
