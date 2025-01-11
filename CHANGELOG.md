@@ -1,5 +1,15 @@
 # 变更日志
 
+## [1.7.7](https://github.com/wuliya336/clarity-meme/compare/v1.7.6...v1.7.7) (2025-01-11)
+
+### 🐛 修复
+
+* **apps:** 修复表情预览图片加载失败的问题 ([da238cf](https://github.com/wuliya336/clarity-meme/commit/da238cf65f6c84c341c25fcc774a2f1a474aae49))
+
+### 🎨 代码风格
+
+* 调整背景图显示方式 ([8444e91](https://github.com/wuliya336/clarity-meme/commit/8444e915f40931d87a767a40a325d298a8580a37))
+
 ## [1.7.6](https://github.com/wuliya336/clarity-meme/compare/v1.7.5...v1.7.6) (2025-01-11)
 
 ### ♻️ 重构
