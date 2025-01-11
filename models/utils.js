@@ -329,8 +329,6 @@ const Utils = {
         return '文本或数量不足'
       case 560:
         return '图片编号错误'
-      default:
-        return message || '网络连接失败，请检查网络后重试。'
     }
   }
 }

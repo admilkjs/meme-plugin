@@ -1,5 +1,5 @@
-import { Config } from '../components/index.js'
-import { Meme, Utils, Args, Tools } from '../models/index.js'
+import { Config } from '#components'
+import { Utils, Args, Tools } from '#models'
 
 export class meme extends plugin {
   constructor () {
@@ -47,7 +47,7 @@ export class meme extends plugin {
     }
 
     const aliases = memeDetails.keywords ? memeDetails.keywords.join(', ') : '无'
-    const previewUrl = await Meme.getPreviewUrl(memeKey)
+    const previewUrl = await Tools.getPreviewUrl(memeKey)
 
     let previewImageBase64 = ''
     try {

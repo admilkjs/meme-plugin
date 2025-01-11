@@ -1,4 +1,3 @@
-import Meme from './meme.js'
 import Utils from './utils.js'
 import { Config } from '../components/index.js'
 import FormData from 'form-data'
@@ -200,7 +199,7 @@ const Rule = {
       }
 
       const endpoint = `memes/${memeKey}/`
-      const result = await Meme.request(
+      const result = await Tools.request(
         endpoint,
         formData,
         'POST',

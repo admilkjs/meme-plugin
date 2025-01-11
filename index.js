@@ -1,5 +1,5 @@
-import { Version, Init } from './components/index.js'
-import { Meme } from './models/index.js'
+import { Version, Init } from '#components'
+import { Tools } from '#models'
 import chalk from 'chalk'
 
 const startTime = Date.now()
@@ -7,7 +7,7 @@ const startTime = Date.now()
 let apps
 
 try {
-  await Meme.load()
+  await Tools.load()
   logger.info(chalk.green('🔵 表情数据加载完成'))
 
   apps = await Init()

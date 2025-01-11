@@ -1,5 +1,5 @@
-import { Meme, Rule, Tools } from '../models/index.js'
-import { Config } from '../components/index.js'
+import { Rule, Tools } from '#models'
+import { Config } from '#components'
 
 export class random extends plugin {
   constructor () {

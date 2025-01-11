@@ -26,5 +26,9 @@
     "*.js": [
       "eslint --fix"
     ]
+  },
+  "imports": {
+    "#components": "./components/index.js",
+    "#models": "./models/index.js"
   }
 }
