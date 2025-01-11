@@ -47,7 +47,7 @@ const Rule = {
 
       if (Buffer.isBuffer(result)) {
         const base64Image = await Utils.bufferToBase64(result)
-        await e.reply(segment.image(`base64://${base64Image}`), Config.meme.reply)
+        await e.reply(segment.image(base64Image), Config.meme.reply)
       } else {
         await e.reply(segment.image(result), Config.meme.reply)
       }
