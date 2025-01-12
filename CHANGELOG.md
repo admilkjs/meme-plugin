@@ -1,5 +1,16 @@
 # 变更日志
 
+## [1.7.8](https://github.com/wuliya336/clarity-meme/compare/v1.7.7...v1.7.8) (2025-01-12)
+
+### 🐛 修复
+
+* **models:** 修复表情回复中 base64 图片格式的处理 ([12e56c6](https://github.com/wuliya336/clarity-meme/commit/12e56c612f7211add21e023411c774447840a27b))
+
+### ♻️ 重构
+
+* **Meme:** 重构文字处理逻辑 ([8403425](https://github.com/wuliya336/clarity-meme/commit/84034251f9a5a6a972fe128fbc065a2c721151dc))
+* **models:** 优化获取用户昵称功能 ([a2c157a](https://github.com/wuliya336/clarity-meme/commit/a2c157a3fca2fe430f845bb083dc6e29c11e6e22))
+
 ## [1.7.7](https://github.com/wuliya336/clarity-meme/compare/v1.7.6...v1.7.7) (2025-01-11)
 
 ### 🐛 修复
