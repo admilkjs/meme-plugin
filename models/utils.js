@@ -158,34 +158,15 @@ const Utils = {
     }
 
     try {
-      const adapter = Bot[e.self_id]?.version?.name || '未知'
-      if (adapter !== 'ICQQ') {
-        if (e.isGroup) {
-          const group = Bot.pickGroup(e.group_id)
-          const memberMap = await group.getMemberMap()
-          for (const [userId, memberInfo] of memberMap) {
-            if (userId === parseInt(qq)) {
-              return memberInfo.card || memberInfo.nickname || '未知'
-            }
-          }
-        }
-
-        const user = Bot.pickUser(qq)
-        const userInfo = await user.getInfo()
-        return userInfo?.nickname || '未知'
-      }
-
       if (e.isGroup) {
-        const group = Bot.pickGroup(e.group_id)
-        const memberMap = await group.getMemberMap()
-        for (const [userId, memberInfo] of memberMap) {
-          if (userId === parseInt(qq)) {
-            return memberInfo.card || memberInfo.nickname || '未知'
-          }
-        }
-        return '未知'
+        const group = Bot[e.self_id].pickGroup(e.group_id)
+        const Member = group.pickMember(qq)
+        const MemberInfo = await Member.getInfo()
+        return MemberInfo.card || MemberInfo.nickname || '未知'
       } else {
-        return e.nickname || '未知'
+        const Friend = Bot[e.self_id].pickFriend(qq)
+        const FriendInfo = await Friend.getInfo()
+        return FriendInfo.nickname || '未知'
       }
     } catch (error) {
       return '未知'
@@ -323,7 +304,6 @@ const Utils = {
 
     return []
   },
-
   /**
    * 处理错误异常信息
    */
