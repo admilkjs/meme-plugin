@@ -37,7 +37,7 @@ const Rule = {
       /**
        * 处理文字类型
        */
-      let finalTexts = await handleTexts(e, userText, min_texts, max_texts, formData)
+      let finalTexts = await handleTexts(e, userText, memeInfo, min_texts, max_texts, formData)
       if (!finalTexts) {
         return e.reply(`该表情至少需要 ${min_texts} 个文字描述`, true)
       }
