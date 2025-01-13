@@ -18,12 +18,6 @@ async function make (e, memeKey, memeInfo, userText) {
 
   const formData = new FormData()
   try {
-
-    /**
-     * 针对仅图片类型做特殊处理(防误触发)
-     */
-    if (min_texts === 0 && max_texts === 0 && userText.replace(/@\s*\d+/g, '').trim() !== '') return true
-
     /**
      * 处理参数类型
      */

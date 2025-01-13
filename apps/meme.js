@@ -41,7 +41,7 @@ export class meme extends plugin {
     if (!Config.meme.Enable) return false
 
     const message = e.msg.trim()
-    let matchedKeyword = null
+    let matchedKeyword
 
     this.rule.some(rule => {
       const match = message.match(rule.reg)
@@ -92,12 +92,18 @@ export class meme extends plugin {
     }
 
     if (!Tools.getInfo(memeKey)) {
-      return false
+      return true
     }
 
     const memeInfo = Tools.getInfo(memeKey)
     const userText = message.replace(new RegExp(`^#?${matchedKeyword}`, 'i'), '').trim()
-    console.log(userText)
-    await Meme.make(e, memeKey, memeInfo, userText)
+
+    /**
+     * 防误触发处理
+     */
+    const { min_texts, max_texts } = memeInfo.params_type
+    if (min_texts === 0 && max_texts === 0 && userText.replace(/@\s*\d+/g, '').trim() !== '') return false
+
+    return await Meme.make(e, memeKey, memeInfo, userText)
   }
 }
