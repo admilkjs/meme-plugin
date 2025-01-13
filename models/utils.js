@@ -311,6 +311,8 @@ const Utils = {
     const { status, message } = error
 
     switch (status) {
+      case 400:
+        return message
       case 404:
         return message || '资源不存在'
       case 500:

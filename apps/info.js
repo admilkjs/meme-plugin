@@ -1,5 +1,5 @@
 import { Config } from '#components'
-import { Utils, Args, Tools } from '#models'
+import { Utils, Meme, Tools } from '#models'
 
 export class meme extends plugin {
   constructor () {
@@ -42,8 +42,8 @@ export class meme extends plugin {
     } = memeDetails.params_type
 
     let argsHint = ''
-    if (args_type && Args.descriptions[memeKey]) {
-      argsHint = Args.descriptions[memeKey]
+    if (args_type != null) {
+      argsHint = await Meme.Args.descriptions(memeKey)
     }
 
     const aliases = memeDetails.keywords ? memeDetails.keywords.join(', ') : '无'

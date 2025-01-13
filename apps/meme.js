@@ -1,5 +1,5 @@
-import { Config } from '../components/index.js'
-import { Rule, Tools } from '../models/index.js'
+import { Config } from '#components'
+import { Meme, Tools } from '#models'
 
 export class meme extends plugin {
   constructor () {
@@ -36,6 +36,7 @@ export class meme extends plugin {
 
     this.rulesInitialized = true
   }
+
   async meme (e) {
     if (!Config.meme.Enable) return false
 
@@ -96,6 +97,7 @@ export class meme extends plugin {
 
     const memeInfo = Tools.getInfo(memeKey)
     const userText = message.replace(new RegExp(`^#?${matchedKeyword}`, 'i'), '').trim()
-    return await Rule.meme(e, memeKey, memeInfo, userText)
+    console.log(userText)
+    await Meme.make(e, memeKey, memeInfo, userText)
   }
 }
