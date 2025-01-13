@@ -1,4 +1,4 @@
-import { Rule, Tools } from '#models'
+import { Meme, Tools } from '#models'
 import { Config } from '#components'
 
 export class random extends plugin {
@@ -44,7 +44,7 @@ export class random extends plugin {
         return true
       }
 
-      await Rule.meme(e, memeKey, memeInfo, '')
+      await Meme.make(e, memeKey, memeInfo, '')
     } catch (error) {
       logger.error(`[清语表情] 随机表情处理失败: ${error.message}`)
       await e.reply(`生成随机表情时出错: ${error.message}`, true)
