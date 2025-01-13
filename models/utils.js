@@ -1,5 +1,5 @@
 import fs from 'fs'
-import { Version, Data } from '../components/index.js'
+import { Version, Data } from '#components'
 import Request from './request.js'
 import Tools from './tools.js'
 
@@ -46,7 +46,6 @@ const Utils = {
       const base64Data = buffer.toString('base64')
       return `base64://${base64Data}`
     } catch (error) {
-      logger.error(`[清语表情] Base64 转换失败: ${error.message}`)
       throw {
         status: 521,
         message: 'Base64 转换失败'
@@ -71,9 +70,11 @@ const Utils = {
       Data.createDir('data/avatar', '', false)
     }
 
+    const defaultAvatarPath = `${Version.Plugin_Path}/resources/meme/imgs/default_avatar.png`
+
     const getAvatarUrl = async (qq) => {
       try {
-        if (e?.group) {
+        if (e.group) {
           const member = Bot.pickGroup(e.group_id).pickMember(qq)
           return await member.getAvatarUrl()
         } else {
@@ -95,7 +96,11 @@ const Utils = {
       try {
         avatarUrl = await getAvatarUrl(qq)
       } catch (error) {
-        throw error
+        console.error('获取头像地址失败:', error.message)
+        throw {
+          status: 404,
+          message: '获取头像地址失败'
+        }
       }
 
       if (await Tools.fileExistsAsync(cachePath)) {
@@ -115,6 +120,7 @@ const Utils = {
           }
         }
       }
+
       try {
         const buffer = await Request.get(avatarUrl, {}, 'arraybuffer')
         if (buffer && Buffer.isBuffer(buffer)) {
@@ -134,14 +140,36 @@ const Utils = {
       }
     }
 
+    const useDefaultAvatar = () => {
+      try {
+        if (fs.existsSync(defaultAvatarPath)) {
+          return fs.readFileSync(defaultAvatarPath)
+        } else {
+          throw {
+            status: 500,
+            message: '默认头像文件不存在'
+          }
+        }
+      } catch (error) {
+        throw {
+          status: 500,
+          message: '加载默认头像失败'
+        }
+      }
+    }
+
     const results = await Promise.all(
       userList.map(async (qq) => {
         try {
           return await downloadAvatar(qq)
         } catch (error) {
-          throw {
-            status: 521,
-            message: '下载头像失败'
+          try {
+            return useDefaultAvatar()
+          } catch (defaultError) {
+            throw {
+              status: defaultError.status || 500,
+              message: '加载头像失败'
+            }
           }
         }
       })
@@ -149,6 +177,7 @@ const Utils = {
 
     return results
   },
+
   /**
  * 获取用户昵称
  */

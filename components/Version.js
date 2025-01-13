@@ -76,18 +76,15 @@ try {
       changelogs.push(temp)
     }
 
-    // 设置 currentVersion 为最新版本
     if (changelogs.length > 0) {
       currentVersion = changelogs[0].version
-      changelogs[0].version += ' <span class="new"></span>' // 添加 NEW 标志
+      changelogs[0].version += ' <span class="new"></span>'
     }
   }
 } catch (err) {
-  console.error('Error reading CHANGELOG:', err)
 }
 
 
-// 设置 Bot 名称
 let BotName = cfg.package.name
 if (BotName === 'miao-yunzai') {
   BotName = 'Miao-Yunzai'
@@ -99,7 +96,6 @@ if (BotName === 'miao-yunzai') {
   BotName = _.capitalize(BotName)
 }
 
-// 导出对象
 const Version = {
   get ver () {
     return currentVersion

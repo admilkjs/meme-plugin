@@ -60,9 +60,10 @@ export class meme extends plugin {
       return true
     }
 
-    // 用户权限检查
+    /**
+     * 用户权限检查
+     */
     if (Config.access.enable) {
-      const userId = e.user_id
 
       /**
        * 黑名单模式
@@ -71,14 +72,14 @@ export class meme extends plugin {
         /**
          * 白名单模式
          */
-        if (!Config.access.userWhiteList.includes(userId)) {
+        if (!Config.access.userWhiteList.includes(e.user_id)) {
           return true
         }
       } else if (Config.access.mode === 1) {
         /**
          * 黑名单模式
          */
-        if (Config.access.userBlackList.includes(userId)) {
+        if (Config.access.userBlackList.includes(e.user_id)) {
           return true
         }
       }
