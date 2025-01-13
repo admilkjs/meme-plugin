@@ -6,7 +6,6 @@ import { handleArgs, handle , descriptions } from './args.js'
 import { handleImages } from './images.js'
 import { handleTexts } from './texts.js'
 
-
 async function make (e, memeKey, memeInfo, userText) {
   const { params_type } = memeInfo || {}
   const {
@@ -19,13 +18,19 @@ async function make (e, memeKey, memeInfo, userText) {
 
   const formData = new FormData()
   try {
+
     /**
-       * 处理参数类型
-       */
+     * 针对仅图片类型做特殊处理(防误触发)
+     */
+    if (min_texts === 0 && max_texts === 0 && userText.replace(/@\s*\d+/g, '').trim() !== '') return true
+
+    /**
+     * 处理参数类型
+     */
     if (args_type !== null) await handleArgs(memeKey, userText, args_type, formData)
     /**
-       * 处理图片类型
-       */
+     * 处理图片类型
+     */
     if (min_images !== 0 && max_images !== 0){
       let images = await handleImages(e, userText, min_images, max_images, formData)
       if (!images) {
@@ -34,8 +39,8 @@ async function make (e, memeKey, memeInfo, userText) {
     }
 
     /**
-       * 处理文字类型
-       */
+     * 处理文字类型
+     */
     if (min_texts !== 0 && max_texts !== 0){
       let finalTexts = await handleTexts(e, userText, memeInfo, min_texts, max_texts, formData)
       if (!finalTexts) {
