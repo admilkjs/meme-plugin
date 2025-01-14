@@ -112,11 +112,16 @@ const Tools = {
     const url = `${baseUrl}/${endpoint}`
 
     try {
-      return await Request.request(url, method, params, responseType)
+      if (method.toUpperCase() === 'GET' || method.toUpperCase() === 'HEAD') {
+        return await Request.get(url, params, responseType)
+      } else {
+        return await Request.post(url, params, responseType)
+      }
     } catch (error) {
       throw error
     }
   },
+
 
   /**
    * 获取表情包预览图片地址
