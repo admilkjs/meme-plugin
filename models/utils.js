@@ -317,7 +317,7 @@ const Utils = {
       case 532:
         return '文本内容过长，请减少输入内容。'
       case 543:
-        return '文本或数量不足'
+        return '文本数量不足'
       case 560:
         return '图片编号错误'
     }

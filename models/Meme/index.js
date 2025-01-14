@@ -11,7 +11,8 @@ async function make (e, memeKey, memeInfo, userText) {
     min_texts,
     max_texts,
     min_images,
-    max_images
+    max_images,
+    default_texts
   } = memeInfo.params_type
   const formData = new FormData()
 
@@ -24,7 +25,6 @@ async function make (e, memeKey, memeInfo, userText) {
     /**
      * 处理图片类型
      */
-
     if (max_images != 0) {
       const images = await handleImages(e, userText, min_images, max_images, formData)
       if (!images.success) {
@@ -37,7 +37,7 @@ async function make (e, memeKey, memeInfo, userText) {
      * 处理文字类型
      */
     if (max_texts != 0){
-      let finalTexts = await handleTexts(e, userText, memeInfo, min_texts, max_texts, formData)
+      let finalTexts = await handleTexts(e, userText, min_texts, max_texts, default_texts,formData)
       if (!finalTexts) {
         return e.reply(`该表情至少需要 ${min_texts} 个文字描述`, true)
       }
@@ -45,12 +45,8 @@ async function make (e, memeKey, memeInfo, userText) {
     const endpoint = `memes/${memeKey}/`
     const result = await Tools.request(endpoint, formData, 'POST', 'arraybuffer')
 
-    if (Buffer.isBuffer(result)) {
-      const base64Image = await Utils.bufferToBase64(result)
-      await e.reply(segment.image(base64Image), Config.meme.reply)
-    } else {
-      await e.reply(segment.image(result), Config.meme.reply)
-    }
+    const base64Image = await Utils.bufferToBase64(result)
+    await e.reply(segment.image(base64Image), Config.meme.reply)
 
     if (Config.stats.enable) {
       const redisKey = `Yz:clarity-meme:stats:${memeKey}`
@@ -60,7 +56,6 @@ async function make (e, memeKey, memeInfo, userText) {
   } catch (error) {
     const errorMessage = await Utils.handleError(error)
     await e.reply(`[清语表情]生成表情包失败, 状态码: ${error.status}, 错误信息: ${errorMessage}`)
-    return true
   }
 }
 

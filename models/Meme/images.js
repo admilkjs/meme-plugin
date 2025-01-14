@@ -1,5 +1,6 @@
 import { Utils } from '#models'
 async function handleImages (e, userText, min_images, max_images, formData) {
+
   let images = []
   let userAvatars = []
 

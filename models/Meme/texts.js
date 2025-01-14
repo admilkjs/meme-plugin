@@ -1,7 +1,8 @@
 import { Config } from '#components'
 import { Utils } from '#models'
 
-async function handleTexts (e, userText, memeInfo, min_texts, max_texts) {
+async function handleTexts (e, userText, min_texts, max_texts, default_texts, formData) {
+
   let finalTexts = []
 
   if (userText) {
@@ -23,13 +24,12 @@ async function handleTexts (e, userText, memeInfo, min_texts, max_texts) {
 
   if (
     finalTexts.length < min_texts &&
-    memeInfo.params_type.default_texts &&
-    memeInfo.params_type.default_texts.length > 0
+    default_texts &&
+    default_texts.length > 0
   ) {
-    const defaultTexts = memeInfo.params_type.default_texts
     while (finalTexts.length < min_texts) {
-      const randomIndex = Math.floor(Math.random() * defaultTexts.length)
-      finalTexts.push(defaultTexts[randomIndex])
+      const randomIndex = Math.floor(Math.random() * default_texts.length)
+      finalTexts.push(default_texts[randomIndex])
     }
   }
 
@@ -41,7 +41,7 @@ async function handleTexts (e, userText, memeInfo, min_texts, max_texts) {
     formData.append('texts', text)
   })
 
-  return finalTexts
+  return true
 }
 
 export { handleTexts }
