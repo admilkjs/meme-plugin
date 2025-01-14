@@ -46,6 +46,7 @@ const Utils = {
       const base64Data = buffer.toString('base64')
       return `base64://${base64Data}`
     } catch (error) {
+      logger.error(`[清语表情] Base64 转换失败: ${error.message}`)
       throw {
         status: 521,
         message: 'Base64 转换失败'
@@ -56,7 +57,7 @@ const Utils = {
   /**
  * 获取用户头像
  */
-  async getAvatar (userList, e) {
+  async getAvatar (userList) {
     if (!userList) {
       throw {
         status: 400,
@@ -72,35 +73,35 @@ const Utils = {
 
     const defaultAvatarPath = `${Version.Plugin_Path}/resources/meme/imgs/default_avatar.png`
 
-    const getAvatarUrl = async (qq) => {
+    const getAvatarUrl = async (qq, e) => {
       try {
-        if (e.group) {
-          const member = Bot.pickGroup(e.group_id).pickMember(qq)
-          return await member.getAvatarUrl()
+        if (e.isGroup) {
+          const group = Bot[e.self_id].pickGroup(e.group_id)
+          const member = group.pickMember(qq)
+          const avatarUrl = await member.getAvatarUrl()
+          return avatarUrl
+        } else if (e.isPrivate) {
+          const friend = Bot[e.self_id].pickFriend(qq)
+          const avatarUrl = await friend.getAvatarUrl()
+          return avatarUrl
         } else {
-          const friend = Bot.pickFriend(qq)
-          return await friend.getAvatarUrl()
+          /**
+           * 处理@+数字的头像
+           */
+          const avatarUrl = `https://q1.qlogo.cn/g?b=qq&s=0&nk=${qq}`
+          return avatarUrl
         }
       } catch (error) {
-        throw {
-          status: 404,
-          message: '无法获取头像地址'
-        }
+        return null
       }
     }
 
-    const downloadAvatar = async (qq) => {
+    const downloadAvatar = async (qq, e) => {
       const cachePath = `${cacheDir}/avatar_${qq}.jpg`
-      let avatarUrl
+      let avatarUrl = await getAvatarUrl(qq, e)
 
-      try {
-        avatarUrl = await getAvatarUrl(qq)
-      } catch (error) {
-        console.error('获取头像地址失败:', error.message)
-        throw {
-          status: 404,
-          message: '获取头像地址失败'
-        }
+      if (!avatarUrl) {
+        return fs.readFileSync(defaultAvatarPath)
       }
 
       if (await Tools.fileExistsAsync(cachePath)) {
@@ -114,10 +115,6 @@ const Utils = {
             return fs.readFileSync(cachePath)
           }
         } catch (error) {
-          throw {
-            status: 521,
-            message: '检查远程头像文件信息失败'
-          }
         }
       }
 
@@ -127,50 +124,19 @@ const Utils = {
           fs.writeFileSync(cachePath, buffer)
           return buffer
         } else {
-          throw {
-            status: 521,
-            message: '头像下载返回了无效的数据'
-          }
-        }
-      } catch (error) {
-        throw {
-          status: 521,
-          message: '下载头像失败'
-        }
-      }
-    }
-
-    const useDefaultAvatar = () => {
-      try {
-        if (fs.existsSync(defaultAvatarPath)) {
           return fs.readFileSync(defaultAvatarPath)
-        } else {
-          throw {
-            status: 500,
-            message: '默认头像文件不存在'
-          }
         }
       } catch (error) {
-        throw {
-          status: 500,
-          message: '加载默认头像失败'
-        }
+        return fs.readFileSync(defaultAvatarPath)
       }
     }
 
     const results = await Promise.all(
-      userList.map(async (qq) => {
+      userList.map(async (qq, e) => {
         try {
-          return await downloadAvatar(qq)
+          return await downloadAvatar(qq, e)
         } catch (error) {
-          try {
-            return useDefaultAvatar()
-          } catch (defaultError) {
-            throw {
-              status: defaultError.status || 500,
-              message: '加载头像失败'
-            }
-          }
+          return fs.readFileSync(defaultAvatarPath)
         }
       })
     )
