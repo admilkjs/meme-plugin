@@ -24,6 +24,9 @@ jobs:
           if [[ "$latest_commit_message" =~ ^chore:\ 发布版本.* ]]; then
             echo "已有版本更新，跳过版本更新"
             echo "::set-output name=should_release::false"
+          elif git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q '.pre-commit-config.yaml'; then
+            echo "更新了pre-commit依赖, 跳过版本更新"
+            echo "::set-output name=should_release::false"
           else
             echo "进行版本更新"
             echo "::set-output name=should_release::true"
