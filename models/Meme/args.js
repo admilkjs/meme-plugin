@@ -8,7 +8,7 @@ async function handleArgs (memeKey, userText, formData) {
     formData.append('args', argsString)
   }
 
-  userText = userText.replace(/#([^#]+)/g, '').trim()
+  return userText.replace(/#([^#]+)/g, '').trim()
 }
 
 async function descriptions (key) {

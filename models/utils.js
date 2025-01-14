@@ -57,7 +57,7 @@ const Utils = {
   /**
  * 获取用户头像
  */
-  async getAvatar (userList) {
+  async getAvatar (userList, e) {
     if (!userList) {
       throw {
         status: 400,
@@ -211,7 +211,7 @@ const Utils = {
      * 艾特用户头像（长按艾特）
      */
     if (quotedImages.length === 0 && ats.length > 0) {
-      const avatarBuffers = await this.getAvatar(ats)
+      const avatarBuffers = await this.getAvatar(ats, e)
       avatarBuffers.forEach((avatarList) => {
         if (Array.isArray(avatarList)) {
           avatarList.forEach((avatar) => {
@@ -227,7 +227,7 @@ const Utils = {
      * 手动艾特用户头像（@+数字）
      */
     if (manualAtQQs.length > 0) {
-      const avatarBuffers = await this.getAvatar(manualAtQQs)
+      const avatarBuffers = await this.getAvatar(manualAtQQs, e)
       avatarBuffers.forEach((avatarList) => {
         if (Array.isArray(avatarList)) {
           avatarList.forEach((avatar) => {
@@ -288,7 +288,7 @@ const Utils = {
 
     if (source.sender?.user_id) {
       try {
-        const avatarBuffers = await this.getAvatar([source.sender.user_id])
+        const avatarBuffers = await this.getAvatar([source.sender.user_id], e)
         if (Array.isArray(avatarBuffers) && avatarBuffers.length > 0) {
           return avatarBuffers
         }

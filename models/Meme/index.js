@@ -1,47 +1,47 @@
-import Utils from '../utils.js'
+import { Utils, Tools } from '#models'
 import { Config } from '#components'
 import FormData from 'form-data'
-import Tools from '../tools.js'
 import { handleArgs, handle , descriptions } from './args.js'
 import { handleImages } from './images.js'
 import { handleTexts } from './texts.js'
 
 async function make (e, memeKey, memeInfo, userText) {
-  const { params_type } = memeInfo || {}
   const {
+    args_type,
     min_texts,
     max_texts,
     min_images,
-    max_images,
-    args_type
-  } = params_type
-
+    max_images
+  } = memeInfo.params_type
   const formData = new FormData()
+
   try {
     /**
      * 处理参数类型
      */
-    if (args_type !== null) await handleArgs(memeKey, userText, args_type, formData)
+    if (args_type != null) userText = await handleArgs(memeKey, userText, formData)
+
     /**
      * 处理图片类型
      */
-    if (min_images !== 0 && max_images !== 0){
-      let images = await handleImages(e, userText, min_images, max_images, formData)
-      if (!images) {
+
+    if (max_images != 0) {
+      const images = await handleImages(e, userText, min_images, max_images, formData)
+      if (!images.success) {
         return e.reply(`该表情至少需要 ${min_images} 张图片`, true)
       }
+      userText = images.userText
     }
 
     /**
      * 处理文字类型
      */
-    if (min_texts !== 0 && max_texts !== 0){
+    if (max_texts != 0){
       let finalTexts = await handleTexts(e, userText, memeInfo, min_texts, max_texts, formData)
       if (!finalTexts) {
         return e.reply(`该表情至少需要 ${min_texts} 个文字描述`, true)
       }
     }
-
     const endpoint = `memes/${memeKey}/`
     const result = await Tools.request(endpoint, formData, 'POST', 'arraybuffer')
 

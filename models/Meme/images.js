@@ -1,4 +1,4 @@
-import Utils from '../utils.js'
+import { Utils } from '#models'
 async function handleImages (e, userText, min_images, max_images, formData) {
   let images = []
   let userAvatars = []
@@ -10,7 +10,7 @@ async function handleImages (e, userText, min_images, max_images, formData) {
   userText = userText.replace(/@\s*\d+/g, '').trim()
 
   if (userAvatars.length > 0) {
-    const avatarBuffers = await Utils.getAvatar(userAvatars)
+    const avatarBuffers = await Utils.getAvatar(userAvatars, e)
     if (avatarBuffers) {
       avatarBuffers.forEach(avatarList => {
         if (Array.isArray(avatarList)) {
@@ -24,27 +24,34 @@ async function handleImages (e, userText, min_images, max_images, formData) {
     }
 
     if (images.length < min_images) {
-      const triggerAvatar = await Utils.getAvatar([e.user_id])
+      const triggerAvatar = await Utils.getAvatar([e.user_id], e)
       if (triggerAvatar && Array.isArray(triggerAvatar) && triggerAvatar[0]) images.unshift(triggerAvatar[0])
     }
   } else {
     const fetchedImages = await Utils.getImage(e, userText, max_images)
     images = fetchedImages
     if (images.length < min_images) {
-      const triggerAvatar = await Utils.getAvatar([e.user_id])
+      const triggerAvatar = await Utils.getAvatar([e.user_id], e)
       if (triggerAvatar && Array.isArray(triggerAvatar) && triggerAvatar[0]) images.unshift(triggerAvatar[0])
     }
   }
 
-  images.forEach((buffer, index) => {
-    formData.append('images', buffer, `image${index}.jpg`)
+  images.slice(0, max_images).forEach((buffer, index) => {
+    formData.append('images', buffer, `image${index}.png`)
   })
 
   if (images.length < min_images) {
-    return false
+    return {
+      success: false,
+      userText: userText
+    }
   }
 
-  return images.slice(0, max_images)
+  return {
+    success: true,
+    userText: userText
+  }
+
 }
 
 export { handleImages }
