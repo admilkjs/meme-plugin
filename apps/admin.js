@@ -1,4 +1,4 @@
-import { Config, Render } from '../components/index.js'
+import { Config, Render } from '#components'
 import lodash from 'lodash'
 
 let keys = lodash.map(Config.getCfgSchemaMap(), (i) => i.key)
@@ -27,6 +27,10 @@ export class setting extends plugin {
     let cfgKey = regRet[1]
     let val = regRet[2]?.trim() || ''
 
+    const users = e.message
+      .filter((m) => m.type === 'at')
+      .map((at) => at.qq)
+
     if (cfgKey === '全部') {
       let enableAll = !/关闭/.test(val)
       for (const key of keys) {
@@ -49,13 +53,26 @@ export class setting extends plugin {
 
         if (/^添加/.test(val)) {
           let itemToAdd = val.replace(/^添加\s*/, '').trim()
-          if (!currentList.includes(itemToAdd)) {
+          if (users.length > 0) {
+            for (let user of users) {
+              if (!currentList.includes(user)) {
+                currentList.push(user)
+              }
+            }
+          } else if (itemToAdd && !currentList.includes(itemToAdd)) {
             currentList.push(itemToAdd)
-            Config.modify(cfgSchema.fileName, cfgSchema.cfgKey, currentList)
           }
-        } else if (/^删除/.test(val)) {
+          Config.modify(cfgSchema.fileName, cfgSchema.cfgKey, currentList)
+        }
+        else if (/^删除/.test(val)) {
           let itemToRemove = val.replace(/^删除\s*/, '').trim()
-          currentList = currentList.filter((item) => item !== itemToRemove)
+          if (users.length > 0) {
+            for (let user of users) {
+              currentList = currentList.filter((item) => item !== user)
+            }
+          } else if (itemToRemove) {
+            currentList = currentList.filter((item) => item !== itemToRemove)
+          }
           Config.modify(cfgSchema.fileName, cfgSchema.cfgKey, currentList)
         }
       } else {

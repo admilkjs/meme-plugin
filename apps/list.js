@@ -1,5 +1,5 @@
-import { Config, Render } from '../components/index.js'
-import { Tools } from '../models/index.js'
+import { Config, Render } from '#components'
+import { Tools } from '#models'
 
 export class list extends plugin {
   constructor () {

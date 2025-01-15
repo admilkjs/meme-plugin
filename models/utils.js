@@ -72,39 +72,12 @@ const Utils = {
 
     const defaultAvatarPath = `${Version.Plugin_Path}/resources/meme/imgs/default_avatar.png`
 
-    const getAvatarUrl = async (qq, e) => {
-      try {
-        if (e.isGroup) {
-          const group = Bot[e.self_id].pickGroup(e.group_id)
-          const member = group.pickMember(qq)
-          const avatarUrl = await member.getAvatarUrl()
-          return avatarUrl
-        } else if (e.isPrivate) {
-          const friend = Bot[e.self_id].pickFriend(qq)
-          const avatarUrl = await friend.getAvatarUrl()
-          return avatarUrl
-        } else {
-          /**
-           * 处理@+数字的头像
-           */
-          const avatarUrl = `https://q1.qlogo.cn/g?b=qq&s=0&nk=${qq}`
-          return avatarUrl
-        }
-      } catch (error) {
-        return null
-      }
-    }
-
-    const downloadAvatar = async (qq, e) => {
+    const downloadAvatar = async (qq) => {
       const cachePath = `${cacheDir}/avatar_${qq}.png`
-      let avatarUrl = await getAvatarUrl(qq, e)
+      const avatarUrl = `https://q1.qlogo.cn/g?b=qq&s=0&nk=${qq}`
 
-      if (!avatarUrl) {
-        return fs.readFileSync(defaultAvatarPath)
-      }
-
-      if (await Tools.fileExistsAsync(cachePath)) {
-        try {
+      try {
+        if (await Tools.fileExistsAsync(cachePath)) {
           const localStats = fs.statSync(cachePath)
           const remoteHeaders = await Request.head(avatarUrl)
           const remoteLastModified = new Date(remoteHeaders['last-modified'])
@@ -113,11 +86,8 @@ const Utils = {
           if (localLastModified >= remoteLastModified) {
             return fs.readFileSync(cachePath)
           }
-        } catch (error) {
         }
-      }
 
-      try {
         const buffer = await Request.get(avatarUrl, {}, 'arraybuffer')
         if (buffer && Buffer.isBuffer(buffer)) {
           fs.writeFileSync(cachePath, buffer)
@@ -131,13 +101,7 @@ const Utils = {
     }
 
     const results = await Promise.all(
-      userList.map(async (qq, e) => {
-        try {
-          return await downloadAvatar(qq, e)
-        } catch (error) {
-          return fs.readFileSync(defaultAvatarPath)
-        }
-      })
+      userList.map((qq) => downloadAvatar(qq))
     )
 
     return results
@@ -174,10 +138,6 @@ const Utils = {
     const imagesInMessage = e.message
       .filter((m) => m.type === 'image')
       .map((img) => img.url)
-    const ats = e.message.filter((m) => m.type === 'at').map((at) => at.qq)
-    const manualAtQQs = [...userText.matchAll(/@(\d{5,11})/g)].map(
-      (match) => match[1]
-    )
 
     const quotedImages = await this.getQuotedImages(e)
 
@@ -185,7 +145,7 @@ const Utils = {
     let tasks = []
 
     /**
-     * 获取引用消息中的图片
+     * 引用消息中的图片
      */
     if (quotedImages.length > 0) {
       quotedImages.forEach((item) => {
@@ -198,44 +158,10 @@ const Utils = {
     }
 
     /**
-     * 获取消息中的图片
+     * 消息中的图片
      */
     if (imagesInMessage.length > 0) {
-      tasks.push(
-        ...imagesInMessage.map((imageUrl) => this.getImageBuffer(imageUrl))
-      )
-    }
-
-    /**
-     * 艾特用户头像（长按艾特）
-     */
-    if (quotedImages.length === 0 && ats.length > 0) {
-      const avatarBuffers = await this.getAvatar(ats, e)
-      avatarBuffers.forEach((avatarList) => {
-        if (Array.isArray(avatarList)) {
-          avatarList.forEach((avatar) => {
-            if (avatar) images.push(avatar)
-          })
-        } else if (avatarList) {
-          images.push(avatarList)
-        }
-      })
-    }
-
-    /**
-     * 手动艾特用户头像（@+数字）
-     */
-    if (manualAtQQs.length > 0) {
-      const avatarBuffers = await this.getAvatar(manualAtQQs, e)
-      avatarBuffers.forEach((avatarList) => {
-        if (Array.isArray(avatarList)) {
-          avatarList.forEach((avatar) => {
-            if (avatar) images.push(avatar)
-          })
-        } else if (avatarList) {
-          images.push(avatarList)
-        }
-      })
+      tasks.push(...imagesInMessage.map((imageUrl) => this.getImageBuffer(imageUrl)))
     }
 
     const results = await Promise.allSettled(tasks)
@@ -247,7 +173,6 @@ const Utils = {
 
     return images.slice(0, max_images)
   },
-
 
   /**
  * 获取引用消息

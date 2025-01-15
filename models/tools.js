@@ -60,6 +60,10 @@ const Tools = {
       }
     } catch (error) {
       logger.error(`获取IP地址出错，使用默认 URL: ${error.message}`)
+      throw {
+        status: 500,
+        message: '获取IP所在地区出错'
+      }
     }
 
     this.baseUrl = Url
@@ -244,6 +248,23 @@ const Tools = {
 
     const memeKey = await this.getKey(input)
     return blacklistedKeys.includes(memeKey)
+  },
+
+  /**
+   * 检查表情是否在受保护表情列表中
+   */
+
+  async isProtected (memeKey, protectList) {
+    if (protectList.includes(memeKey)) {
+      return true
+    }
+    for (const keyword of protectList) {
+      const key = this.getKey(keyword)
+      if (key === memeKey) {
+        return true
+      }
+    }
+    return false
   }
 }
 

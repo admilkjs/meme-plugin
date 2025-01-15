@@ -61,8 +61,8 @@ export class search extends plugin {
       return true
 
     } catch (error) {
-      logger.error(`表情搜索失败: ${error}`)
-      await e.reply('搜索时发生错误，请稍后重试', true)
+      logger.error(`[清语表情]搜索表情失败: ${error}`)
+      await e.reply('[清语表情]搜索表情失败，请稍后重试', true)
       return true
     }
   }

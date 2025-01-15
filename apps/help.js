@@ -1,5 +1,5 @@
 import lodash from 'lodash'
-import { Render, Data, Version, Config } from '../components/index.js'
+import { Render, Data, Version, Config } from '#components'
 import Theme from '../config/system/theme_system.js'
 
 export class help extends plugin {

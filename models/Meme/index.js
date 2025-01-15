@@ -26,7 +26,7 @@ async function make (e, memeKey, memeInfo, userText) {
      * 处理图片类型
      */
     if (max_images != 0) {
-      const images = await handleImages(e, userText, min_images, max_images, formData)
+      const images = await handleImages(e, memeKey, userText, min_images, max_images, formData)
       if (!images.success) {
         return e.reply(`该表情至少需要 ${min_images} 张图片`, true)
       }

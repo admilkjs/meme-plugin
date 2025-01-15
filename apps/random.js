@@ -46,8 +46,8 @@ export class random extends plugin {
 
       await Meme.make(e, memeKey, memeInfo, '')
     } catch (error) {
-      logger.error(`[清语表情] 随机表情处理失败: ${error.message}`)
-      await e.reply(`生成随机表情时出错: ${error.message}`, true)
+      const errorMessage = await Utils.handleError(error)
+      await e.reply(`[清语表情]生成随机表情包失败, 状态码: ${error.status}, 错误信息: ${errorMessage}`)
     }
   }
 }
