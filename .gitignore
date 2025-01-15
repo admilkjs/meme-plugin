@@ -1,4 +1,4 @@
 node_modules/*
-pnpm-lock.yaml
 config/config
 data
+pnpm-lock.yaml

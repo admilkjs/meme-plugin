@@ -1,4 +1,4 @@
-name: 删除PR版本分支并
+name: verson-close
 
 on:
   pull_request:
