@@ -23,7 +23,7 @@ const Utils = {
       return buffer
     } catch (error) {
       throw {
-        status: 521,
+        status: 510,
         message: '图片请求失败'
       }
     }
@@ -46,9 +46,8 @@ const Utils = {
       const base64Data = buffer.toString('base64')
       return `base64://${base64Data}`
     } catch (error) {
-      logger.error(`[清语表情] Base64 转换失败: ${error.message}`)
       throw {
-        status: 521,
+        status: 510,
         message: 'Base64 转换失败'
       }
     }
@@ -97,7 +96,7 @@ const Utils = {
     }
 
     const downloadAvatar = async (qq, e) => {
-      const cachePath = `${cacheDir}/avatar_${qq}.jpg`
+      const cachePath = `${cacheDir}/avatar_${qq}.png`
       let avatarUrl = await getAvatarUrl(qq, e)
 
       if (!avatarUrl) {
@@ -293,7 +292,10 @@ const Utils = {
           return avatarBuffers
         }
       } catch (error) {
-        logger.error(`[清语表情] 获取引用消息失败: ${error.message}`)
+        throw {
+          status: 400,
+          message: '获取引用消息失败，请稍后再试。'
+        }
       }
     }
 
@@ -312,14 +314,24 @@ const Utils = {
         return message || '资源不存在'
       case 500:
         return '表情服务请求失败，请稍后再试。'
-      case 521:
+      case 510:
         return message
+      /**
+       * 表情服务端状态码
+       */
+      case 520:
+      case 531:
       case 532:
-        return '文本内容过长，请减少输入内容。'
+      case 533:
+      case 540:
+      case 541:
+      case 542:
       case 543:
-        return '文本数量不足'
+      case 550:
+      case 552:
       case 560:
-        return '图片编号错误'
+      case 560:
+        return message.detail
     }
   }
 }

@@ -102,8 +102,8 @@ export class meme extends plugin {
     /**
      * 防误触发处理
      */
-    const { min_texts, max_texts } = memeInfo.params_type
-    if (min_texts === 0 && max_texts === 0 && userText.replace(/@\s*\d+/g, '').trim() !== '') return false
+    const { min_texts, max_texts, args_type } = memeInfo.params_type
+    if (min_texts === 0 && max_texts === 0 && args_type !== null && userText.replace(/@\s*\d+/g, '').trim() !== '') return false
 
     return await Meme.make(e, memeKey, memeInfo, userText)
   }
