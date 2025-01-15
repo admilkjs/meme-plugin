@@ -134,7 +134,7 @@ const Utils = {
   /**
    * 获取图片
    **/
-  async getImage (e, userText, max_images) {
+  async getImage (e, max_images) {
     const imagesInMessage = e.message
       .filter((m) => m.type === 'image')
       .map((img) => img.url)

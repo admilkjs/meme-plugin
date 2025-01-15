@@ -5,7 +5,6 @@ async function handleImages (e, memeKey, userText, min_images, max_images, formD
   let images = []
   let userAvatars = []
 
-
   const atsInMessage = e.message
     .filter((m) => m.type === 'at')
     .map((at) => at.qq)
@@ -22,14 +21,17 @@ async function handleImages (e, memeKey, userText, min_images, max_images, formD
   }
 
   if (images.length < max_images) {
-    const fetchedImages = await Utils.getImage(e, userText, max_images - images.length)
+    const fetchedImages = await Utils.getImage(e, max_images - images.length)
     images = images.concat(fetchedImages)
   }
 
+  const imagesInMessage = e.message.filter((m) => m.type === 'image').length > 0
+  const quotedImages = await Utils.getQuotedImages(e)
+
   /**
-   * 这里是为表情保护准备的
+   * 为表情保护准备的，min_images=1时的特殊处理
    */
-  if (min_images === 1) {
+  if (min_images === 1 && !imagesInMessage && quotedImages.length === 0) {
     const triggerAvatar = await Utils.getAvatar([e.user_id], e)
     if (triggerAvatar && Array.isArray(triggerAvatar) && triggerAvatar[0]) {
       images.push(triggerAvatar[0])
@@ -50,13 +52,20 @@ async function handleImages (e, memeKey, userText, min_images, max_images, formD
     const isProtected = await Tools.isProtected(memeKey, Config.protect.list)
 
     if (isProtected) {
-      if (Config.protect.master && !e.isMaster) {
-        images.reverse()
-      } else if (Config.protect.userEnable && Config.protect.user.includes(e.user_id)) {
-        images.reverse()
-        const triggerAvatar = await Utils.getAvatar([e.user_id], e)
-        if (triggerAvatar && Array.isArray(triggerAvatar) && triggerAvatar[0] && images[0] === triggerAvatar[0]) {
+      if (!imagesInMessage && quotedImages.length === 0) {
+        if (Config.protect.master && !e.isMaster) {
           images.reverse()
+        } else if (Config.protect.userEnable && Config.protect.user.includes(e.user_id)) {
+          images.reverse()
+          const triggerAvatar = await Utils.getAvatar([e.user_id], e)
+          if (
+            triggerAvatar &&
+            Array.isArray(triggerAvatar) &&
+            triggerAvatar[0] &&
+            images[0] === triggerAvatar[0]
+          ) {
+            images.reverse()
+          }
         }
       }
     }
