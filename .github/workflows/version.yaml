@@ -21,7 +21,7 @@ jobs:
         id: check
         run: |
           latest_commit_message="${{ github.event.head_commit.message }}"
-          if [[ "$latest_commit_message" =~ ^chore:\ 发布版本.* ]]; then
+          if [[ "$latest_commit_message" =~ ^release:\ 发布版本.* ]]; then
             echo "已有版本更新，跳过版本更新"
             echo "::set-output name=should_release::false"
           elif git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q '.pre-commit-config.yaml'; then
@@ -96,7 +96,7 @@ jobs:
           RELEASE_BRANCH="release/v$VERSION"
           pnpm release-it
           git add CHANGELOG.md package.json
-          git commit -m "chore: 发布版本 v$VERSION 🚀" || echo "无更改需要提交"
+          git commit -m "release: 发布版本 v$VERSION 🚀" || echo "无更改需要提交"
           git push origin $RELEASE_BRANCH --force || git push -u origin $RELEASE_BRANCH --force
 
       - name: 创建或更新 PR
@@ -115,7 +115,7 @@ jobs:
             gh pr create \
               --head "$RELEASE_BRANCH" \
               --base main \
-              --title "chore: 发布版本 v$VERSION 🚀" \
+              --title "release: 发布版本 v$VERSION 🚀" \
               --body "$BODY"
           else
             gh pr edit "$EXISTING_PR" \

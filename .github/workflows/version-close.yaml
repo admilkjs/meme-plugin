@@ -44,7 +44,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           VERSION=$(echo "${{ github.event.pull_request.head.ref }}" | sed 's|release/v||')
-          git tag -a "v$VERSION" -m "Release version $VERSION"
+          git tag "v$VERSION"
           git push origin "v$VERSION"
           git push origin --delete ${{ github.event.pull_request.head.ref }} || echo "版本分支已不存在，跳过删除。"
 
