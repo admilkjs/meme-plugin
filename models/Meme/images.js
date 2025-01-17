@@ -2,46 +2,43 @@ import { Utils, Tools } from '#models'
 import { Config } from '#components'
 
 async function handleImages (e, memeKey, userText, min_images, max_images, formData) {
-  let images = []
+  let messageImages = []
   let userAvatars = []
 
   const atsInMessage = e.message
     .filter((m) => m.type === 'at')
     .map((at) => at.qq)
 
+
   const manualAts = [...userText.matchAll(/@\s*(\d+)/g)].map((match) => match[1])
-  userAvatars = [...new Set([...atsInMessage, ...manualAts])]
+  const allMentionedUsers = [...new Set([...atsInMessage, ...manualAts])]
+
   userText = userText.replace(/@\s*\d+/g, '').trim()
 
-  if (userAvatars.length > 0) {
-    const avatarBuffers = await Utils.getAvatar(userAvatars, e)
-    avatarBuffers.forEach((avatar) => {
-      if (avatar) images.push(avatar)
-    })
+
+  if (allMentionedUsers.length > 0) {
+    const avatarBuffers = await Utils.getAvatar(allMentionedUsers, e)
+    userAvatars = avatarBuffers.filter(Boolean)
   }
 
-  if (images.length < max_images) {
-    const fetchedImages = await Utils.getImage(e, max_images - images.length)
-    images = images.concat(fetchedImages)
-  }
 
-  const imagesInMessage = e.message.filter((m) => m.type === 'image').length > 0
-  const quotedImages = await Utils.getQuotedImages(e)
+  const fetchedImages = await Utils.getImage(e)
+  messageImages = fetchedImages
 
   /**
-   * 为表情保护准备的，min_images=1时的特殊处理
+   * 特殊处理：当 min_images === 1 时，因没有多余的图片，表情保护会失效
    */
-  if (min_images === 1 && !imagesInMessage && quotedImages.length === 0) {
+  if (min_images === 1 && messageImages.length === 0) {
     const triggerAvatar = await Utils.getAvatar([e.user_id], e)
     if (triggerAvatar && Array.isArray(triggerAvatar) && triggerAvatar[0]) {
-      images.push(triggerAvatar[0])
+      userAvatars.push(triggerAvatar[0])
     }
   }
 
-  if (images.length < min_images) {
+  if (messageImages.length + userAvatars.length < min_images) {
     const triggerAvatar = await Utils.getAvatar([e.user_id], e)
     if (triggerAvatar && Array.isArray(triggerAvatar) && triggerAvatar[0]) {
-      images.unshift(triggerAvatar[0])
+      userAvatars.unshift(triggerAvatar[0])
     }
   }
 
@@ -52,30 +49,32 @@ async function handleImages (e, memeKey, userText, min_images, max_images, formD
     const isProtected = await Tools.isProtected(memeKey, Config.protect.list)
 
     if (isProtected) {
-      if (!imagesInMessage && quotedImages.length === 0) {
+      if (messageImages.length === 0) {
         if (Config.protect.master && !e.isMaster) {
-          images.reverse()
+          userAvatars.reverse()
         } else if (Config.protect.userEnable && Config.protect.user.includes(e.user_id)) {
-          images.reverse()
+          userAvatars.reverse()
           const triggerAvatar = await Utils.getAvatar([e.user_id], e)
           if (
             triggerAvatar &&
             Array.isArray(triggerAvatar) &&
             triggerAvatar[0] &&
-            images[0] === triggerAvatar[0]
+            userAvatars[0] === triggerAvatar[0]
           ) {
-            images.reverse()
+            userAvatars.reverse()
           }
         }
       }
     }
   }
 
-  images.slice(0, max_images).forEach((buffer, index) => {
+  const finalImages = [...messageImages, ...userAvatars].slice(0, max_images)
+  finalImages.forEach((buffer, index) => {
     formData.append('images', buffer, `image${index}.png`)
   })
 
-  if (images.length < min_images) {
+
+  if (finalImages.length < min_images) {
     return {
       success: false,
       userText: userText

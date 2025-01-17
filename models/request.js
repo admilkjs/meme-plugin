@@ -54,7 +54,7 @@ const Request = {
       if (error.response) {
         throw {
           status: error.response.status,
-          message: JSON.parse(error.response.data.toString())
+          message: error.response.data
         }
       } else {
         throw {

@@ -130,23 +130,70 @@ const Utils = {
       return '未知'
     }
   },
-
   /**
    * 获取图片
-   **/
-  async getImage (e, max_images) {
+   */
+  async getImage (e) {
+
     const imagesInMessage = e.message
       .filter((m) => m.type === 'image')
       .map((img) => img.url)
-
-    const quotedImages = await this.getQuotedImages(e)
 
     let images = []
     let tasks = []
 
     /**
-     * 引用消息中的图片
-     */
+   * 获取引用消息中的图片
+   */
+    let quotedImages = []
+    let source = null
+
+    if (e.getReply) {
+      source = await e.getReply()
+    } else if (e.source) {
+      if (e.isGroup) {
+        const group = Bot[e.self_id].pickGroup(e.group_id)
+        if (group && group.getChatHistory) {
+          source = (await group.getChatHistory(e.source.seq, 1)).pop()
+        }
+      } else if (e.isPrivate) {
+        const friend = Bot[e.self_id].pickFriend(e.user_id)
+        if (friend && friend.getChatHistory) {
+          source = (await friend.getChatHistory(e.source.time, 1)).pop()
+        }
+      }
+    }
+
+    if (source?.message && Array.isArray(source.message)) {
+      const imgArr = source.message
+        .filter((msg) => msg.type === 'image')
+        .map((img) => img.url)
+
+      const hasOtherTypes = source.message.some((msg) => msg.type !== 'image')
+      const isSelfMessage = source.sender.user_id === e.sender.user_id
+
+      if (isSelfMessage && imgArr.length > 0) {
+        quotedImages = imgArr
+      } else if (imgArr.length > 0 && !hasOtherTypes) {
+        quotedImages = imgArr
+      } else if (source.sender.user_id) {
+        try {
+          const avatarBuffers = await this.getAvatar([source.sender.user_id], e)
+          if (Array.isArray(avatarBuffers) && avatarBuffers.length > 0) {
+            quotedImages = avatarBuffers
+          }
+        } catch (error) {
+          throw {
+            status: 400,
+            message: '获取引用消息失败，请稍后再试。'
+          }
+        }
+      }
+    }
+
+    /**
+   * 引用消息中的图片
+   */
     if (quotedImages.length > 0) {
       quotedImages.forEach((item) => {
         if (Buffer.isBuffer(item)) {
@@ -158,8 +205,8 @@ const Utils = {
     }
 
     /**
-     * 消息中的图片
-     */
+   * 消息中的图片
+   */
     if (imagesInMessage.length > 0) {
       tasks.push(...imagesInMessage.map((imageUrl) => this.getImageBuffer(imageUrl)))
     }
@@ -171,66 +218,18 @@ const Utils = {
       }
     })
 
-    return images.slice(0, max_images)
+    return images
   },
 
-  /**
- * 获取引用消息
- */
-  async getQuotedImages (e) {
-    let source = null
 
-
-    if (e.getReply) {
-      source = await e.getReply()
-    } else if (e.source) {
-      if (e.group?.getChatHistory) {
-        source = (await e.group.getChatHistory(e.source.seq, 1)).pop()
-      } else if (e.friend?.getChatHistory) {
-        source = (await e.friend.getChatHistory(e.source.time, 1)).pop()
-      }
-    }
-
-    if (!source || !source.message || !Array.isArray(source.message)) {
-      return []
-    }
-
-    const imgArr = source.message
-      .filter((msg) => msg.type === 'image')
-      .map((img) => img.url)
-
-    const hasOtherTypes = source.message.some((msg) => msg.type !== 'image')
-    const isSelfMessage = source.sender?.user_id === e.sender.user_id
-
-    if (isSelfMessage && imgArr.length > 0) {
-      return imgArr
-    }
-
-    if (imgArr.length > 0 && !hasOtherTypes) {
-      return imgArr
-    }
-
-    if (source.sender?.user_id) {
-      try {
-        const avatarBuffers = await this.getAvatar([source.sender.user_id], e)
-        if (Array.isArray(avatarBuffers) && avatarBuffers.length > 0) {
-          return avatarBuffers
-        }
-      } catch (error) {
-        throw {
-          status: 400,
-          message: '获取引用消息失败，请稍后再试。'
-        }
-      }
-    }
-
-    return []
-  },
   /**
    * 处理错误异常信息
    */
   async handleError (error) {
     const { status, message } = error
+
+    let serverMsg = null
+    if ( status && message) serverMsg = JSON.parse(message.toString()).detail
 
     switch (status) {
       case 400:
@@ -256,7 +255,7 @@ const Utils = {
       case 552:
       case 560:
       case 560:
-        return message.detail
+        return serverMsg
     }
   }
 }
