@@ -11,13 +11,13 @@ async function handleImages (e, memeKey, userText, min_images, max_images, formD
 
 
   const manualAts = [...userText.matchAll(/@\s*(\d+)/g)].map((match) => match[1])
-  const allMentionedUsers = [...new Set([...atsInMessage, ...manualAts])]
+  const allUserAvatars = [...new Set([...atsInMessage, ...manualAts])]
 
   userText = userText.replace(/@\s*\d+/g, '').trim()
 
 
-  if (allMentionedUsers.length > 0) {
-    const avatarBuffers = await Utils.getAvatar(allMentionedUsers, e)
+  if (allUserAvatars.length > 0) {
+    const avatarBuffers = await Utils.getAvatar(allUserAvatars, e)
     userAvatars = avatarBuffers.filter(Boolean)
   }
 
