@@ -7,8 +7,7 @@ export default [
     field: 'other.renderScale',
     label: '渲染精度',
     component: 'InputNumber',
-    bottomHelpMessage:
-          '可选值50~200，建议100。设置高精度会提高图片的精细度，但因图片较大可能会影响渲染与发送速度',
+    bottomHelpMessage: '可选值50~200，建议100。设置高精度会提高图片的精细度，但因图片较大可能会影响渲染与发送速度',
     required: true,
     componentProps: {
       min: 50,
@@ -25,6 +24,7 @@ export default [
   {
     field: 'other.autoUpdate',
     label: '自动更新',
+    component: 'Switch',
     bottomHelpMessage: '是否开启自动更新'
   },
   {
