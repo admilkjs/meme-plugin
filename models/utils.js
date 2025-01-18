@@ -227,9 +227,14 @@ const Utils = {
    */
   async handleError (error) {
     const { status, message } = error
+    let serverMsg = ''
 
-    let serverMsg = null
-    if ( status && message) serverMsg = JSON.parse(message.toString()).detail
+    try {
+      const parsedMessage = JSON.parse(message.toString())
+      serverMsg = parsedMessage.detail
+    } catch (e) {
+      serverMsg = message
+    }
 
     switch (status) {
       case 400:
@@ -237,7 +242,7 @@ const Utils = {
       case 404:
         return message || '资源不存在'
       case 500:
-        return '表情服务请求失败，请稍后再试。'
+        return message || '表情服务请求失败，请稍后再试。'
       case 510:
         return message
       /**
@@ -254,10 +259,10 @@ const Utils = {
       case 550:
       case 552:
       case 560:
-      case 560:
         return serverMsg
     }
   }
+
 }
 
 export default Utils
