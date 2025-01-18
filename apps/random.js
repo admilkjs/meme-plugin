@@ -31,14 +31,13 @@ export class random extends plugin {
         return true
       }
 
-      const { min_texts, max_texts, min_images, max_images, args_type } =
+      const { min_texts, max_texts, min_images, max_images } =
         memeInfo.params_type || {}
 
       const isValid =
         (min_texts === 1 && max_texts === 1) ||
         (min_images === 1 && max_images === 1) ||
-        (min_texts === 1 && min_images === 1) ||
-        (args_type && (min_texts === 1 || min_images === 1))
+        (min_texts === 1 && min_images === 1 && max_texts === 1 && max_images === 1)
 
       if (!isValid) {
         return true
