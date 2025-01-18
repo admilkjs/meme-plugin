@@ -21,5 +21,19 @@ export default [
     label: '仓库更新检测',
     component: 'Switch',
     bottomHelpMessage: '是否开启仓库更新检测'
+  },
+  {
+    field: 'other.autoUpdate',
+    label: '自动更新',
+    bottomHelpMessage: '是否开启自动更新'
+  },
+  {
+    field: 'other.autoUpdateCron',
+    label: '自动更新Cron表达式',
+    bottomHelpMessage: '定时自动更新Cron表达式,重启生效',
+    component: 'EasyCron',
+    componentProps: {
+      placeholder: '请输入Cron表达式'
+    }
   }
 ]

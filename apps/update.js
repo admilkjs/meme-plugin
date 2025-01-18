@@ -53,9 +53,38 @@ export class update extends plugin {
         }
       })
     }
+
+    this.e = {
+      isMaster: true,
+      logFnc: '[清语表情]自动更新]',
+      msg: `#更新${Version.Plugin_Name}`,
+      reply: async (msg) => {
+        const masters = Object.keys(cfg.master)
+        for (const master of masters) {
+          if (master.toString().length > 11) {
+            logger.info('[清语表情] 更新推送跳过 QQBot')
+            continue
+          }
+          try {
+            await Bot.pickFriend(master).sendMsg(msg)
+            await Bot.sleep(2000)
+          } catch (err) {
+            logger.error(`[清语表情] 向好友 ${master} 发送消息时出错：`, err)
+          }
+        }
+      }
+    }
+
+    if (Config.other.autoUpdate) {
+      this.task.push({
+        name: '清语表情:自动更新',
+        cron: Config.other.autoUpdateCron,
+        fnc: () => this.update(this.e)
+      })
+    }
   }
 
-  async update (e = this.e) {
+  async update (e) {
     const Type = e?.msg.includes('强制') ? '#强制更新' : '#更新'
     if (e) e.msg = Type + Version.Plugin_Name
     const up = new Update(e)

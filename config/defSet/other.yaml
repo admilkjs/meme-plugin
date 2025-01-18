@@ -3,3 +3,9 @@ checkRepo: true
 
 # 图片渲染精度
 renderScale: 100
+
+# 自动更新
+autoUpdate: false
+
+# 自动更新Cron
+autoUpdateCron: "0 0 1 * * ?"
