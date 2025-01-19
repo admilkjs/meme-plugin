@@ -160,8 +160,7 @@ const Utils = {
       .filter((m) => m.type === 'image')
       .map((img) => img.url)
 
-    let images = []
-    let tasks = []
+    const tasks = []
 
     /**
      * 获取引用消息中的图片
@@ -213,12 +212,12 @@ const Utils = {
     }
 
     /**
-     * 引用消息中的图片
+     * 引用消息中的图片任务
      */
     if (quotedImages.length > 0) {
       quotedImages.forEach((item) => {
         if (Buffer.isBuffer(item)) {
-          images.push(item)
+          tasks.push(Promise.resolve(item))
         } else {
           tasks.push(this.getImageBuffer(item))
         }
@@ -226,18 +225,16 @@ const Utils = {
     }
 
     /**
-     * 消息中的图片
+     * 消息中的图片任务
      */
     if (imagesInMessage.length > 0) {
       tasks.push(...imagesInMessage.map((imageUrl) => this.getImageBuffer(imageUrl)))
     }
 
     const results = await Promise.allSettled(tasks)
-    results.forEach((res) => {
-      if (res.status === 'fulfilled' && res.value) {
-        images.push(res.value)
-      }
-    })
+    const images = results
+      .filter((res) => res.status === 'fulfilled' && res.value)
+      .map((res) => res.value)
 
     return images
   },
