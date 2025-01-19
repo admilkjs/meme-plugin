@@ -19,9 +19,10 @@ jobs:
     steps:
       - name: 检查是否需要进行版本更新
         id: check
+        env:
+          LATEST_COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
         run: |
-          latest_commit_message="${{ github.event.head_commit.message }}"
-          if [[ "$latest_commit_message" =~ ^release:\ 发布版本.* ]]; then
+          if [[ "$LATEST_COMMIT_MESSAGE" =~ ^release:\ 发布版本.* ]]; then
             echo "已有版本更新，跳过版本更新"
             echo "::set-output name=should_release::false"
           elif git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q '.pre-commit-config.yaml'; then
@@ -31,7 +32,6 @@ jobs:
             echo "进行版本更新"
             echo "::set-output name=should_release::true"
           fi
-
   auto-release:
     needs: check-commit-message
     if: needs.check-commit-message.outputs.should_release == 'true'

@@ -45,7 +45,7 @@ async function make (e, memeKey, memeInfo, userText) {
     const endpoint = `memes/${memeKey}/`
     const result = await Tools.request(endpoint, formData, 'POST', 'arraybuffer')
 
-    const base64Image = await Utils.bufferToBase64(result)
+    const base64Image = await Utils.getImageBase64(result, true)
     await e.reply(segment.image(base64Image), Config.meme.reply)
 
     if (Config.stats.enable) {

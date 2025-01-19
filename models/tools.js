@@ -1,4 +1,4 @@
-import fs from 'fs/promises'
+import fs from 'node:fs/promises'
 import { Data, Version, Config } from '../components/index.js'
 import Request from './request.js'
 

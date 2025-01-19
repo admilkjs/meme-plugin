@@ -1,5 +1,5 @@
 import { Data, Version } from '../../components/index.js'
-import fs from 'fs'
+import fs from 'node:fs'
 
 let Theme = {
   async getThemeCfg () {

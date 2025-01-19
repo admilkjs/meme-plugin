@@ -1,6 +1,6 @@
 
 import lodash from 'lodash'
-import fs from 'fs'
+import fs from 'node:fs'
 import { fileURLToPath } from 'url'
 import { join, dirname } from 'path'
 

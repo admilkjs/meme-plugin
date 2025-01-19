@@ -1,4 +1,4 @@
-import fs from 'fs'
+import fs from 'node:fs'
 import _ from 'lodash'
 import Data from './Data.js'
 import cfg from '../../../lib/config/config.js'

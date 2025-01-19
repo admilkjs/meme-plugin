@@ -1,4 +1,4 @@
-import fs from 'fs'
+import fs from 'node:fs'
 import Version from './Version.js'
 import chalk from 'chalk'
 

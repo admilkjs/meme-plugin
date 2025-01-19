@@ -17,8 +17,10 @@ async function handleImages (e, memeKey, userText, min_images, max_images, formD
 
 
   if (allUserAvatars.length > 0) {
-    const avatarBuffers = await Utils.getAvatar(allUserAvatars, e)
-    userAvatars = avatarBuffers.filter(Boolean)
+    const avatarBuffers = await Utils.getAvatar(allUserAvatars)
+    avatarBuffers.filter(Boolean).forEach((buffer) => {
+      userAvatars.push(buffer)
+    })
   }
 
 
@@ -29,14 +31,14 @@ async function handleImages (e, memeKey, userText, min_images, max_images, formD
    * 特殊处理：当 min_images === 1 时，因没有多余的图片，表情保护会失效
    */
   if (min_images === 1 && messageImages.length === 0) {
-    const triggerAvatar = await Utils.getAvatar([e.user_id], e)
+    const triggerAvatar = await Utils.getAvatar([e.user_id])
     if (triggerAvatar && Array.isArray(triggerAvatar) && triggerAvatar[0]) {
       userAvatars.push(triggerAvatar[0])
     }
   }
 
   if (messageImages.length + userAvatars.length < min_images) {
-    const triggerAvatar = await Utils.getAvatar([e.user_id], e)
+    const triggerAvatar = await Utils.getAvatar([e.user_id])
     if (triggerAvatar && Array.isArray(triggerAvatar) && triggerAvatar[0]) {
       userAvatars.unshift(triggerAvatar[0])
     }
@@ -54,7 +56,7 @@ async function handleImages (e, memeKey, userText, min_images, max_images, formD
           userAvatars.reverse()
         } else if (Config.protect.userEnable && Config.protect.user.includes(e.user_id)) {
           userAvatars.reverse()
-          const triggerAvatar = await Utils.getAvatar([e.user_id], e)
+          const triggerAvatar = await Utils.getAvatar([e.user_id])
           if (
             triggerAvatar &&
             Array.isArray(triggerAvatar) &&
