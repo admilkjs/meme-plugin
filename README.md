@@ -74,7 +74,7 @@ pnpm install --filter=clarity-meme
 - [x] 添加`自动更新表情包数据`
 - [x] 动态重载表情包数据
 - [x] 完善`表情保护`功能
-- [ ] 自动更新插件
+- [x] 自动更新插件[@MapleLeaf2007](https://github.com/MapleLeaf2007)
 - [ ] 内置`表情服务端`
 - [ ] 扩展库 `实现本地制作表情`(bushi)
 

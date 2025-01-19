@@ -51,8 +51,7 @@ export class meme extends plugin {
 
     let previewImageBase64 = ''
     try {
-      const imageBuffer = await Utils.getImageBuffer(previewUrl)
-      const base64Data = await Utils.bufferToBase64(imageBuffer)
+      const base64Data = await Utils.getImageBase64(previewUrl, true)
       previewImageBase64 = base64Data
     } catch (error) {
       previewImageBase64 = '预览图片加载失败'

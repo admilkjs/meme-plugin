@@ -14,8 +14,7 @@ jobs:
   check-commit-message:
     runs-on: ubuntu-latest
     outputs:
-      should_release: ${{ steps.check.outputs.should_release }}
-
+      should_release: ${{ env.SHOULD_RELEASE }}
     steps:
       - name: 检查是否需要进行版本更新
         id: check
@@ -23,15 +22,13 @@ jobs:
           LATEST_COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
         run: |
           if [[ "$LATEST_COMMIT_MESSAGE" =~ ^release:\ 发布版本.* ]]; then
-            echo "已有版本更新，跳过版本更新"
-            echo "::set-output name=should_release::false"
+              echo "SHOULD_RELEASE=false" >> $GITHUB_ENV
           elif git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q '.pre-commit-config.yaml'; then
-            echo "更新了pre-commit依赖, 跳过版本更新"
-            echo "::set-output name=should_release::false"
+              echo "SHOULD_RELEASE=false" >> $GITHUB_ENV
           else
-            echo "进行版本更新"
-            echo "::set-output name=should_release::true"
+              echo "SHOULD_RELEASE=true" >> $GITHUB_ENV
           fi
+
   auto-release:
     needs: check-commit-message
     if: needs.check-commit-message.outputs.should_release == 'true'

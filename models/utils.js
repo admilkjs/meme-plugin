@@ -1,4 +1,4 @@
-import fs from 'fs'
+import fs from 'node:fs'
 import { Version, Data } from '#components'
 import Request from './request.js'
 import Tools from './tools.js'
@@ -7,15 +7,18 @@ const Utils = {
 
   /**
    * 获取图片 Buffer
+   * @param {string | Buffer} image - 图片地址或 Buffer
+   * @returns {Promise<Buffer>} - 返回图片的 Buffer 数据
+   * @throws {Error} - 如果图片地址为空或请求失败，则抛出异常
    */
   async getImageBuffer (image) {
-    if (Buffer.isBuffer(image)) {
-      return image
-    }
-
     if (!image) throw {
       status: 400,
       message: '图片地址不能为空'
+    }
+
+    if (Buffer.isBuffer(image)) {
+      return image
     }
 
     try {
@@ -30,33 +33,46 @@ const Utils = {
   },
 
   /**
-   * 将图片 Buffer 转换为 Base64
+   * 获取图片 Base64 字符串
+   * @param {string | Buffer} image - 图片的 URL、Buffer 或 Base64 字符串
+   * @param {boolean} withPrefix - 是否添加 base64:// 前缀，默认 false
+   * @returns {Promise<string>} - 返回图片的 Base64 字符串，带或不带前缀
+   * @throws {Error} - 如果图片地址为空或处理失败，则抛出异常
    */
-  async bufferToBase64 (buffer) {
-    if (typeof buffer === 'string' && buffer.startsWith('base64://')) {
-      return buffer
+  async getImageBase64 (image, withPrefix = false) {
+    if (!image) throw {
+      status: 400,
+      message: '图片地址不能为空'
     }
 
-    if (!buffer) throw {
-      status: 400,
-      message: '图片Buffer不能为空'
+    if (typeof image === 'string' && image.startsWith('base64://')) {
+      return withPrefix ? image : image.replace('base64://', '')
     }
 
     try {
-      const base64Data = buffer.toString('base64')
-      return `base64://${base64Data}`
+      if (Buffer.isBuffer(image)) {
+        const base64Data = image.toString('base64')
+        return withPrefix ? `base64://${base64Data}` : base64Data
+      }
+
+      const buffer = await Request.get(image, {}, 'arraybuffer')
+      const base64Data = Buffer.from(buffer).toString('base64')
+      return withPrefix ? `base64://${base64Data}` : base64Data
     } catch (error) {
       throw {
         status: 510,
-        message: 'Base64 转换失败'
+        message: '图片处理失败'
       }
     }
   },
 
   /**
- * 获取用户头像
- */
-  async getAvatar (userList, e) {
+   * 获取用户头像
+   * @param {string | string[]} userList - 单个或多个 QQ 号
+   * @returns {Promise<Buffer[]>} - 返回头像 Buffer 数组
+   * @throws {Error} - 如果用户列表为空或头像获取失败，则抛出异常
+   */
+  async getAvatar (userList) {
     if (!userList) {
       throw {
         status: 400,
@@ -108,8 +124,11 @@ const Utils = {
   },
 
   /**
- * 获取用户昵称
- */
+   * 获取用户昵称
+   * @param {string} qq - QQ 号
+   * @param {object} e - 消息对象，用于区分群聊或私聊
+   * @returns {Promise<string>} - 返回用户昵称，若获取失败则返回 "未知"
+   */
   async getNickname (qq, e) {
     if (!qq || !e) {
       return '未知'
@@ -130,11 +149,13 @@ const Utils = {
       return '未知'
     }
   },
+
   /**
-   * 获取图片
+   * 获取图片列表（包括消息和引用消息中的图片）
+   * @param {object} e - 消息对象
+   * @returns {Promise<Buffer[]>} - 返回图片 Buffer 数组
    */
   async getImage (e) {
-
     const imagesInMessage = e.message
       .filter((m) => m.type === 'image')
       .map((img) => img.url)
@@ -143,8 +164,8 @@ const Utils = {
     let tasks = []
 
     /**
-   * 获取引用消息中的图片
-   */
+     * 获取引用消息中的图片
+     */
     let quotedImages = []
     let source = null
 
@@ -178,7 +199,7 @@ const Utils = {
         quotedImages = imgArr
       } else if (source.sender.user_id) {
         try {
-          const avatarBuffers = await this.getAvatar([source.sender.user_id], e)
+          const avatarBuffers = await this.getAvatar([source.sender.user_id])
           if (Array.isArray(avatarBuffers) && avatarBuffers.length > 0) {
             quotedImages = avatarBuffers
           }
@@ -192,8 +213,8 @@ const Utils = {
     }
 
     /**
-   * 引用消息中的图片
-   */
+     * 引用消息中的图片
+     */
     if (quotedImages.length > 0) {
       quotedImages.forEach((item) => {
         if (Buffer.isBuffer(item)) {
@@ -205,8 +226,8 @@ const Utils = {
     }
 
     /**
-   * 消息中的图片
-   */
+     * 消息中的图片
+     */
     if (imagesInMessage.length > 0) {
       tasks.push(...imagesInMessage.map((imageUrl) => this.getImageBuffer(imageUrl)))
     }
@@ -221,9 +242,10 @@ const Utils = {
     return images
   },
 
-
   /**
    * 处理错误异常信息
+   * @param {object} error - 异常对象
+   * @returns {string} - 返回处理后的错误消息
    */
   async handleError (error) {
     const { status, message } = error
