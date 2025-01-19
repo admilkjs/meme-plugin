@@ -64,21 +64,11 @@ export class meme extends plugin {
      * 用户权限检查
      */
     if (Config.access.enable) {
-
-      /**
-       * 黑名单模式
-       */
       if (Config.access.mode === 0) {
-        /**
-         * 白名单模式
-         */
         if (!Config.access.userWhiteList.includes(e.user_id)) {
           return true
         }
       } else if (Config.access.mode === 1) {
-        /**
-         * 黑名单模式
-         */
         if (Config.access.userBlackList.includes(e.user_id)) {
           return true
         }
@@ -92,19 +82,24 @@ export class meme extends plugin {
       return true
     }
 
-    if (!Tools.getInfo(memeKey)) {
+    const params = Tools.getParams(memeKey)
+    if (!params) {
       return true
     }
 
-    const memeInfo = Tools.getInfo(memeKey)
+    const { min_texts, max_texts, min_images, max_images, default_texts, args_type } = params
     const userText = message.replace(new RegExp(`^#?${matchedKeyword}`, 'i'), '').trim()
 
     /**
      * 防误触发处理
      */
-    const { min_texts, max_texts, args_type } = memeInfo.params_type
-    if (min_texts === 0 && max_texts === 0 && args_type !== null && userText.replace(/@\s*\d+/g, '').trim() !== '') return false
+    if (min_texts === 0 && max_texts === 0) {
+      if (userText && !/^(@\s*\d+\s*)+$/.test(userText.trim())) {
+        return false
+      }
+    }
 
-    return await Meme.make(e, memeKey, memeInfo, userText)
+    return await Meme.make(e, memeKey, min_texts, max_texts, min_images, max_images, default_texts, args_type, userText)
   }
+
 }

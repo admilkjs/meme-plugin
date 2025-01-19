@@ -5,15 +5,7 @@ import { handleArgs, handle , descriptions } from './args.js'
 import { handleImages } from './images.js'
 import { handleTexts } from './texts.js'
 
-async function make (e, memeKey, memeInfo, userText) {
-  const {
-    args_type,
-    min_texts,
-    max_texts,
-    min_images,
-    max_images,
-    default_texts
-  } = memeInfo.params_type
+async function make (e, memeKey, min_texts, max_texts, min_images, max_images, default_texts, args_type, userText) {
   const formData = new FormData()
 
   try {

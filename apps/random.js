@@ -25,14 +25,13 @@ export class random extends plugin {
       }
 
       const memeKey = memeKeys[Math.floor(Math.random() * memeKeys.length)]
-      const memeInfo = Tools.getInfo(memeKey)
+      const params = Tools.getParams(memeKey)
 
-      if (!memeInfo) {
+      if (!params) {
         return true
       }
 
-      const { min_texts, max_texts, min_images, max_images } =
-        memeInfo.params_type || {}
+      const { min_texts, max_texts, min_images, max_images, default_texts, args_type } = params
 
       const isValid =
         (min_texts === 1 && max_texts === 1) ||
@@ -43,7 +42,7 @@ export class random extends plugin {
         return true
       }
 
-      await Meme.make(e, memeKey, memeInfo, '')
+      await Meme.make(e, memeKey, min_texts, max_texts, min_images, max_images, default_texts, args_type, '')
     } catch (error) {
       const errorMessage = await Utils.handleError(error)
       await e.reply(`[清语表情]生成随机表情包失败, 状态码: ${error.status}, 错误信息: ${errorMessage}`)
