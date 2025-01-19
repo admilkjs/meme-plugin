@@ -32,7 +32,8 @@ const Render = {
       },
       copyright: `${Version.name}<span class="version"> ${Version.bot}</span> & ${Version.Plugin_Name}<span class="version"> ${Version.ver}`,
       pageGotoParams: {
-        waitUntil: 'load'
+        waitUntil: 'load',
+        timeout: 60000
       },
       tplFile: `${Version.Plugin_Path}/resources/${path}.html`,
       pluResPath: `${Version.Plugin_Path}/resources/`,

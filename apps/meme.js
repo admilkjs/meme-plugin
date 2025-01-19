@@ -79,7 +79,8 @@ export class meme extends plugin {
      * 禁用表情列表
      */
     if (Config.access.blackListEnable && await Tools.isBlacklisted(matchedKeyword)) {
-      return true
+      logger.info('[清语表情]该表情为禁用表情, 跳过生成')
+      return false
     }
 
     const params = Tools.getParams(memeKey)
