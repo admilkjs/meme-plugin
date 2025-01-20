@@ -25,22 +25,27 @@ const Tools = {
    * @returns {Promise<boolean>} - 如果在海外环境返回 true，否则返回 false
    */
   async isAbroad () {
-    const urls = [
-      'https://blog.cloudflare.com/cdn-cgi/trace',
-      'https://developers.cloudflare.com/cdn-cgi/trace'
-    ]
+    const url = 'https://ipinfo.io/json'
 
     try {
-      const response = await Promise.any(urls.map(url => Request.get(url, {}, 'text')))
-      const traceMap = Object.fromEntries(
-        response.split('\n').filter(line => line).map(line => line.split('='))
-      )
-      return traceMap.loc !== 'CN'
+      const response = await Request.get(url, {}, 'json')
+      if (response && response.country) {
+        return response.country !== 'CN'
+      } else {
+        throw {
+          status: 500,
+          message: '获取IP所在地区失败: 返回数据不完整'
+        }
+      }
     } catch (error) {
-      logger.error(`获取IP所在地区错误: ${error.message}`)
-      return false
+      throw {
+        status: 500,
+        message: `获取IP所在地区出错: ${error.message}`
+      }
     }
   },
+
+
 
   /**
    * 获取表情包请求的基础 URL
@@ -56,24 +61,10 @@ const Tools = {
       return this.baseUrl
     }
 
-    let Url = 'https://meme.wuliya.cn'
-
-    try {
-      const isAbroad = await this.isAbroad()
-      if (isAbroad) {
-        Url = 'https://meme.wuliya.xin'
-      }
-    } catch (error) {
-      logger.error(`获取IP地址出错，使用默认 URL: ${error.message}`)
-      throw {
-        status: 500,
-        message: '获取IP所在地区出错'
-      }
-    }
-
-    this.baseUrl = Url
+    this.baseUrl = 'https://meme.wuliya.cn'
     return this.baseUrl
   },
+
 
   /**
    * 加载表情包数据
