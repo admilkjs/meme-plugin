@@ -77,8 +77,13 @@ async function handleImages (e, memeKey, userText, min_images, max_images, formD
     }
   }
 
+  let finalImages
 
-  const finalImages = [...userAvatars, ...messageImages].slice(0, max_images)
+  if (messageImages.length === 1 && allUserAvatars.length === 1) {
+    finalImages = [...messageImages, ...userAvatars].slice(0, max_images)
+  } else {
+    finalImages = [...userAvatars, ...messageImages].slice(0, max_images)
+  }
 
   finalImages.forEach((buffer, index) => {
     formData.append('images', buffer, `image${index}.png`)

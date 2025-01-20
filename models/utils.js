@@ -172,43 +172,16 @@ const Utils = {
       source = await e.getReply()
     } else if (e.source) {
       if (e.isGroup) {
-        const group = Bot[e.self_id].pickGroup(e.group_id)
-        if (group && group.getChatHistory) {
-          source = (await group.getChatHistory(e.source.seq, 1)).pop()
-        }
+        source = Bot[e.self_id].pickGroup(e.group_id).getChatHistory(e.source.seq, 1).pop()
       } else if (e.isPrivate) {
-        const friend = Bot[e.self_id].pickFriend(e.user_id)
-        if (friend && friend.getChatHistory) {
-          source = (await friend.getChatHistory(e.source.time, 1)).pop()
-        }
+        source = Bot[e.self_id].pickFriend(e.user_id).getChatHistory(e.source.time, 1).pop()
       }
     }
 
-    if (source?.message && Array.isArray(source.message)) {
-      const imgArr = source.message
+    if (source) {
+      quotedImages = source.message
         .filter((msg) => msg.type === 'image')
         .map((img) => img.url)
-
-      const hasOtherTypes = source.message.some((msg) => msg.type !== 'image')
-      const isSelfMessage = source.sender.user_id === e.sender.user_id
-
-      if (isSelfMessage && imgArr.length > 0) {
-        quotedImages = imgArr
-      } else if (imgArr.length > 0 && !hasOtherTypes) {
-        quotedImages = imgArr
-      } else if (source.sender.user_id) {
-        try {
-          const avatarBuffers = await this.getAvatar([source.sender.user_id])
-          if (Array.isArray(avatarBuffers) && avatarBuffers.length > 0) {
-            quotedImages = avatarBuffers
-          }
-        } catch (error) {
-          throw {
-            status: 400,
-            message: '获取引用消息失败，请稍后再试。'
-          }
-        }
-      }
     }
 
     /**
