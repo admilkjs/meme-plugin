@@ -20,7 +20,7 @@ export class setting extends plugin {
   }
 
   async setting (e) {
-    if (!this.e.isMaster) return true
+    if (!e.isMaster) return true
 
     let regRet = sysCfgReg.exec(e.msg) || []
     let cfgSchemaMap = Config.getCfgSchemaMap()
@@ -37,7 +37,7 @@ export class setting extends plugin {
         let schema = cfgSchemaMap[key]
         if (schema && typeof schema.def === 'boolean') {
           if (key === '全部') {
-            await redis.set('Yz:sweet-star:setAll', enableAll ? 1 : 0)
+            await redis.set('Yz:clarity-meme:setAll', enableAll ? 1 : 0)
           } else {
             Config.modify(schema.fileName, schema.cfgKey, enableAll)
           }
@@ -100,7 +100,7 @@ export class setting extends plugin {
 
     let schema = Config.getCfgSchema()
     let cfg = Config.getCfg()
-    cfg.setAll = (await redis.get('Yz:sweet-star:setAll')) == 1
+    cfg.setAll = (await redis.get('Yz:clarity-meme:setAll')) == 1
 
     const img = await Render.render(
       'admin/index',
