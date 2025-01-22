@@ -9,7 +9,7 @@ export class random extends plugin {
       priority: -Infinity,
       rule: [
         {
-          reg: /^#?(清语表情|clarity-meme)?随机(表情|meme)(包)?$/i,
+          reg: /^#?(?:(清语)?表情|(?:clarity-)?meme)?随机(?:表情|meme)(包)?$/i,
           fnc: 'random'
         }
       ]
@@ -49,3 +49,4 @@ export class random extends plugin {
     }
   }
 }
+

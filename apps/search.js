@@ -8,7 +8,7 @@ export class search extends plugin {
       event: 'message',
       priority: -Infinity,
       rule: [{
-        reg: /^#?(清语表情|clarity[\s-]?meme|表情|meme)搜索\s*(.+)\s*$/i,
+        reg: /^#?(?:(清语)?表情|(?:clarity-)?meme)搜索\s*(.+)\s*$/i,
         fnc: 'search'
       }]
     })
@@ -18,7 +18,7 @@ export class search extends plugin {
     if (!Config.meme.Enable) return false
     try {
       const match = e.msg.match(this.rule[0].reg)
-      const keyword = match[2].trim()
+      const keyword = match[2]?.trim()
 
       if (!keyword) {
         await e.reply('请提供搜索的表情关键字', true)
@@ -31,29 +31,29 @@ export class search extends plugin {
         return true
       }
 
-      let results = new Set()
+      const results = []
 
-      // 精确匹配
       if (infoMap.hasOwnProperty(keyword)) {
-        infoMap[keyword].keywords.forEach(kw => results.add(kw))
-      }
-
-      // 模糊搜索
-      for (const [key, info] of Object.entries(infoMap)) {
-        for (const kw of info.keywords) {
-          if (kw.toLowerCase().includes(keyword.toLowerCase())) {
-            results.add(kw)
+        results.push(...infoMap[keyword].keywords)
+      } else {
+        const lowerCaseKeyword = keyword.toLowerCase()
+        for (const [key, info] of Object.entries(infoMap)) {
+          for (const kw of info.keywords) {
+            if (kw.toLowerCase().includes(lowerCaseKeyword)) {
+              results.push(kw)
+            }
           }
         }
       }
 
-      if (results.size === 0) {
+      if (results.length === 0) {
         await e.reply(`未找到与"${keyword}"相关的表情`, true)
         return true
       }
 
-      const sortedResults = [...results].sort()
-      const replyMessage = sortedResults
+      // 去重并排序
+      const uniqueResults = [...new Set(results)].sort()
+      const replyMessage = uniqueResults
         .map((kw, index) => `${index + 1}. ${kw}`)
         .join('\n')
 
@@ -67,3 +67,4 @@ export class search extends plugin {
     }
   }
 }
+

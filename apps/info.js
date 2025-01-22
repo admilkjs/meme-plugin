@@ -1,7 +1,7 @@
 import { Config } from '#components'
 import { Utils, Meme, Tools } from '#models'
 
-export class meme extends plugin {
+export class info extends plugin {
   constructor () {
     super({
       name: '清语表情:表情包详情',
@@ -9,7 +9,7 @@ export class meme extends plugin {
       priority: -Infinity,
       rule: [
         {
-          reg: /^#?(清语表情|clarity[\s-]?meme|表情|meme)\s*(.+?)\s*详情$/i,
+          reg: /^#?(?:(清语)?表情|(?:clarity-)?meme)\s*(.+?)\s*详情$/i,
           fnc: 'info'
         }
       ]
@@ -83,3 +83,4 @@ export class meme extends plugin {
     return true
   }
 }
+

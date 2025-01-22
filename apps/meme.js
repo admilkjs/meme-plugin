@@ -21,21 +21,26 @@ export class meme extends plugin {
 
     this.rule = this.rule.filter((r) => r.fnc !== 'meme')
     const prefix = Config.meme.forceSharp ? '^#' : '^#?'
+    const keywords = []
 
     Object.entries(Tools.getInfoMap()).forEach(([key, value]) => {
       value.keywords.forEach((keyword) => {
         const escapedKeyword = keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-        const regex = new RegExp(`${prefix}(${escapedKeyword})(.*)`, 'i')
-
-        this.rule.push({
-          reg: regex,
-          fnc: 'meme'
-        })
+        keywords.push(escapedKeyword)
       })
+    })
+
+    const keywordsRegex = `(${keywords.join('|')})`
+    const regex = new RegExp(`${prefix}${keywordsRegex}(.*)`, 'i')
+
+    this.rule.push({
+      reg: regex,
+      fnc: 'meme'
     })
 
     this.rulesInitialized = true
   }
+
 
   async meme (e) {
     if (!Config.meme.Enable) return false

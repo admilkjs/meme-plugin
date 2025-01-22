@@ -12,19 +12,19 @@ export class update extends plugin {
       priority: -Infinity,
       rule: [
         {
-          reg: /^#?(清语表情|clarity-meme)(插件)?(强制)?更新$/i,
+          reg: /^#?(清语表情|clarity-meme)(插件)(强制)?更新$/i,
           fnc: 'update'
         },
         {
-          reg: /^#?(清语表情|clarity-meme)?更新日志$/i,
+          reg: /^#?(清语表情|clarity-meme)更新日志$/i,
           fnc: 'updateLog'
         },
         {
-          reg: /^#?(清语表情|clarity-meme)?更新(表情包)?(资源|数据)$/i,
+          reg: /^#?(清语表情|clarity-meme)更新(表情包)?(资源|数据)$/i,
           fnc: 'updateRes'
         },
         {
-          reg: /^#?(清语表情|clarity-meme)?检查更新$/i,
+          reg: /^#?(清语表情|clarity-meme)检查更新$/i,
           fnc: 'checkUpdate'
         }
       ]
