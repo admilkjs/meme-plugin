@@ -25,7 +25,7 @@ jobs:
           git reset --hard origin/main 
           git push origin dev --force 
 
-  delete-branch-and-push-tag:
+  push-tag:
     if: github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'release/v')
     needs: sync-main-to-dev
     runs-on: ubuntu-latest
@@ -37,17 +37,41 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: 推送Tag和删除分支
+      - name: 推送Tag
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           VERSION=$(echo "${{ github.event.pull_request.head.ref }}" | sed 's|release/v||')
-          git tag "v$VERSION"
+          git tag -a "v$VERSION"
           git push origin "v$VERSION"
+
+  delete-branch:
+    if: github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'release/v')
+    needs: push-tag
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 删除版本分支
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
           git push origin --delete ${{ github.event.pull_request.head.ref }} || echo "版本分支已不存在，跳过删除。"
 
+  create-release:
+    if: github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'release/v')
+    needs: [sync-main-to-dev, push-tag]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
       - name: 提取版本号
         id: extract_version
         run: |
