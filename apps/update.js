@@ -85,7 +85,7 @@ export class update extends plugin {
   }
 
   async update (e) {
-    const Type = e?.msg.includes('强制') ? '#强制更新' : '#更新'
+    const Type = e.msg.includes('强制') ? '#强制更新' : '#更新'
     if (e) e.msg = Type + Version.Plugin_Name
     const up = new Update(e)
     up.e = e
@@ -100,7 +100,7 @@ export class update extends plugin {
   }
 
   async updateRes (e, isTask = false) {
-    if (!isTask && e && !e.isMaster) {
+    if (!isTask && !e.isMaster) {
       await e.reply('只有主人才能更新表情包数据')
       return
     }
@@ -120,11 +120,24 @@ export class update extends plugin {
       await Tools.load()
       const Plugin = new meme()
       const pluginName = Plugin.name
-      const pluginKey = pluginsLoader.priority.find((p) => p.plugin.name === pluginName)
+      const pluginKey = pluginsLoader.priority.find((p) => {
+        if (p.plugin) {
+          return p.plugin.name === pluginName
+        } else if (p.class) {
+          return p.name === pluginName
+        }
+        return false
+      })
 
-      pluginKey.plugin.rulesInitialized = false
+      let pluginInfo
+      if (pluginKey.plugin) {
+        pluginInfo = pluginKey.plugin
+      } else {
+        pluginInfo = new pluginKey.class()
+      }
 
-      await pluginKey.plugin.initRules()
+      pluginInfo.rulesInitialized = false
+      pluginInfo.initRules()
 
       if (!isTask && e) {
         await e.reply('表情包数据更新完成')
@@ -139,6 +152,7 @@ export class update extends plugin {
       return false
     }
   }
+
 
   async checkUpdate (e, isTask = false) {
     try {
