@@ -1,6 +1,7 @@
 import _ from 'lodash'
 import Tools from '../tools.js'
 import Utils from '../utils.js'
+
 async function handleArgs (e, memeKey, userText, allUsers, formData) {
   const argsMatches = userText.match(/#([^#]+)/g)
   if (argsMatches) {
@@ -14,7 +15,7 @@ async function handleArgs (e, memeKey, userText, allUsers, formData) {
 
 async function handle (e, key, allUsers, args) {
   if (!args) {
-    args = ''
+    args = []
   }
 
   let argsObj = {}
@@ -23,21 +24,33 @@ async function handle (e, key, allUsers, args) {
   const { parser_options } = args_type
 
   const argMap = {}
+
   for (let i = 0; i < parser_options.length; i++) {
     const option = parser_options[i]
-    const argName = option.args[0].name
+    const argName = option.args ? option.args[0].name : null
+    const defaultValue = option.args && option.args[0].default !== undefined ? option.args[0].default : null
+    let argValue = null
+
     if (args[i]) {
-      if (option.args[0].value === 'int') {
-        argMap[argName] = parseInt(args[i])
-      } else {
-        argMap[argName] = args[i]
-      }
+      argValue = args[i]
+    } else if (defaultValue !== null) {
+      argValue = defaultValue
+    } else if (option.action && option.action.type === 0) {
+      argValue = option.action.value
+    }
+
+    if (argValue !== null && argName) {
+      argMap[argName] = argValue
+    } else if(argValue !== null && option.dest){
+      argMap[option.dest] = argValue
     }
   }
+
   argsObj = argMap
+
   const userInfos = [{
-    text: await Utils.getNickname(allUsers[0]|| e.sender.user_id , e),
-    gender: await Utils.getGender(allUsers[0]|| e.sender.user_id, e)
+    text: await Utils.getNickname(allUsers[0] || e.sender.user_id , e),
+    gender: await Utils.getGender(allUsers[0] || e.sender.user_id, e)
   }]
 
   const result = {
@@ -48,7 +61,4 @@ async function handle (e, key, allUsers, args) {
   return JSON.stringify(result)
 }
 
-
 export { handleArgs, handle }
-
-
