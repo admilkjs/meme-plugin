@@ -35,13 +35,13 @@ export const helpList = [
       },
       {
         icon: 75,
-        title: '#清语表情xx详情',
-        desc: '获取表情详情'
+        title: '#清语表情详情xx',
+        desc: '获取指定表情详情'
       },
       {
         icon: 71,
         title: 'xx',
-        desc: '如喜报xx (参数使用#, 多段文本使用/, 指定用户头像使用@+qq号)'
+        desc: '如喜报xx (参数使用#,多个参数同样使用#, 多段文本使用/, 指定用户头像使用@+qq号)'
       }
     ]
   },

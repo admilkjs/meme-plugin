@@ -12,7 +12,7 @@ export class update extends plugin {
       priority: -Infinity,
       rule: [
         {
-          reg: /^#?(清语表情|clarity-meme)(插件)(强制)?更新$/i,
+          reg: /^#?(清语表情|clarity-meme)(插件)?(强制)?更新$/i,
           fnc: 'update'
         },
         {

@@ -65,6 +65,12 @@ class Config {
     return this.getDefOrConfig('stats')
   }
 
+  /**
+   * 自定义设置
+   */
+  get custom () {
+    return this.getDefOrConfig('custom')
+  }
   /** 其他设置 */
   get other () {
     return this.getDefOrConfig('other')

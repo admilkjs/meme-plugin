@@ -214,7 +214,7 @@ const Tools = {
    * @returns {object|null} - 返回表情包的信息或 null
    */
   getInfo (memeKey) {
-    return this.infoMap?.[memeKey] || null
+    return this.infoMap[memeKey] || null
   },
 
   /**
@@ -251,6 +251,30 @@ const Tools = {
       args_type
     }
   },
+  /**
+   * 获取指定 key 的描述信息，优先使用自定义描述，否则使用默认描述。
+   * @param {string} key - 需要获取描述的 key。
+   * @returns {string} - 返回描述信息，格式为 "[描述1][描述2]..."。
+   */
+  descriptions (key) {
+    if (Config.custom.descriptions) {
+      const custom = Config.custom.descriptions.find(
+        (item) => item.key === key
+      )
+      if (custom) {
+        return custom.desc.map(desc => `[${desc}]`).join('')
+      }
+    }
+
+    const info = this.getInfo(key)
+    const parserOptions = info.params_type.args_type.parser_options || []
+    const helpTexts = parserOptions
+      .map((option) => option.help_text)
+      .filter((text) => text)
+    return `[${helpTexts.join('][')}]`
+  },
+
+
 
   /**
    * 获取指定表情包的关键字

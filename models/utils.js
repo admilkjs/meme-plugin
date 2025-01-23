@@ -140,7 +140,7 @@ const Utils = {
         const Member = group.pickMember(qq)
         const MemberInfo = await Member.getInfo()
         return MemberInfo.card || MemberInfo.nickname || '未知'
-      } else {
+      } else if (e.isPrivate) {
         const Friend = Bot[e.self_id].pickFriend(qq)
         const FriendInfo = await Friend.getInfo()
         return FriendInfo.nickname || '未知'
@@ -149,6 +149,37 @@ const Utils = {
       return '未知'
     }
   },
+  /**
+   * 获取用户性别
+   *
+   * @async
+   * @param {number} qq - 要查询的 QQ 号码。
+   * @returns {Promise<string>} - 返回一个 Promise，其解析值为：
+   *   - 'male'：男性。
+   *   - 'female'：女性。
+   *   - 'unknown'：未知性别。
+   */
+  async getGender (qq, e) {
+    if (!qq || !e) {
+      return 'unknown'
+    }
+
+    try {
+      if (e.isGroup) {
+        const group = Bot[e.self_id].pickGroup(e.group_id)
+        const Member = group.pickMember(qq)
+        const MemberInfo = await Member.getInfo()
+        return MemberInfo.sex || 'unknown'
+      } else if (e.isPrivate) {
+        const Friend = Bot[e.self_id].pickFriend(qq)
+        const FriendInfo = await Friend.getInfo()
+        return FriendInfo.sex || 'unknown'
+      }
+    } catch (error) {
+      return 'unknown'
+    }
+  },
+
 
   /**
    * 获取图片列表（包括消息和引用消息中的图片）
