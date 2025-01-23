@@ -1,5 +1,5 @@
 import { Config } from '#components'
-import { Utils, Meme, Tools } from '#models'
+import { Utils, Tools } from '#models'
 
 export class info extends plugin {
   constructor () {
@@ -9,7 +9,7 @@ export class info extends plugin {
       priority: -Infinity,
       rule: [
         {
-          reg: /^#?(?:(清语)?表情|(?:clarity-)?meme)\s*(.+?)\s*详情$/i,
+          reg: /^#?(?:(清语)?表情|(?:clarity-)?meme)\s*详情\s*(.+?)$/i,
           fnc: 'info'
         }
       ]
@@ -41,12 +41,12 @@ export class info extends plugin {
       args_type = {}
     } = memeDetails.params_type
 
-    let argsHint = ''
+    let argsHint = '[无]'
     if (args_type != null) {
-      argsHint = await Meme.Args.descriptions(memeKey)
+      argsHint = await Tools.descriptions(memeKey)
     }
 
-    const aliases = memeDetails.keywords ? memeDetails.keywords.join(', ') : '无'
+    const aliases = memeDetails.keywords ? memeDetails.keywords.map(keyword => `[${keyword}]`).join('') : '[无]'
     const previewUrl = await Tools.getPreviewUrl(memeKey)
 
     let previewImageBase64 = ''
@@ -57,18 +57,24 @@ export class info extends plugin {
       previewImageBase64 = '预览图片加载失败'
     }
 
+    const defText = default_texts && default_texts.length > 0
+      ? default_texts.map(text => `[${text}]`).join('')
+      : '[无]'
+
+
     const replyMessage = [
       `名称: ${memeKey}\n`,
-      `别名: ${aliases || '无'}\n`,
+      `别名: ${aliases}\n`,
       `最大图片数量: ${max_images}\n`,
       `最小图片数量: ${min_images}\n`,
       `最大文本数量: ${max_texts}\n`,
       `最小文本数量: ${min_texts}\n`,
-      `默认文本: ${default_texts.length > 0 ? default_texts.join(', ') : '无'}`
+      `默认文本: ${defText}`
     ]
 
+
     if (argsHint) {
-      replyMessage.push(`\n参数提示:\n${argsHint}`)
+      replyMessage.push(`\n描述/可选参数:\n${argsHint}`)
     }
 
     if (previewImageBase64) {
@@ -83,4 +89,3 @@ export class info extends plugin {
     return true
   }
 }
-

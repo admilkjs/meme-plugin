@@ -1,7 +1,7 @@
 import { Config } from '#components'
 import { Utils } from '#models'
 
-async function handleTexts (e, userText, min_texts, max_texts, default_texts, formData) {
+async function handleTexts (e, userText, min_texts, max_texts, default_texts, allUsers, formData) {
 
   let finalTexts = []
 
@@ -10,10 +10,9 @@ async function handleTexts (e, userText, min_texts, max_texts, default_texts, fo
     finalTexts = splitTexts.slice(0, max_texts)
   }
 
-  const ats = e.message.filter((m) => m.type === 'at').map((at) => at.qq)
   if (finalTexts.length === 0 && Config.meme.userName) {
-    if (ats.length >= 1) {
-      const User = ats[0]
+    if (allUsers.length >= 1) {
+      const User = allUsers[0]
       const Nickname = await Utils.getNickname(User, e)
       finalTexts.push(Nickname)
     } else {

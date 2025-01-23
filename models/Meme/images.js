@@ -1,17 +1,9 @@
 import { Utils, Tools } from '#models'
 import { Config } from '#components'
 
-async function handleImages (e, memeKey, userText, min_images, max_images, formData) {
+async function handleImages (e, memeKey, userText, min_images, max_images, allUsers, formData) {
   let messageImages = []
   let userAvatars = []
-
-  const atsInMessage = e.message
-    .filter((m) => m.type === 'at')
-    .map((at) => at.qq)
-
-  const manualAts = [...userText.matchAll(/@\s*(\d+)/g)].map((match) => match[1])
-  const allUserAvatars = [...new Set([...atsInMessage, ...manualAts])]
-  userText = userText.replace(/@\s*\d+/g, '').trim()
 
 
   const masterQQList = (Array.isArray(Config.masterQQ) ? Config.masterQQ : [Config.masterQQ])
@@ -19,14 +11,14 @@ async function handleImages (e, memeKey, userText, min_images, max_images, formD
     .map((qq) => qq.toString())
 
   const isMasterUser = masterQQList.includes(e.user_id.toString())
-  const hasAtMaster = allUserAvatars.some((qq) => masterQQList.includes(qq.toString()))
+  const hasAtMaster = allUsers.some((qq) => masterQQList.includes(qq.toString()))
   const protectedUsers = Config.protect.user.map((id) => id.toString())
-  const hasAtProtectedUser = allUserAvatars.some((qq) =>
+  const hasAtProtectedUser = allUsers.some((qq) =>
     protectedUsers.includes(qq.toString())
   )
 
-  if (allUserAvatars.length > 0) {
-    const avatarBuffers = await Utils.getAvatar(allUserAvatars)
+  if (allUsers.length > 0) {
+    const avatarBuffers = await Utils.getAvatar(allUsers)
     avatarBuffers.filter(Boolean).forEach((buffer) => {
       userAvatars.push(buffer)
     })
@@ -61,13 +53,13 @@ async function handleImages (e, memeKey, userText, min_images, max_images, formD
         /**
          * 如果只有一个艾特，反转图片顺序
          */
-        if (allUserAvatars.length === 1) {
+        if (allUsers.length === 1) {
           userAvatars.reverse()
         } else {
           /**
            * 如果第一个艾特不是主人或受保护用户，反转图片顺序
            */
-          const firstAtUser = allUserAvatars[0].toString()
+          const firstAtUser = allUsers[0].toString()
           const isFirstAtMasterOrProtected = masterQQList.includes(firstAtUser) || protectedUsers.includes(firstAtUser)
           if (!isFirstAtMasterOrProtected) {
             userAvatars.reverse()
@@ -79,7 +71,7 @@ async function handleImages (e, memeKey, userText, min_images, max_images, formD
 
   let finalImages
 
-  if (messageImages.length === 1 && allUserAvatars.length === 1) {
+  if (messageImages.length === 1 && allUsers.length === 1) {
     finalImages = [...messageImages, ...userAvatars].slice(0, max_images)
   } else {
     finalImages = [...userAvatars, ...messageImages].slice(0, max_images)
