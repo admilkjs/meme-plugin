@@ -44,7 +44,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           VERSION=$(echo "${{ github.event.pull_request.head.ref }}" | sed 's|release/v||')
-          git tag -a "v$VERSION"
+          git tag -a "v$VERSION" -m "Release v$VERSION"
           git push origin "v$VERSION"
 
   delete-branch:
