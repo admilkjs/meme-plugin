@@ -4,17 +4,16 @@ on:
   pull_request:
     types: [closed]
 
+permissions:
+  contents: write
+
 jobs:
   sync-main-to-dev:
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
       - name: 检出代码
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: 同步分支
         run: |
@@ -29,13 +28,9 @@ jobs:
     if: github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'release/v')
     needs: sync-main-to-dev
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
       - name: 检出代码
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: 推送Tag
         env:
@@ -51,13 +46,9 @@ jobs:
     if: github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'release/v')
     needs: push-tag
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
       - name: 检出代码
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: 删除版本分支
         run: |
@@ -69,13 +60,9 @@ jobs:
     if: github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'release/v')
     needs: [sync-main-to-dev, push-tag]
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
       - name: 检出代码
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
           
       - name: 提取版本号
         id: extract_version
