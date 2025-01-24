@@ -1,4 +1,4 @@
-export const cfgSchema = {
+const cfgSchema = {
   meme: {
     title: '表情设置',
     cfg: {
@@ -202,3 +202,5 @@ export const cfgSchema = {
     }
   }
 }
+
+export default cfgSchema

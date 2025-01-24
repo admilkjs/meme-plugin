@@ -1,6 +1,6 @@
 import lodash from 'lodash'
-import { Render, Data, Version, Config } from '#components'
-import Theme from '../config/system/theme_system.js'
+import { Render, Version } from '#components'
+import { Help } from '#models'
 
 export class help extends plugin {
   constructor () {
@@ -22,34 +22,12 @@ export class help extends plugin {
   }
 
   async help (e) {
-    if (!Config.meme.Enable) return false
-    let custom = {}
-    let help = {}
-    let { diyCfg, sysCfg } = await Data.importCfg('help')
+    const helpGroup = []
 
-    if (lodash.isArray(help.helpCfg)) {
-      custom = {
-        helpList: help.helpCfg,
-        helpCfg: {}
-      }
-    } else {
-      custom = help
-    }
-
-    let helpConfig = lodash.defaults(
-      diyCfg.helpCfg || {},
-      custom.helpCfg,
-      sysCfg.helpCfg
-    )
-    let helpList = diyCfg.helpList || custom.helpList || sysCfg.helpList
-
-    let helpGroup = []
-
-    lodash.forEach(helpList, (group) => {
+    lodash.forEach(Help.helpList, (group) => {
       if (group.auth && group.auth === 'master' && !e.isMaster) {
         return true
       }
-
       lodash.forEach(group.list, (help) => {
         let icon = help.icon * 1
         if (!icon) {
@@ -63,14 +41,11 @@ export class help extends plugin {
 
       helpGroup.push(group)
     })
-    let themeData = await Theme.getThemeData(
-      diyCfg.helpCfg || {},
-      sysCfg.helpCfg || {}
-    )
+    const themeData = await Help.Theme.getThemeData(Help.helpCfg)
     const img = await Render.render(
       'help/index',
       {
-        helpCfg: helpConfig,
+        helpCfg: Help.helpCfg,
         helpGroup,
         ...themeData
       }
