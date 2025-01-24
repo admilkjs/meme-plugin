@@ -83,8 +83,8 @@ export class help extends plugin {
     const img = await Render.render(
       'help/version-info',
       {
-        currentVersion: Version.ver,
-        changelogs: Version.logs
+        currentVersion: Version.Plugin_Version,
+        changelogs: Version.Plugin_Logs
       }
     )
     await e.reply(img)

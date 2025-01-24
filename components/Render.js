@@ -30,7 +30,7 @@ const Render = {
       sys: {
         scale: scale(params?.scale || 1)
       },
-      copyright: `${Version.name}<span class="version"> ${Version.bot}</span> & ${Version.Plugin_Name}<span class="version"> ${Version.ver}`,
+      copyright: `${Version.Plugin_Version}<span class="version"> ${Version.Bot_Version}</span> & ${Version.Plugin_Name}<span class="version"> ${Version.Plugin_Version}`,
       pageGotoParams: {
         waitUntil: 'load',
         timeout: 60000

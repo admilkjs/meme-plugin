@@ -86,37 +86,46 @@ try {
 
 
 let BotName = cfg.package.name
-if (BotName === 'miao-yunzai') {
-  BotName = 'Miao-Yunzai'
-} else if (BotName === 'yunzai') {
-  BotName = 'Yunzai-Bot'
-} else if (BotName === 'trss-yunzai') {
-  BotName = 'TRSS-Yunzai'
-} else {
-  BotName = _.capitalize(BotName)
+
+switch (BotName) {
+  case 'miao-yunzai':
+    BotName = 'Miao-Yunzai'
+    break
+  case 'yunzai':
+    BotName = 'Yunzai-Bot'
+    break
+  case 'trss-yunzai':
+    BotName = 'TRSS-Yunzai'
+    break
+  default:
+    BotName = _.capitalize(BotName)
 }
 
+
 const Version = {
-  get ver () {
-    return currentVersion
-  },
-  get name () {
+  get Bot_Name () {
     return BotName
   },
-  get bot () {
+  get Bot_Version () {
     return packageJson.version
   },
-  get logs () {
+  get Bot_Path () {
+    return Path
+  },
+  get Plugin_Logs () {
     return changelogs
   },
-  get Path () {
-    return Path
+  get Plugin_Path () {
+    return Plugin_Path
   },
   get Plugin_Name () {
     return Plugin_Name
   },
-  get Plugin_Path () {
-    return Plugin_Path
+  get Plugin_AliasName () {
+    return '清语表情'
+  },
+  get Plugin_Version () {
+    return currentVersion
   }
 }
 

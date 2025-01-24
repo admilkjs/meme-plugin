@@ -25,8 +25,15 @@ try {
 
   logger.info(chalk.bold.rgb(0, 255, 0)('========= 🌟🌟🌟 ========='))
   logger.info(
-    chalk.bold.rgb(255, 215, 0)('✨ 清语表情插件 ') +
-    chalk.bold.rgb(255, 165, 0).italic(Version.ver) +
+    chalk.bold.blue('📦 当前运行环境: ') +
+    chalk.bold.white(`${Version.Bot_Name}`) +
+    chalk.gray(' | ') +
+    chalk.bold.green('运行版本: ') +
+    chalk.bold.white(`${Version.Bot_Version}`)
+  )
+  logger.info(
+    chalk.bold.rgb(255, 215, 0)(`✨ ${Version.Plugin_AliasName} `) +
+    chalk.bold.rgb(255, 165, 0).italic(Version.Plugin_Version) +
     chalk.rgb(255, 215, 0).bold(' 载入成功 ^_^')
   )
   logger.info(loadTimeColor(`⏱️ 载入耗时：${loadTime} ms`))
