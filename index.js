@@ -1,6 +1,8 @@
-import { Version, Init } from '#components'
+import { Version } from '#components'
 import { Tools } from '#models'
 import chalk from 'chalk'
+import fs from 'node:fs/promises'
+import path from 'node:path'
 
 const startTime = Date.now()
 
@@ -8,9 +10,58 @@ let apps
 
 try {
   await Tools.load()
-  logger.info(chalk.green('🔵 表情数据加载完成'))
+  logger.info(
+    chalk.bold.rgb(0, 255, 255)(`[${Version.Plugin_AliasName}]`) +
+    chalk.green(' 🔵 ') +
+    chalk.bold('表情数据加载完成') +
+    chalk.rgb(255, 223, 0)(' ✨')
+  )
 
-  apps = await Init()
+  const files = (await fs.readdir(`${Version.Plugin_Path}/apps`))
+    .filter(file => file.endsWith('.js'))
+
+  const ret = await Promise.allSettled(
+    files.map(async (file) => {
+      const filePath = path.resolve(`${Version.Plugin_Path}/apps/${file}`)
+      const startModuleTime = Date.now()
+
+      try {
+        const module = await import(`file://${filePath}`)
+        const endModuleTime = Date.now()
+        const loadTime = endModuleTime - startModuleTime
+
+        logger.debug(
+          chalk.rgb(0, 255, 255)(`[${Version.Plugin_AliasName}]`) +
+          chalk.green(` 🔵 ${file.replace('.js', '')}`) +
+          chalk.rgb(255, 223, 0)(` 加载时间: ${loadTime} ms`)
+        )
+
+        return module
+      } catch (error) {
+        logger.error(
+          chalk.bgRgb(255, 0, 0).white.bold(' ❌ 载入插件错误：') +
+          chalk.redBright(` ${file.replace('.js', '')} `) +
+          ' 🚫'
+        )
+        logger.debug(chalk.red(`📄 错误详情： ${error.message}`))
+
+        return null
+      }
+    })
+  )
+
+  apps = {}
+
+  files.forEach((file, i) => {
+    const name = file.replace('.js', '')
+
+    if (ret[i].status !== 'fulfilled' || !ret[i].value) {
+      return
+    }
+
+    apps[name] = ret[i].value[Object.keys(ret[i].value)[0]]
+  })
+
   const endTime = Date.now()
   const loadTime = endTime - startTime
 
