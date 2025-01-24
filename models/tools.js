@@ -81,12 +81,12 @@ const Tools = {
         if (!(await this.fileExistsAsync('data/meme.json'))) {
           await this.downloadMemeData()
         }
-        this.infoMap = Data.readJSON('data/meme.json')
+        this.infoMap = await Data.readJSON('data/meme.json')
       } else {
         if (!(await this.fileExistsAsync('data/custom/meme.json'))) {
           await this.generateMemeData()
         }
-        this.infoMap = Data.readJSON('data/custom/meme.json')
+        this.infoMap = await Data.readJSON('data/custom/meme.json')
       }
 
       if (!this.infoMap || typeof this.infoMap !== 'object') {
@@ -150,7 +150,7 @@ const Tools = {
   async downloadMemeData (forceUpdate = false) {
     try {
       const filePath = `${Version.Plugin_Path}/data/meme.json`
-      Data.createDir('data')
+      await Data.createDir('data')
       if (await this.fileExistsAsync(filePath) && !forceUpdate) {
         return
       }
@@ -158,7 +158,7 @@ const Tools = {
         await fs.unlink(filePath)
       }
       const response = await Request.get('https://pan.wuliya.cn/d/Yunzai-Bot/data/meme.json')
-      Data.writeJSON('data/meme.json', response)
+      await Data.writeJSON('data/meme.json', response)
     } catch (error) {
       logger.error(`下载远程表情包数据失败: ${error.message}`)
       throw error
@@ -173,7 +173,7 @@ const Tools = {
   async generateMemeData (forceUpdate = false) {
     try {
       const filePath = `${Version.Plugin_Path}/data/custom/meme.json`
-      Data.createDir('data/custom', '', false)
+      await Data.createDir('data/custom', '', false)
       if (await this.fileExistsAsync(filePath) && !forceUpdate) {
         return
       }
@@ -193,7 +193,7 @@ const Tools = {
         memeData[key] = infoResponse
       }
 
-      Data.writeJSON('data/custom/meme.json', memeData, 2)
+      await Data.writeJSON('data/custom/meme.json', memeData, 2)
     } catch (error) {
       logger.error(`生成本地表情包数据失败: ${error.message}`)
       throw error

@@ -5,7 +5,7 @@ import fs from 'node:fs'
 import YamlReader from './YamlReader.js'
 import _ from 'lodash'
 import Version from './Version.js'
-import { cfgSchema } from '../config/system/cfg_system.js'
+import cfgSchema from '../config/system/cfg_system.js'
 import cfg from '../../../lib/config/config.js'
 
 class Config {

@@ -12,7 +12,7 @@ const Plugin_Path = join(__dirname, '..').replace(/\\/g, '/')
 const Plugin_Name = basename(Plugin_Path)
 
 let packageJson = {}
-packageJson = Data.readJSON('package.json', `${Path}`)
+packageJson = await Data.readJSON('package.json', `${Path}`)
 
 let changelogs = []
 let currentVersion = ''

@@ -32,7 +32,7 @@ try {
 
         logger.debug(
           chalk.rgb(0, 255, 255)(`[${Version.Plugin_AliasName}]`) +
-          chalk.green(` 🔵 ${file.replace('.js', '')}`) +
+          chalk.green(` 🚀 ${file.replace('.js', '')}`) +
           chalk.rgb(255, 223, 0)(` 加载时间: ${loadTime} ms`)
         )
 
@@ -79,7 +79,7 @@ try {
     chalk.bold.blue('📦 当前运行环境: ') +
     chalk.bold.white(`${Version.Bot_Name}`) +
     chalk.gray(' | ') +
-    chalk.bold.green('运行版本: ') +
+    chalk.bold.green('🏷️ 运行版本: ') +
     chalk.bold.white(`${Version.Bot_Version}`)
   )
   logger.info(

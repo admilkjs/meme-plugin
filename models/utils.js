@@ -83,7 +83,7 @@ const Utils = {
 
     const cacheDir = `${Version.Plugin_Path}/data/avatar`
     if (!await Tools.fileExistsAsync(cacheDir)) {
-      Data.createDir('data/avatar', '', false)
+      await Data.createDir('data/avatar', '', false)
     }
 
     const defaultAvatarPath = `${Version.Plugin_Path}/resources/meme/imgs/default_avatar.png`
