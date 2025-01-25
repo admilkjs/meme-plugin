@@ -51,7 +51,7 @@ export class info extends plugin {
 
     let previewImageBase64 = ''
     try {
-      const base64Data = await Utils.getImageBase64(previewUrl, true)
+      const base64Data = await Utils.Common.getImageBase64(previewUrl, true)
       previewImageBase64 = base64Data
     } catch (error) {
       previewImageBase64 = '预览图片加载失败'
