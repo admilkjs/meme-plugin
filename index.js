@@ -1,5 +1,5 @@
 import { Version } from '#components'
-import { Tools } from '#models'
+import { Utils } from '#models'
 import chalk from 'chalk'
 import fs from 'node:fs/promises'
 import path from 'node:path'
@@ -9,7 +9,7 @@ const startTime = Date.now()
 let apps
 
 try {
-  await Tools.load()
+  await Utils.Tools.load()
   logger.info(
     chalk.bold.rgb(0, 255, 255)(`[${Version.Plugin_AliasName}]`) +
     chalk.green(' 🔵 ') +
