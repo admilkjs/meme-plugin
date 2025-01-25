@@ -25,18 +25,17 @@ const Tools = {
    * @returns {Promise<boolean>} - 如果在海外环境返回 true，否则返回 false
    */
   async isAbroad () {
-    const url = 'https://ipinfo.io/json'
+    const urls = [
+      'https://blog.cloudflare.com/cdn-cgi/trace',
+      'https://developers.cloudflare.com/cdn-cgi/trace'
+    ]
 
     try {
-      const response = await Request.get(url, {}, 'json')
-      if (response && response.country) {
-        return response.country !== 'CN'
-      } else {
-        throw {
-          status: 500,
-          message: '获取IP所在地区失败: 返回数据不完整'
-        }
-      }
+      const response = await Promise.any(urls.map(url => Request.get(url, {}, 'text')))
+      const traceMap = Object.fromEntries(
+        response.split('\n').filter(line => line).map(line => line.split('='))
+      )
+      return traceMap.loc !== 'CN'
     } catch (error) {
       throw {
         status: 500,
