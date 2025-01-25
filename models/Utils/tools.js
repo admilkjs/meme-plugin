@@ -153,7 +153,7 @@ const Tools = {
         memeData[key] = infoResponse
       }
 
-      await Data.writeJSON('data/custom/meme.json', memeData, 2)
+      await Data.writeJSON('data/meme.json', memeData, 2)
     } catch (error) {
       logger.error(`生成本地表情包数据失败: ${error.message}`)
       throw error
