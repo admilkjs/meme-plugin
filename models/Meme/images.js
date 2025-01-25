@@ -1,4 +1,4 @@
-import { Utils, Tools } from '#models'
+import { Utils } from '#models'
 import { Config } from '#components'
 
 async function handleImages (e, memeKey, userText, min_images, max_images, allUsers, formData) {
@@ -18,27 +18,27 @@ async function handleImages (e, memeKey, userText, min_images, max_images, allUs
   )
 
   if (allUsers.length > 0) {
-    const avatarBuffers = await Utils.getAvatar(allUsers)
+    const avatarBuffers = await Utils.Common.getAvatar(allUsers)
     avatarBuffers.filter(Boolean).forEach((buffer) => {
       userAvatars.push(buffer)
     })
   }
 
-  const fetchedImages = await Utils.getImage(e)
+  const fetchedImages = await Utils.Common.getImage(e)
   messageImages.push(...fetchedImages)
 
   /**
    * 特殊处理：当 min_images === 1 时，因没有多余的图片，表情保护功能会失效
    */
   if (min_images === 1 && messageImages.length === 0) {
-    const triggerAvatar = await Utils.getAvatar([e.user_id])
+    const triggerAvatar = await Utils.Common.getAvatar([e.user_id])
     if (triggerAvatar[0]) {
       userAvatars.push(triggerAvatar[0])
     }
   }
 
   if (messageImages.length + userAvatars.length < min_images) {
-    const triggerAvatar = await Utils.getAvatar([e.user_id])
+    const triggerAvatar = await Utils.Common.getAvatar([e.user_id])
     if (triggerAvatar[0]) {
       userAvatars.unshift(triggerAvatar[0])
     }
@@ -47,7 +47,7 @@ async function handleImages (e, memeKey, userText, min_images, max_images, allUs
   /**
    * 表情保护逻辑
    */
-  if (Config.protect.enable && (await Tools.isProtected(memeKey, Config.protect.list))) {
+  if (Config.protect.enable && (await Utils.Tools.isProtected(memeKey, Config.protect.list))) {
     if (!isMasterUser) {
       if (hasAtMaster || hasAtProtectedUser) {
         /**

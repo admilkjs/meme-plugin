@@ -1,4 +1,4 @@
-import Request from '../request.js'
+import { Utils } from '#models'
 import gitApi from './gitApi.js'
 import { formatCommitTime, parseCommitMessage } from './utils.js'
 
@@ -7,7 +7,7 @@ const commit = {
     try {
       const apiBase = await gitApi.getGitApi()
       const url = `${apiBase}/repos/${owner}/${repo}/commits/${branch}`
-      const commit = await Request.get(url)
+      const commit = await Utils.Request.get(url)
 
       const author = {
         login: commit.author?.login || '',

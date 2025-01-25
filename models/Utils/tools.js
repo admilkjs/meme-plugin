@@ -1,5 +1,5 @@
 import fs from 'node:fs/promises'
-import { Data, Version, Config } from '../components/index.js'
+import { Data, Version, Config } from '../../components/index.js'
 import Request from './request.js'
 
 const Tools = {
@@ -45,8 +45,6 @@ const Tools = {
     }
   },
 
-
-
   /**
    * 获取表情包请求的基础 URL
    * @returns {Promise<string>} - 返回表情包基础 URL
@@ -61,10 +59,8 @@ const Tools = {
       return this.baseUrl
     }
 
-    this.baseUrl = 'https://meme.wuliya.cn'
-    return this.baseUrl
+    return this.baseUrl = 'https://meme.wuliya.cn'
   },
-
 
   /**
    * 加载表情包数据
@@ -75,29 +71,16 @@ const Tools = {
     if (this.loaded) {
       return
     }
-
-    try {
-      if (!Config.meme.url) {
-        if (!(await this.fileExistsAsync('data/meme.json'))) {
-          await this.downloadMemeData()
-        }
-        this.infoMap = await Data.readJSON('data/meme.json')
-      } else {
-        if (!(await this.fileExistsAsync('data/custom/meme.json'))) {
-          await this.generateMemeData()
-        }
-        this.infoMap = await Data.readJSON('data/custom/meme.json')
-      }
-
-      if (!this.infoMap || typeof this.infoMap !== 'object') {
-        logger.error('加载表情包详情失败')
-        return
-      }
-
-      this.loaded = true
-    } catch (error) {
-      logger.error(`加载表情包数据出错: ${error.message}`)
+    if (!(await this.fileExistsAsync('data/meme.json'))) {
+      await this.generateMemeData()
     }
+    this.infoMap = await Data.readJSON('data/meme.json')
+
+    if (!this.infoMap || typeof this.infoMap !== 'object') {
+      return
+    }
+
+    this.loaded = true
   },
 
   /**
@@ -143,37 +126,14 @@ const Tools = {
   },
 
   /**
-   * 下载远程表情包数据
-   * @param {boolean} forceUpdate - 是否强制更新数据
-   * @returns {Promise<void>}
-   */
-  async downloadMemeData (forceUpdate = false) {
-    try {
-      const filePath = `${Version.Plugin_Path}/data/meme.json`
-      await Data.createDir('data')
-      if (await this.fileExistsAsync(filePath) && !forceUpdate) {
-        return
-      }
-      if (forceUpdate && await this.fileExistsAsync(filePath)) {
-        await fs.unlink(filePath)
-      }
-      const response = await Request.get('https://pan.wuliya.cn/d/Yunzai-Bot/data/meme.json')
-      await Data.writeJSON('data/meme.json', response)
-    } catch (error) {
-      logger.error(`下载远程表情包数据失败: ${error.message}`)
-      throw error
-    }
-  },
-
-  /**
    * 生成本地表情包数据
    * @param {boolean} forceUpdate - 是否强制更新数据
    * @returns {Promise<void>}
    */
   async generateMemeData (forceUpdate = false) {
     try {
-      const filePath = `${Version.Plugin_Path}/data/custom/meme.json`
-      await Data.createDir('data/custom', '', false)
+      const filePath = `${Version.Plugin_Path}/data/meme.json`
+      await Data.createDir('data', '', false)
       if (await this.fileExistsAsync(filePath) && !forceUpdate) {
         return
       }
@@ -183,7 +143,7 @@ const Tools = {
 
       const baseUrl = await this.getBaseUrl()
       if (!baseUrl) {
-        throw new Error('无法获取基础URL')
+        throw new Error('无法获取表情包请求基础路径')
       }
       const keysResponse = await Request.get(`${baseUrl}/memes/keys`)
       const memeData = {}
@@ -273,8 +233,6 @@ const Tools = {
       .filter((text) => text)
     return `[${helpTexts.join('][')}]`
   },
-
-
 
   /**
    * 获取指定表情包的关键字

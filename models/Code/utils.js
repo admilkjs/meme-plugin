@@ -1,4 +1,3 @@
-// utils.js
 export const formatCommitTime = (commitDate) => {
   return new Date(commitDate).toLocaleString('zh-CN', {
     timeZone: 'Asia/Shanghai',

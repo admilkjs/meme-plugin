@@ -1,6 +1,5 @@
 import _ from 'lodash'
-import Tools from '../tools.js'
-import Utils from '../utils.js'
+import { Utils } from '#models'
 
 async function handleArgs (e, memeKey, userText, allUsers, formData) {
   const argsMatches = userText.match(/#([^#]+)/g)
@@ -19,7 +18,7 @@ async function handle (e, key, allUsers, args) {
   }
 
   let argsObj = {}
-  const paramsInfo = Tools.getParams(key)
+  const paramsInfo = Utils.Tools.getParams(key)
   const { args_type } = paramsInfo
   const { parser_options } = args_type
 
@@ -49,8 +48,8 @@ async function handle (e, key, allUsers, args) {
   argsObj = argMap
 
   const userInfos = [{
-    text: await Utils.getNickname(allUsers[0] || e.sender.user_id , e),
-    gender: await Utils.getGender(allUsers[0] || e.sender.user_id, e)
+    text: await Utils.Common.getNickname(allUsers[0] || e.sender.user_id , e),
+    gender: await Utils.Common.getGender(allUsers[0] || e.sender.user_id, e)
   }]
 
   const result = {

@@ -1,4 +1,4 @@
-import { Utils, Tools } from '#models'
+import { Utils } from '#models'
 import { Config } from '#components'
 import FormData from 'form-data'
 import { handleArgs, handle } from './args.js'
@@ -41,9 +41,9 @@ async function make (e, memeKey, min_texts, max_texts, min_images, max_images, d
       }
     }
     const endpoint = `memes/${memeKey}/`
-    const result = await Tools.request(endpoint, formData, 'POST', 'arraybuffer')
+    const result = await Utils.Tools.request(endpoint, formData, 'POST', 'arraybuffer')
 
-    const base64Image = await Utils.getImageBase64(result, true)
+    const base64Image = await Utils.Common.getImageBase64(result, true)
     await e.reply(segment.image(base64Image), Config.meme.reply)
 
     if (Config.stats.enable) {
@@ -52,7 +52,7 @@ async function make (e, memeKey, min_texts, max_texts, min_images, max_images, d
     }
     return true
   } catch (error) {
-    const errorMessage = await Utils.handleError(error)
+    const errorMessage = await Utils.Common.handleError(error)
     await e.reply(`[清语表情]生成表情包失败, 状态码: ${error.status}, 错误信息: ${errorMessage}`)
   }
 }

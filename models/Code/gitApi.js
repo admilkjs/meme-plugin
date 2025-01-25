@@ -1,8 +1,8 @@
-import Tools from '../tools.js'
+import { Utils } from '#models'
 
 const gitApi = {
   async getGitApi () {
-    const isAbroad = await Tools.isAbroad()
+    const isAbroad = await Utils.Tools.isAbroad()
     return isAbroad ? 'https://api.github.com' : 'https://gh.wuliya.xin/https://api.github.com'
   }
 }

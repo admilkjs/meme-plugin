@@ -110,11 +110,7 @@ export class update extends plugin {
     }
 
     try {
-      if (!Config.meme.url) {
-        await Tools.downloadMemeData(true)
-      } else {
-        await Tools.generateMemeData(true)
-      }
+      await Tools.generateMemeData(true)
 
       Tools.loaded = false
       await Tools.load()

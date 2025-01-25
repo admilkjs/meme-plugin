@@ -1,6 +1,6 @@
 import { exec } from 'child_process'
 import util from 'util'
-import { Version } from '../../components/index.js'
+import { Version } from '#components'
 
 const execPromise = util.promisify(exec)
 

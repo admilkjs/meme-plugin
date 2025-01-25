@@ -13,10 +13,10 @@ async function handleTexts (e, userText, min_texts, max_texts, default_texts, al
   if (finalTexts.length === 0 && Config.meme.userName) {
     if (allUsers.length >= 1) {
       const User = allUsers[0]
-      const Nickname = await Utils.getNickname(User, e)
+      const Nickname = await Utils.Common.getNickname(User, e)
       finalTexts.push(Nickname)
     } else {
-      const Nickname = await Utils.getNickname(e.sender.user_id, e)
+      const Nickname = await Utils.Common.getNickname(e.sender.user_id, e)
       finalTexts.push(Nickname)
     }
   }

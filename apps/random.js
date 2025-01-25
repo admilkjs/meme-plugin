@@ -1,4 +1,4 @@
-import { Meme, Tools } from '#models'
+import { Meme, Utils } from '#models'
 import { Config } from '#components'
 
 export class random extends plugin {
@@ -19,7 +19,7 @@ export class random extends plugin {
   async random (e) {
     if (!Config.meme.Enable) return false
     try {
-      const memeKeys = Object.keys(Tools.getInfoMap())
+      const memeKeys = Object.keys(Utils.Tools.getInfoMap())
       if (memeKeys.length === 0) {
         return true
       }
@@ -44,7 +44,7 @@ export class random extends plugin {
 
       await Meme.make(e, memeKey, min_texts, max_texts, min_images, max_images, default_texts, args_type, '')
     } catch (error) {
-      const errorMessage = await Utils.handleError(error)
+      const errorMessage = await Utils.Common.handleError(error)
       await e.reply(`[清语表情]生成随机表情包失败, 状态码: ${error.status}, 错误信息: ${errorMessage}`)
     }
   }

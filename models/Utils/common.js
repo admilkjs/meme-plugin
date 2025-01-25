@@ -1,9 +1,9 @@
-import fs from 'node:fs'
+import fs from 'node:fs/promises'
 import { Version, Data } from '#components'
 import Request from './request.js'
 import Tools from './tools.js'
 
-const Utils = {
+const Common = {
 
   /**
    * 获取图片 Buffer
@@ -94,25 +94,25 @@ const Utils = {
 
       try {
         if (await Tools.fileExistsAsync(cachePath)) {
-          const localStats = fs.statSync(cachePath)
+          const localStats = await fs.stat(cachePath)
           const remoteHeaders = await Request.head(avatarUrl)
           const remoteLastModified = new Date(remoteHeaders['last-modified'])
           const localLastModified = localStats.mtime
 
           if (localLastModified >= remoteLastModified) {
-            return fs.readFileSync(cachePath)
+            return await fs.readFile(cachePath)
           }
         }
 
         const buffer = await Request.get(avatarUrl, {}, 'arraybuffer')
         if (buffer && Buffer.isBuffer(buffer)) {
-          fs.writeFileSync(cachePath, buffer)
+          await fs.writeFile(cachePath, buffer)
           return buffer
         } else {
-          return fs.readFileSync(defaultAvatarPath)
+          return await fs.readFile(defaultAvatarPath)
         }
       } catch (error) {
-        return fs.readFileSync(defaultAvatarPath)
+        return await fs.readFile(defaultAvatarPath)
       }
     }
 
@@ -149,6 +149,7 @@ const Utils = {
       return '未知'
     }
   },
+
   /**
    * 获取用户性别
    *
@@ -179,7 +180,6 @@ const Utils = {
       return 'unknown'
     }
   },
-
 
   /**
    * 获取图片列表（包括消息和引用消息中的图片）
@@ -288,4 +288,4 @@ const Utils = {
 
 }
 
-export default Utils
+export default Common
