@@ -1,5 +1,5 @@
 import { Config } from '#components'
-import { Meme, Tools } from '#models'
+import { Meme, Utils } from '#models'
 
 export class meme extends plugin {
   constructor () {
@@ -23,7 +23,7 @@ export class meme extends plugin {
     const prefix = Config.meme.forceSharp ? '^#' : '^#?'
     const keywords = []
 
-    Object.entries(Tools.getInfoMap()).forEach(([key, value]) => {
+    Object.entries(Utils.Tools.getInfoMap()).forEach(([key, value]) => {
       value.keywords.forEach((keyword) => {
         const escapedKeyword = keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
         keywords.push(escapedKeyword)
@@ -59,7 +59,7 @@ export class meme extends plugin {
 
     if (!matchedKeyword) return true
 
-    const memeKey = await Tools.getKey(matchedKeyword)
+    const memeKey = await Utils.Tools.getKey(matchedKeyword)
 
     if (!memeKey) {
       return true
@@ -83,12 +83,12 @@ export class meme extends plugin {
     /**
      * 禁用表情列表
      */
-    if (Config.access.blackListEnable && await Tools.isBlacklisted(matchedKeyword)) {
+    if (Config.access.blackListEnable && await Utils.Tools.isBlacklisted(matchedKeyword)) {
       logger.info('[清语表情]该表情为禁用表情, 跳过生成')
       return false
     }
 
-    const params = Tools.getParams(memeKey)
+    const params = Utils.Tools.getParams(memeKey)
     if (!params) {
       return true
     }

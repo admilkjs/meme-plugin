@@ -1,5 +1,5 @@
 import { Config } from '#components'
-import { Utils, Tools } from '#models'
+import { Utils } from '#models'
 
 export class info extends plugin {
   constructor () {
@@ -24,8 +24,8 @@ export class info extends plugin {
     if (!match) return
 
     const keyword = match[2]
-    const memeKey = Tools.getKey(keyword)
-    const memeDetails = memeKey ? Tools.getInfo(memeKey) : null
+    const memeKey = Utils.Tools.getKey(keyword)
+    const memeDetails = memeKey ? Utils.Tools.getInfo(memeKey) : null
 
     if (!memeKey || !memeDetails) {
       await e.reply('未找到相关表情包详情', true)
@@ -43,11 +43,11 @@ export class info extends plugin {
 
     let argsHint = '[无]'
     if (args_type != null) {
-      argsHint = await Tools.descriptions(memeKey)
+      argsHint = await Utils.Tools.descriptions(memeKey)
     }
 
     const aliases = memeDetails.keywords ? memeDetails.keywords.map(keyword => `[${keyword}]`).join('') : '[无]'
-    const previewUrl = await Tools.getPreviewUrl(memeKey)
+    const previewUrl = await Utils.Tools.getPreviewUrl(memeKey)
 
     let previewImageBase64 = ''
     try {

@@ -1,5 +1,5 @@
 import { Render, Config } from '../components/index.js'
-import { Tools } from '../models/index.js'
+import { Utils } from '../models/index.js'
 
 export class stats extends plugin {
   constructor () {
@@ -28,7 +28,7 @@ export class stats extends plugin {
       const count = parseInt(await redis.get(key)) || 0
       total += count
 
-      const keywords = await Tools.getKeywords(memeKey)
+      const keywords = await Utils.Tools.getKeywords(memeKey)
       if (!keywords || keywords.length === 0) continue
 
       const keywordsString = keywords.join(', ')

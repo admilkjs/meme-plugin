@@ -1,6 +1,6 @@
 import { Version, Config, Render } from '#components'
 import { update as Update } from '../../other/update.js'
-import { Tools, Code } from '#models'
+import { Utils, Code } from '#models'
 import { meme } from './meme.js'
 import pluginsLoader from '../../../lib/plugins/loader.js'
 
@@ -110,10 +110,10 @@ export class update extends plugin {
     }
 
     try {
-      await Tools.generateMemeData(true)
+      await Utils.Tools.generateMemeData(true)
 
-      Tools.loaded = false
-      await Tools.load()
+      Utils.Tools.loaded = false
+      await Utils.Tools.load()
       const Plugin = new meme()
       const pluginName = Plugin.name
       const pluginKey = pluginsLoader.priority.find((p) => {

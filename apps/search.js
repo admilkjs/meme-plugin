@@ -1,5 +1,5 @@
 import { Config } from '../components/index.js'
-import { Tools } from '../models/index.js'
+import { Utils } from '../models/index.js'
 
 export class search extends plugin {
   constructor () {
@@ -18,14 +18,14 @@ export class search extends plugin {
     if (!Config.meme.Enable) return false
     try {
       const match = e.msg.match(this.rule[0].reg)
-      const keyword = match[2]?.trim()
+      const keyword = match[2].trim()
 
       if (!keyword) {
         await e.reply('请提供搜索的表情关键字', true)
         return true
       }
 
-      const infoMap = Tools.getInfoMap()
+      const infoMap = Utils.Tools.getInfoMap()
       if (!infoMap) {
         await e.reply('表情数据未加载，请稍后重试', true)
         return true
@@ -51,7 +51,6 @@ export class search extends plugin {
         return true
       }
 
-      // 去重并排序
       const uniqueResults = [...new Set(results)].sort()
       const replyMessage = uniqueResults
         .map((kw, index) => `${index + 1}. ${kw}`)

@@ -1,5 +1,5 @@
 import { Config, Render } from '#components'
-import { Tools } from '#models'
+import { Utils } from '#models'
 
 export class list extends plugin {
   constructor () {
@@ -19,7 +19,7 @@ export class list extends plugin {
   async list (e) {
     if (!Config.meme.Enable) return false
     try {
-      const infoMap = Tools.getInfoMap() || {}
+      const infoMap = Utils.Tools.getInfoMap()
       const keys = Object.keys(infoMap)
 
       if (!keys.length) {
@@ -29,7 +29,7 @@ export class list extends plugin {
 
       const emojiList = keys.flatMap(key => {
         const emoji = infoMap[key]
-        const { min_texts, min_images, args_type } = emoji.params_type || {}
+        const { min_texts, min_images, args_type } = emoji.params_type
 
         const types = []
         if (min_texts >= 1) types.push('text')
