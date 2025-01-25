@@ -1,5 +1,5 @@
 
-# <center>清语表情</center>
+# <h1 align="center">清语表情</h1>
 
 ![清语表情](https://count.kjchmc.cn/get/@clarity-meme?theme=moebooru)<br>
 [![Github](https://img.shields.io/badge/Github-清语表情-black?style=flat-square&logo=github)](https://github.com/ClarityJS/meme-plugin) [![云崽bot](https://img.shields.io/badge/云崽-v3.0.0-black?style=flat-square&logo=dependabot)](https://gitee.com/Le-niao/Yunzai-Bot) [![Q群](https://img.shields.io/badge/group-272040396-blue)](https://qm.qq.com/q/gBs8Ri3nIQ)<br>
