@@ -22,7 +22,7 @@ const Render = {
     path = path.replace(/.html$/, '')
     const savePath = `/${path.replace('html/', '')}`
     const data = {
-      _Plugin_name: Version.Plugin_Name,
+      _Plugin_AliasName: `${Version.Plugin_AliasName}`,
       _res_path: `${Version.Plugin_Path}/resources`.replace(/\\/g, '/'),
       _layout_path: `${Version.Plugin_Path}/resources/common/layout/`.replace(/\\/g, '/'),
       defaultLayout: `${Version.Plugin_Path}/resources/common/layout/default.html`.replace(/\\/g, '/'),
