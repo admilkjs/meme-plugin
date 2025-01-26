@@ -1,16 +1,16 @@
-
 # <h1 align="center">清语表情</h1>
 
 <div align="center">
 <img src="https://count.kjchmc.cn/get/@clarity-meme?theme=moebooru" alt="清语表情">
 
 <a href="https://github.com/ClarityJS/meme-plugin"><img src="https://img.shields.io/badge/Github-清语表情-black?style=flat-square&logo=github" alt="Github"></a><a href="https://gitee.com/Le-niao/Yunzai-Bot"><img src="https://img.shields.io/badge/云崽-v3.0.0-black?style=flat-square&logo=dependabot" alt="Gitee"></a><a href="https://qm.qq.com/q/gBs8Ri3nIQ"><img src="https://img.shields.io/badge/group-272040396-blue" alt="Gitee"></a>
+
 </div>
 
 ## 介绍 📝
-`清语表情` 是一个 `Yunzai-Bot` | `Karin` (暂未完成) 的扩展插件，提供表情包合成等功能 🤖
+`清语表情` 是一个 `Yunzai-Bot` | `Karin` (暂未完成) 的扩展插件，提供表情包合成等功能。
 
-如有问题请提交 `issue` 或加入 Q 群: `272040396` 📬<br>
+如有问题请提交 `issue` 或加入 Q 群: `272040396` 📬
 
 ## 安装与更新 🔧
 
@@ -45,19 +45,16 @@ git clone --depth=1 https://gh.wuliya.xin/https://github.com/ClarityJS/meme-plug
 </details>
 
 <details>
-  <summary><code>Karin</code> (暂未完成) 🛠</summary>
+  <summary><code>Karin</code> (暂未完成) 🤖</summary>
   <mark>暂未完成</mark>
 </details>
 
 ### 安装依赖 📦
-<details>
-
 ```bash
-pnpm install --filter=clarity-meme
+pnpm install --filter=meme-plugin
 ```
-</details>
 
-## 使用帮助 🚀
+## 使用帮助 ℹ️
 其他内容请查看 [官方文档](https://docs.wuliya.cn)
 
 ### 表情后端搭建教程 🌟
