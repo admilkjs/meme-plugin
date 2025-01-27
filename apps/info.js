@@ -18,17 +18,16 @@ export class info extends plugin {
 
   async info (e) {
     if (!Config.meme.Enable) return false
-
-    const message = (e?.msg || '').trim()
+    const message = (e.msg || '').trim()
     const match = message.match(this.rule[0].reg)
     if (!match) return
 
     const keyword = match[2]
     const memeKey = Utils.Tools.getKey(keyword)
-    const memeDetails = memeKey ? Utils.Tools.getInfo(memeKey) : null
+    const memeParams = Utils.Tools.getParams(memeKey)
 
-    if (!memeKey || !memeDetails) {
-      await e.reply('未找到相关表情包详情', true)
+    if (!memeKey || !memeParams) {
+      await e.reply('未找到相关表情包详情, 请稍后再试', true)
       return true
     }
 
@@ -36,45 +35,36 @@ export class info extends plugin {
       min_texts = 0,
       max_texts = 0,
       min_images = 0,
-      max_images = 0,
-      default_texts = [],
-      args_type = {}
-    } = memeDetails.params_type
+      max_images = 0
+    } = memeParams
 
-    let argsHint = '[无]'
-    if (args_type != null) {
-      argsHint = await Utils.Tools.descriptions(memeKey)
-    }
+    const argsdesc = Utils.Tools.descriptions(memeKey)
+    const alias = Utils.Tools.getKeywords(memeKey).map(text => `[${text}]`).join('') || '[无]'
 
-    const aliases = memeDetails.keywords ? memeDetails.keywords.map(keyword => `[${keyword}]`).join('') : '[无]'
-    const previewUrl = await Utils.Tools.getPreviewUrl(memeKey)
-
-    let previewImageBase64 = ''
+    let previewImageBase64
     try {
-      const base64Data = await Utils.Common.getImageBase64(previewUrl, true)
-      previewImageBase64 = base64Data
-    } catch (error) {
-      previewImageBase64 = '预览图片加载失败'
+      const previewUrl = await Utils.Tools.getPreviewUrl(memeKey)
+      previewImageBase64 = await Utils.Common.getImageBase64(previewUrl, true)
+    } catch {
+      previewImageBase64 = false
     }
+    const defText = (Utils.Tools.getDeftext(memeKey).map(default_texts => `[${default_texts}]`).join('')) || '[无]'
 
-    const defText = default_texts && default_texts.length > 0
-      ? default_texts.map(text => `[${text}]`).join('')
-      : '[无]'
-
+    const tags = (Utils.Tools.getTags(memeKey)) || '[无]'
 
     const replyMessage = [
       `名称: ${memeKey}\n`,
-      `别名: ${aliases}\n`,
+      `别名: ${alias}\n`,
       `最大图片数量: ${max_images}\n`,
       `最小图片数量: ${min_images}\n`,
       `最大文本数量: ${max_texts}\n`,
       `最小文本数量: ${min_texts}\n`,
-      `默认文本: ${defText}`
+      `默认文本: ${defText}\n`,
+      `标签: ${tags}`
     ]
 
-
-    if (argsHint) {
-      replyMessage.push(`\n描述/可选参数:\n${argsHint}`)
+    if (argsdesc) {
+      replyMessage.push(`\n可选参数:\n${argsdesc}`)
     }
 
     if (previewImageBase64) {
@@ -82,7 +72,7 @@ export class info extends plugin {
       replyMessage.push(segment.image(previewImageBase64))
     } else {
       replyMessage.push('\n预览图片:\n')
-      replyMessage.push(previewImageBase64)
+      replyMessage.push('预览图片加载失败')
     }
 
     await e.reply(replyMessage, true)

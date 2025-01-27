@@ -19,7 +19,13 @@ async function make (e, memeKey, min_texts, max_texts, min_images, max_images, d
     /**
      * 处理参数类型
      */
-    if (args_type != null) userText = await handleArgs(e, memeKey, userText, allUsers, formData)
+    if (args_type != null) {
+      const args = await handleArgs(e, memeKey, userText, allUsers, formData)
+      if (args.success === false) {
+        return e.reply(`该表情${args.message}`, true)
+      }
+      userText = args.text
+    }
     /**
      * 处理图片类型
      */
@@ -35,7 +41,7 @@ async function make (e, memeKey, min_texts, max_texts, min_images, max_images, d
      * 处理文字类型
      */
     if (max_texts != 0){
-      let finalTexts = await handleTexts(e, userText, min_texts, max_texts, default_texts, allUsers, formData)
+      let finalTexts = await handleTexts(e, memeKey, userText, min_texts, max_texts, default_texts, allUsers, formData)
       if (!finalTexts) {
         return e.reply(`该表情至少需要 ${min_texts} 个文字描述`, true)
       }

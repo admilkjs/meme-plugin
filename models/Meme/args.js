@@ -2,62 +2,71 @@ import _ from 'lodash'
 import { Utils } from '#models'
 
 async function handleArgs (e, memeKey, userText, allUsers, formData) {
-  const argsMatches = userText.match(/#([^#]+)/g)
+  const argsMatches = userText.match(/#(\S+)\s+([^#]+)/g)
+  const argsArray = {}
+
   if (argsMatches) {
-    const argsArray = argsMatches.map(arg => arg.slice(1).trim())
+    for (const match of argsMatches) {
+      const [_, key, value] = match.match(/#(\S+)\s+([^#]+)/)
+      argsArray[key] = value.trim()
+    }
     const argsString = await handle(e, memeKey, allUsers, argsArray)
+    if (argsString.success === false) {
+      return {
+        success: argsString.success,
+        message: argsString.message
+      }
+    }
     formData.append('args', argsString)
   }
-  const Text = userText.replace(/#([^#]+)/g, '').trim()
-  return Text
+
+  return {
+    text: userText.replace(/#(\S+)\s+([^#]+)/g, '').trim()
+  }
 }
 
 async function handle (e, key, allUsers, args) {
   if (!args) {
-    args = []
+    args = {}
   }
 
-  let argsObj = {}
   const paramsInfo = Utils.Tools.getParams(key)
-  const { args_type } = paramsInfo
-  const { parser_options } = args_type
+  const properties = paramsInfo.args_type.args_model.properties
 
-  const argMap = {}
+  const validArgs = {}
+  for (const [argName, config] of Object.entries(properties)) {
+    validArgs[argName] = config
+  }
 
-  for (let i = 0; i < parser_options.length; i++) {
-    const option = parser_options[i]
-    const argName = option.args ? option.args[0].name : null
-    const defaultValue = option.args && option.args[0].default !== undefined ? option.args[0].default : null
-    let argValue = null
-
-    if (args[i]) {
-      argValue = args[i]
-    } else if (defaultValue !== null) {
-      argValue = defaultValue
-    } else if (option.action && option.action.type === 0) {
-      argValue = option.action.value
+  const argsObj = {}
+  for (const [argName, argValue] of Object.entries(args)) {
+    const argConfig = validArgs[argName]
+    if (!argConfig) {
+      return {
+        success: false,
+        message: `参数名 ${argName} 不存在`
+      }
     }
 
-    if (argValue !== null && argName) {
-      argMap[argName] = argValue
-    } else if(argValue !== null && option.dest){
-      argMap[option.dest] = argValue
+    if (argConfig.type === 'integer') {
+      const intValue = parseInt(argValue)
+      argsObj[argName] = intValue
+    } else {
+      argsObj[argName] = argValue
     }
   }
 
-  argsObj = argMap
+  const userInfos = [
+    {
+      text: await Utils.Common.getNickname(allUsers[0] || e.sender.user_id, e),
+      gender: await Utils.Common.getGender(allUsers[0] || e.sender.user_id, e)
+    }
+  ]
 
-  const userInfos = [{
-    text: await Utils.Common.getNickname(allUsers[0] || e.sender.user_id , e),
-    gender: await Utils.Common.getGender(allUsers[0] || e.sender.user_id, e)
-  }]
-
-  const result = {
+  return JSON.stringify({
     user_infos: userInfos,
     ...argsObj
-  }
-
-  return JSON.stringify(result)
+  })
 }
 
 export { handleArgs, handle }

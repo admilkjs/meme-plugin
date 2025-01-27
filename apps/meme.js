@@ -18,19 +18,10 @@ export class meme extends plugin {
     if (this.rulesInitialized) {
       return
     }
-
-    this.rule = this.rule.filter((r) => r.fnc !== 'meme')
     const prefix = Config.meme.forceSharp ? '^#' : '^#?'
-    const keywords = []
-
-    Object.entries(Utils.Tools.getInfoMap()).forEach(([key, value]) => {
-      value.keywords.forEach((keyword) => {
-        const escapedKeyword = keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-        keywords.push(escapedKeyword)
-      })
-    })
-
-    const keywordsRegex = `(${keywords.join('|')})`
+    const keywords = Utils.Tools.getAllKeywords()
+    const escapedKeywords = keywords.map((keyword) => keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
+    const keywordsRegex = `(${escapedKeywords.join('|')})`
     const regex = new RegExp(`${prefix}${keywordsRegex}(.*)`, 'i')
 
     this.rule.push({
@@ -40,6 +31,7 @@ export class meme extends plugin {
 
     this.rulesInitialized = true
   }
+
 
 
   async meme (e) {

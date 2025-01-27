@@ -189,6 +189,36 @@ const Tools = {
     }
     return null
   },
+  /**
+   * 获取指定表情包的关键字
+   * @param {string} memeKey - 表情包的唯一标识符
+   * @returns {Array<string>|null} - 返回表情包关键字数组或 null
+   */
+  getKeywords (memeKey) {
+    const memeKeywords = this.infoMap[memeKey].keywords
+    return memeKeywords
+  },
+
+  /**
+   * 获取所有的关键词
+   * @returns {Array<string>} - 返回包含所有关键词的数组
+   */
+  getAllKeywords () {
+    const keywords = Object.values(this.infoMap)
+      .flatMap(info => info.keywords || [])
+    return Array.from(new Set(keywords))
+  },
+
+  /**
+     * 获取所有的 key
+     * @returns {Array<string>} - 返回所有的表情包 key 的数组
+     */
+  getAllKeys () {
+    if (!this.infoMap) {
+      return []
+    }
+    return Object.keys(this.infoMap)
+  },
 
   /**
    * 获取表情包的参数类型
@@ -197,9 +227,6 @@ const Tools = {
    */
   getParams (memeKey) {
     const memeInfo = this.getInfo(memeKey)
-    if (!memeInfo || !memeInfo.params_type) {
-      return null
-    }
     const { min_texts, max_texts, min_images, max_images, default_texts, args_type } = memeInfo.params_type
     return {
       min_texts,
@@ -211,36 +238,46 @@ const Tools = {
     }
   },
   /**
-   * 获取指定 key 的描述信息，优先使用自定义描述，否则使用默认描述。
+   * 获取指定 key 的描述信息
    * @param {string} key - 需要获取描述的 key。
-   * @returns {string} - 返回描述信息，格式为 "[描述1][描述2]..."。
+   * @returns {string} - 返回描述信息，格式为 "[参数描述1][参数描述2]..."。
    */
   descriptions (key) {
-    if (Config.custom.descriptions) {
-      const custom = Config.custom.descriptions.find(
-        (item) => item.key === key
-      )
-      if (custom) {
-        return custom.desc.map(desc => `[${desc}]`).join('')
-      }
+    const { args_type } = this.getParams(key)
+    if (args_type == null) {
+      return ''
     }
+    const properties = args_type.args_model.properties || {}
 
+    const descriptions = Object.entries(properties)
+      .filter(([paramName]) => paramName !== 'user_infos')
+      .map(([paramName, paramInfo]) => {
+        const description = paramInfo.description || paramInfo.title || ''
+        if (description) {
+          return `[${paramName}: ${description}]`
+        }
+        return null
+      })
+      .filter((text) => text !== null)
+
+    return descriptions.join('')
+  },
+  /**
+   * 获取对应表情的表情
+   * @param {string} key
+   * @returns 返回对应表情, 格式为[标签1][标签2]
+   */
+  getTags (key) {
     const info = this.getInfo(key)
-    const parserOptions = info.params_type.args_type.parser_options || []
-    const helpTexts = parserOptions
-      .map((option) => option.help_text)
-      .filter((text) => text)
-    return `[${helpTexts.join('][')}]`
+    return (info.tags || []).map(tag => `[${tag}]`).join('')
   },
 
   /**
-   * 获取指定表情包的关键字
-   * @param {string} memeKey - 表情包的唯一标识符
-   * @returns {Array<string>|null} - 返回表情包关键字数组或 null
+   * 获取对应表情的默认文本
    */
-  getKeywords (memeKey) {
-    const memeInfo = this.infoMap?.[memeKey]
-    return memeInfo?.keywords || null
+  getDeftext (key) {
+    const info = this.getInfo(key)
+    return info.params_type.default_texts
   },
 
   /**

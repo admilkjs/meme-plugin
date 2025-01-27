@@ -1,6 +1,0 @@
-## 自定义描述
-## name: 表情的键值
-## description: 表情的描述
-descriptions:
-  - key: test
-    desc: '这是一个测试描述'

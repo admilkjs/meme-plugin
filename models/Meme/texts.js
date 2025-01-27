@@ -1,7 +1,7 @@
 import { Config } from '#components'
 import { Utils } from '#models'
 
-async function handleTexts (e, userText, min_texts, max_texts, default_texts, allUsers, formData) {
+async function handleTexts (e, memeKey, userText, min_texts, max_texts, default_texts, allUsers, formData) {
 
   let finalTexts = []
 
@@ -26,9 +26,10 @@ async function handleTexts (e, userText, min_texts, max_texts, default_texts, al
     default_texts &&
     default_texts.length > 0
   ) {
+    const defaultTexts = Utils.Tools.getDeftext(memeKey)
     while (finalTexts.length < min_texts) {
-      const randomIndex = Math.floor(Math.random() * default_texts.length)
-      finalTexts.push(default_texts[randomIndex])
+      const randomIndex = Math.floor(Math.random() * defaultTexts.length)
+      finalTexts.push(defaultTexts[randomIndex])
     }
   }
 
