@@ -210,9 +210,6 @@ const Tools = {
      * @returns {Array<string>} - 返回所有的表情包 key 的数组
      */
   getAllKeys () {
-    if (!this.infoMap) {
-      return []
-    }
     return Object.keys(this.infoMap)
   },
 

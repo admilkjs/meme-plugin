@@ -7,7 +7,7 @@ import { join, dirname, basename } from 'path'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
-const Path = process.cwd()
+const Path = process.cwd().replace(/\\/g, '/')
 const Plugin_Path = join(__dirname, '..').replace(/\\/g, '/')
 const Plugin_Name = basename(Plugin_Path)
 
@@ -18,12 +18,18 @@ let changelogs = []
 let currentVersion = ''
 const versionCount = 3
 
-const getLine = (line) => {
+function getLine (line) {
+  const patterns = [
+    { regex: new RegExp('\\s*`([^`]+)`', 'g'), replacement: '<span class="cmd">$1</span>' },
+    { regex: new RegExp('\\*\\*\\s*([^*]+)\\s*\\*\\*', 'g'), replacement: '<span class="strong">$1</span>' },
+    { regex: new RegExp('\\(\\[([^\\]]+)\\]\\(([^)]+)\\)\\)', 'g'), replacement: '<span class="link">$1</span>' }
+  ]
+
+  patterns.forEach(({ regex, replacement }) => {
+    line = line.replace(regex, replacement)
+  })
+
   return line
-    .replace(/^\s*[\*\-]\s*/, '')
-    .replace(/\s*`([^`]+)`/g, '<span class="cmd">$1</span>')
-    .replace(/\*\*([^*]+)\*\*/g, '<span class="strong">$1</span>')
-    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<span class="link">$1</span>')
 }
 const CHANGELOG_path = `${Plugin_Path}/CHANGELOG.md`
 
