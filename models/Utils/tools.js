@@ -49,10 +49,6 @@ const Tools = {
    * @returns {Promise<string>} - 返回表情包基础 URL
    */
   async getBaseUrl () {
-    if (this.baseUrl) {
-      return this.baseUrl
-    }
-
     if (Config.meme.url) {
       this.baseUrl = Config.meme.url.replace(/\/+$/, '')
       return this.baseUrl
@@ -238,6 +234,31 @@ const Tools = {
     }
   },
   /**
+ * 获取指定表情包参数的类型
+ * @param {string} key - 表情包的唯一标识符
+ * @param {string} paramName - 参数名称
+ * @returns {string|null} - 返回参数的类型或 null
+ */
+  getParamType (key, paramName) {
+    const params = this.getParams(key)
+    const argsModel = params.args_type.args_model
+    const properties = argsModel.properties
+
+    if (properties[paramName]) {
+      const paramInfo = properties[paramName]
+      if (paramName === 'user_infos') {
+        return null
+      }
+
+      if (paramInfo.type) {
+        return paramInfo.type
+      }
+    }
+
+    return null
+  },
+
+  /**
    * 获取指定 key 的描述信息
    * @param {string} key - 需要获取描述的 key。
    * @returns {string} - 返回描述信息，格式为 "[参数描述1][参数描述2]..."。
@@ -269,7 +290,7 @@ const Tools = {
    */
   getTags (key) {
     const info = this.getInfo(key)
-    return (info.tags || []).map(tag => `[${tag}]`).join('')
+    return info.tags.map(tag => `[${tag}]`).join('')
   },
 
   /**

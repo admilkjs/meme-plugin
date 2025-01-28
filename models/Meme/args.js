@@ -10,6 +10,7 @@ async function handleArgs (e, memeKey, userText, allUsers, formData) {
       const [_, key, value] = match.match(/#(\S+)\s+([^#]+)/)
       argsArray[key] = value.trim()
     }
+
     const argsString = await handle(e, memeKey, allUsers, argsArray)
     if (argsString.success === false) {
       return {
@@ -30,25 +31,19 @@ async function handle (e, key, allUsers, args) {
     args = {}
   }
 
-  const paramsInfo = Utils.Tools.getParams(key)
-  const properties = paramsInfo.args_type.args_model.properties
-
-  const validArgs = {}
-  for (const [argName, config] of Object.entries(properties)) {
-    validArgs[argName] = config
-  }
-
   const argsObj = {}
+
   for (const [argName, argValue] of Object.entries(args)) {
-    const argConfig = validArgs[argName]
-    if (!argConfig) {
+    const paramType = Utils.Tools.getParamType(key, argName)
+
+    if (!paramType) {
       return {
         success: false,
         message: `参数名 ${argName} 不存在`
       }
     }
 
-    if (argConfig.type === 'integer') {
+    if (paramType === 'integer') {
       const intValue = parseInt(argValue)
       argsObj[argName] = intValue
     } else {
@@ -62,7 +57,6 @@ async function handle (e, key, allUsers, args) {
       gender: await Utils.Common.getGender(allUsers[0] || e.sender.user_id, e)
     }
   ]
-
   return JSON.stringify({
     user_infos: userInfos,
     ...argsObj

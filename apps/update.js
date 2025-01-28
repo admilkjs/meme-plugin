@@ -59,7 +59,7 @@ export class update extends plugin {
       logFnc: '[清语表情]自动更新]',
       msg: `#更新${Version.Plugin_Name}`,
       reply: async (msg) => {
-        const masters = Object.keys(cfg.master)
+        const masters = Object.keys(Config.masterQQ)
         for (const master of masters) {
           if (master.toString().length > 11) {
             logger.info('[清语表情] 更新推送跳过 QQBot')
@@ -196,7 +196,7 @@ export class update extends plugin {
 
         for (let qq of masterQQs) {
           try {
-            await Bot.pickUser(qq).sendMsg(img)
+            await Bot.pickFriend(qq).sendMsg(img)
             break
           } catch (sendError) {
             logger.info(`发送消息给 ${qq} 失败: ${sendError.message}`)
