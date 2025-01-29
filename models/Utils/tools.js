@@ -108,8 +108,7 @@ const Tools = {
    */
   async getPreviewUrl (memeKey) {
     if (!memeKey) {
-      logger.error('表情键值不能为空')
-      return null
+      throw new Error('表情键值不能为空')
     }
 
     try {

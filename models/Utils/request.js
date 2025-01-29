@@ -3,18 +3,26 @@ import axios from 'axios'
 import FormData from 'form-data'
 import axiosRetry from 'axios-retry'
 
-/**
- * 配置 Axios 重试机制
- */
-axiosRetry(axios, {
-  retries: Config.meme.retry,
-  retryDelay: () => 0,
-  retryCondition: (error) => {
-    return error.response && error.response.status === 500
-  }
-})
+class Request {
+  constructor () {
+    this.axiosInstance = axios.create({
+      headers: {
+        'User-Agent': Version.Plugin_Name
+      },
+      timeout: Config.meme.timeout * 1000,
+      proxy: false
+    })
 
-const Request = {
+    /**
+     * 重试机制
+     */
+    axiosRetry(this.axiosInstance, {
+      retries: Config.meme.retry,
+      retryDelay: () => 0,
+      retryCondition: (error) => error.response && error.response.status === 500
+    })
+  }
+
   /**
    * 通用请求方法
    * @param {string} url - 请求的 URL
@@ -28,12 +36,7 @@ const Request = {
     try {
       const options = {
         method: method.toUpperCase(),
-        url,
-        headers: {
-          'User-Agent': Version.Plugin_Name
-        },
-        timeout: Config.meme.timeout * 1000,
-        proxy: false
+        url
       }
 
       if (method.toUpperCase() === 'GET' || method.toUpperCase() === 'HEAD') {
@@ -52,7 +55,7 @@ const Request = {
         options.responseType = responseType
       }
 
-      const response = await axios(options)
+      const response = await this.axiosInstance(options)
 
       return responseType === 'arraybuffer' ? Buffer.from(response.data) : response.data
 
@@ -70,21 +73,21 @@ const Request = {
         }
       }
     }
-  },
+  }
 
   /**
    * GET 请求方法
    */
   async get (url, params = {}, responseType = null) {
     return await this.request(url, 'GET', params, responseType)
-  },
+  }
 
   /**
    * POST 请求方法
    */
   async post (url, params = {}, responseType = null) {
     return await this.request(url, 'POST', params, responseType)
-  },
+  }
 
   /**
    * HEAD 请求方法
@@ -94,4 +97,4 @@ const Request = {
   }
 }
 
-export default Request
+export default new Request()
