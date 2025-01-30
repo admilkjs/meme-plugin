@@ -132,8 +132,7 @@ export class update extends plugin {
         pluginInfo = new pluginKey.class()
       }
 
-      pluginInfo.rulesInitialized = false
-      pluginInfo.initRules()
+      pluginInfo.updateRegExp()
 
       if (!isTask && e) {
         await e.reply('表情包数据更新完成')
