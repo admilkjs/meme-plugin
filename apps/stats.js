@@ -17,7 +17,7 @@ export class stats extends plugin {
   }
 
   async stats (e) {
-    if (!Config.meme.Enable) return false
+    if (!Config.meme.enable) return false
     const keys = await redis.keys('Yz:clarity-meme:stats:*')
 
     let total = 0

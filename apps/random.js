@@ -17,7 +17,7 @@ export class random extends plugin {
   }
 
   async random (e) {
-    if (!Config.meme.Enable) return false
+    if (!Config.meme.enable) return false
     try {
       const memeKeys = Object.keys(Utils.Tools.getInfoMap())
       if (memeKeys.length === 0) {

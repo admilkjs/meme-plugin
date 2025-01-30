@@ -40,7 +40,10 @@ class Config {
   get masterQQ () {
     return cfg.masterQQ
   }
-
+  /** 服务设置 */
+  get server () {
+    return this.getDefOrConfig('server')
+  }
   /** 表情设置 */
   get meme () {
     return this.getDefOrConfig('meme')
@@ -145,14 +148,7 @@ class Config {
 
   /** 获取配置 Schema 映射 */
   getCfgSchemaMap () {
-    let ret = {}
-    _.forEach(cfgSchema, (cfgGroup) => {
-      _.forEach(cfgGroup.cfg, (cfgItem, cfgKey) => {
-        ret[cfgItem.key] = cfgItem
-        cfgItem.cfgKey = cfgKey
-      })
-    })
-    return ret
+    return cfgSchema
   }
 
   /** 获取所有配置 */
@@ -161,7 +157,8 @@ class Config {
       ...this.getDefOrConfig('other'),
       ...this.getDefOrConfig('meme'),
       ...this.getDefOrConfig('access'),
-      ...this.getDefOrConfig('protect')
+      ...this.getDefOrConfig('protect'),
+      ...this.getDefOrConfig('server')
     }
   }
 

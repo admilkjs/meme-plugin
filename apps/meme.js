@@ -66,7 +66,7 @@ export class meme extends plugin {
   }
 
   async meme (e) {
-    if (!Config.meme.Enable) return false
+    if (!Config.meme.enable) return false
 
     const message = e.msg.trim()
     const match = message.match(memeRegExp)

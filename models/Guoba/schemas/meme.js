@@ -4,7 +4,7 @@ export default [
     label: '表情设置'
   },
   {
-    field: 'meme.Enable',
+    field: 'meme.enable',
     label: '表情',
     component: 'Switch',
     bottomHelpMessage: '是否设置当前插件的表情功能为默认表情'

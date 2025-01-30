@@ -17,7 +17,7 @@ export class list extends plugin {
   }
 
   async list (e) {
-    if (!Config.meme.Enable) return false
+    if (!Config.meme.enable) return false
     try {
       const infoMap = Utils.Tools.getInfoMap()
       const keys = Object.keys(infoMap)
