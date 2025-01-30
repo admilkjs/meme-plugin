@@ -171,6 +171,7 @@ const Tools = {
    * @returns {object|null} - 返回表情包信息映射表
    */
   getInfoMap () {
+    if (!this.loaded) return
     return this.infoMap || null
   },
 
@@ -180,6 +181,7 @@ const Tools = {
    * @returns {object|null} - 返回表情包的信息或 null
    */
   getInfo (memeKey) {
+    if (!this.loaded) return
     return this.infoMap[memeKey] || null
   },
 
@@ -189,6 +191,7 @@ const Tools = {
    * @returns {string|null} - 返回对应的表情包键或 null
    */
   getKey (keyword) {
+    if (!this.loaded) return
     for (const [key, value] of Object.entries(this.infoMap)) {
       if (value.keywords.includes(keyword)) {
         return key
@@ -202,6 +205,7 @@ const Tools = {
    * @returns {Array<string>|null} - 返回表情包关键字数组或 null
    */
   getKeywords (memeKey) {
+    if (!this.loaded) return
     const memeKeywords = this.infoMap[memeKey].keywords
     return memeKeywords
   },
@@ -211,6 +215,7 @@ const Tools = {
    * @returns {Array<string>} - 返回包含所有关键词的数组
    */
   getAllKeywords () {
+    if (!this.loaded) return
     const keywords = Object.values(this.infoMap)
       .flatMap(info => info.keywords || [])
     return Array.from(new Set(keywords))
@@ -221,6 +226,7 @@ const Tools = {
      * @returns {Array<string>} - 返回所有的表情包 key 的数组
      */
   getAllKeys () {
+    if (!this.loaded) return
     return Object.keys(this.infoMap)
   },
 
@@ -230,6 +236,7 @@ const Tools = {
    * @returns {object|null} - 返回参数类型信息或 null
    */
   getParams (memeKey) {
+    if (!this.loaded) return
     const memeInfo = this.getInfo(memeKey)
     const { min_texts, max_texts, min_images, max_images, default_texts, args_type } = memeInfo.params_type
     return {
@@ -248,6 +255,7 @@ const Tools = {
  * @returns {string|null} - 返回参数的类型或 null
  */
   getParamType (key, paramName) {
+    if (!this.loaded) return
     const params = this.getParams(key)
     const argsModel = params.args_type.args_model
     const properties = argsModel.properties
@@ -272,6 +280,7 @@ const Tools = {
    * @returns {string} - 返回描述信息，格式为 "[参数描述1][参数描述2]..."。
    */
   descriptions (key) {
+    if (!this.loaded) return
     const { args_type } = this.getParams(key)
     if (args_type == null) {
       return ''
@@ -297,6 +306,7 @@ const Tools = {
    * @returns 返回对应表情, 格式为[标签1][标签2]
    */
   getTags (key) {
+    if (!this.loaded) return
     const info = this.getInfo(key)
     return info.tags.map(tag => `[${tag}]`).join('')
   },
@@ -305,6 +315,7 @@ const Tools = {
    * 获取对应表情的默认文本
    */
   getDeftext (key) {
+    if (!this.loaded) return
     const info = this.getInfo(key)
     return info.params_type.default_texts
   },
@@ -315,6 +326,7 @@ const Tools = {
    * @returns {Promise<boolean>} - 如果在禁用列表中返回 true，否则返回 false
    */
   async isBlacklisted (input) {
+    if (!this.loaded) return
     const blacklistedKeys = await Promise.all(
       Config.access.blackList.map(async (item) => {
         return await this.getKey(item) || item
@@ -336,6 +348,7 @@ const Tools = {
    * @returns {Promise<boolean>} - 如果在保护列表中返回 true，否则返回 false
    */
   async isProtected (memeKey, protectList) {
+    if (!this.loaded) return
     if (protectList.includes(memeKey)) {
       return true
     }

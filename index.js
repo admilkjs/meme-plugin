@@ -9,14 +9,6 @@ const startTime = Date.now()
 let apps
 
 try {
-  await Utils.Tools.load()
-  logger.info(
-    chalk.bold.rgb(0, 255, 255)(`[${Version.Plugin_AliasName}]`) +
-    chalk.green(' 🔵 ') +
-    chalk.bold('表情数据加载完成') +
-    chalk.rgb(255, 223, 0)(' ✨')
-  )
-
   const files = (await fs.readdir(`${Version.Plugin_Path}/apps`))
     .filter(file => file.endsWith('.js'))
 
@@ -75,6 +67,14 @@ try {
   }
 
   logger.info(chalk.bold.rgb(0, 255, 0)('========= 🌟🌟🌟 ========='))
+  try {
+    await Utils.Tools.load()
+    logger.info(chalk.bold.cyan('🎉 表情包数据加载成功！'))
+  } catch (error) {
+    logger.error(chalk.bold.red(`💥 表情包数据加载失败！错误详情：${error.message}`))
+  }
+
+
   logger.info(
     chalk.bold.blue('📦 当前运行环境: ') +
     chalk.bold.white(`${Version.Bot_Name}`) +
