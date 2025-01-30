@@ -128,6 +128,7 @@ const Tools = {
     try {
       const filePath = `${Version.Plugin_Path}/data/meme.json`
       await Data.createDir('data', '', false)
+
       if (await this.fileExistsAsync(filePath) && !forceUpdate) {
         return
       }
@@ -139,13 +140,24 @@ const Tools = {
       if (!baseUrl) {
         throw new Error('无法获取表情包请求基础路径')
       }
-      const keysResponse = await Request.get(`${baseUrl}/memes/keys`)
-      const memeData = {}
 
-      for (const key of keysResponse) {
-        const infoResponse = await Request.get(`${baseUrl}/memes/${key}/info`)
-        memeData[key] = infoResponse
-      }
+      const keysResponse = await Request.get(`${baseUrl}/memes/keys`)
+
+      const memeDataArray = await Promise.all(
+        keysResponse.map(async (key) => {
+          try {
+            const infoResponse = await Request.get(`${baseUrl}/memes/${key}/info`)
+            return { key, info: infoResponse }
+          } catch (error) {
+            logger.error(`获取 表情 详情失败: ${key} - ${error.message}`)
+            return null
+          }
+        })
+      )
+
+      const memeData = Object.fromEntries(
+        memeDataArray.filter(Boolean).map(({ key, info }) => [key, info])
+      )
 
       await Data.writeJSON('data/meme.json', memeData, 2)
     } catch (error) {

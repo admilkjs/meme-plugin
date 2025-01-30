@@ -1,4 +1,4 @@
-import fs from 'node:fs/promises' // 使用 promises API
+import fs from 'node:fs/promises'
 import Version from './Version.js'
 
 const getRoot = (root = '') => {
