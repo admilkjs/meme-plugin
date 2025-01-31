@@ -49,12 +49,7 @@ const Tools = {
    * @returns {Promise<string>} - 返回表情包基础 URL
    */
   async getBaseUrl () {
-    if (Config.meme.url) {
-      this.baseUrl = Config.meme.url.replace(/\/+$/, '')
-      return this.baseUrl
-    }
-
-    return this.baseUrl = 'https://meme.wuliya.cn'
+    return (this.baseUrl ??= Config.server.url.replace(/\/+$/, '') ?? 'https://meme.wuliya.cn')
   },
 
   /**
