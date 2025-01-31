@@ -11,8 +11,7 @@ const Path = process.cwd().replace(/\\/g, '/')
 const Plugin_Path = join(__dirname, '..').replace(/\\/g, '/')
 const Plugin_Name = basename(Plugin_Path)
 
-let packageJson = {}
-packageJson = await Data.readJSON('package.json', `${Path}`)
+let pkg = await Data.readJSON('package.json', `${Plugin_Path}`)
 
 let changelogs = []
 let currentVersion = ''
@@ -113,7 +112,7 @@ const Version = {
     return BotName
   },
   get Bot_Version () {
-    return packageJson.version
+    return cfg.package.version
   },
   get Bot_Path () {
     return Path
@@ -132,6 +131,9 @@ const Version = {
   },
   get Plugin_Version () {
     return currentVersion
+  },
+  get Plugin_Author () {
+    return pkg.author
   }
 }
 

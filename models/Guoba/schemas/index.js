@@ -1,11 +1,13 @@
-import { Config } from '../../../components/index.js'
+import { Config } from '#components'
 import access from './access.js'
 import meme from './meme.js'
 import protect from './protect.js'
 import other from './other.js'
 import stats from './stats.js'
+import server from './server.js'
 
 export const schemas = [
+  server,
   meme,
   access,
   protect,
@@ -15,6 +17,7 @@ export const schemas = [
 
 export function getConfigData () {
   return {
+    server: Config.server,
     meme: Config.meme,
     other: Config.other,
     access: Config.access,

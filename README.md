@@ -8,7 +8,7 @@
 </div>
 
 ## 介绍 📝
-`清语表情` 是一个 `Yunzai-Bot` | `Karin` (暂未完成) 的扩展插件，提供表情包合成等功能。
+`清语表情` 是一个 `Yunzai-Bot` | `Karin` 的扩展插件，提供表情包合成等功能。
 
 如有问题请提交 `issue` 或加入 Q 群: `272040396` 📬
 
@@ -45,8 +45,9 @@ git clone --depth=1 https://gh.wuliya.xin/https://github.com/ClarityJS/meme-plug
 </details>
 
 <details>
-  <summary><code>Karin</code> (暂未完成) 🤖</summary>
-  <mark>暂未完成</mark>
+  <summary><code>Karin</code> 🤖</summary>
+
+请前往[Karin仓库](https://github.com/ClarityJS/karin-plugin-meme)
 </details>
 
 ### 安装依赖 📦
@@ -55,7 +56,7 @@ pnpm install --filter=meme-plugin
 ```
 
 ## 使用帮助 ℹ️
-其他内容请查看 [官方文档](https://docs.wuliya.cn)
+其他内容请查看 [官方文档](https://docs.wuliya.cn/clarity/meme)
 
 ### 表情后端搭建教程 🌟
 <mark>请查看文档</mark>

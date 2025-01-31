@@ -1,11 +1,12 @@
-import { Version } from '../../components/index.js'
+import { Version } from '#components'
+
 
 export default {
   name: `${Version.Plugin_Name}`,
-  title: '清语表情插件',
-  author: '@shiwuliya',
-  authorLink: 'https://github.com/shiwuliya',
-  link: `https://github.com/wuliya336/${Version.Plugin_Name}`,
+  title: `${Version.Plugin_AliasName}插件`,
+  author: `@${Version.Plugin_Author}`,
+  authorLink: `https://github.com/${Version.Plugin_Author}`,
+  link: `https://github.com/${Version.Plugin_Author}/${Version.Plugin_Name}`,
   isV3: true,
   isV2: false,
   showInMenu: 'auto',
