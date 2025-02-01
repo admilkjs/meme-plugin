@@ -16,7 +16,7 @@ async function handleImages (e, memeKey, userText, min_images, max_images, allUs
   const hasAtProtectedUser = allUsers.some((qq) => protectedUsers.includes(qq.toString()))
 
   if (allUsers.length > 0) {
-    const avatarBuffers = await Utils.Common.getAvatar(allUsers, e)
+    const avatarBuffers = await Utils.Common.getAvatar(e, allUsers)
     avatarBuffers.filter(Boolean).forEach((buffer) => {
       userAvatars.push(buffer)
     })

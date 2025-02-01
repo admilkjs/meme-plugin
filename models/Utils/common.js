@@ -72,7 +72,7 @@ const Common = {
    * @returns {Promise<Buffer[]>} - 返回头像 Buffer 数组
    * @throws {Error} - 如果用户列表为空或头像获取失败，则抛出异常
    */
-  async getAvatar (userList, e) {
+  async getAvatar (e, userList) {
     if (!userList) {
       throw {
         status: 400,
@@ -147,7 +147,7 @@ const Common = {
    * @param {object} e - 消息对象，用于区分群聊或私聊
    * @returns {Promise<string>} - 返回用户昵称，若获取失败则返回 "未知"
    */
-  async getNickname (qq, e) {
+  async getNickname (e, qq) {
     if (!qq || !e) {
       return '未知'
     }
