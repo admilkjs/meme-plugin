@@ -72,7 +72,7 @@ const Common = {
    * @returns {Promise<Buffer[]>} - 返回头像 Buffer 数组
    * @throws {Error} - 如果用户列表为空或头像获取失败，则抛出异常
    */
-  async getAvatar (userList) {
+  async getAvatar (userList, e) {
     if (!userList) {
       throw {
         status: 400,
@@ -90,21 +90,39 @@ const Common = {
 
     const downloadAvatar = async (qq) => {
       const cachePath = `${cacheDir}/avatar_${qq}.png`
-      const avatarUrl = `https://q1.qlogo.cn/g?b=qq&s=0&nk=${qq}`
+      let avatarUrl = ''
+
+      try {
+        if (e.isGroup) {
+          const member = Bot[e.self_id].pickGroup(e.group_id).pickMember(qq)
+          avatarUrl = await member.getAvatarUrl()
+        } else if (e.isPrivate) {
+          const friend = Bot[e.self_id].pickFriend(qq)
+          avatarUrl = await friend.getAvatarUrl()
+        }
+      } catch (err) {
+      }
+
+      if (!avatarUrl) {
+        avatarUrl = `https://q1.qlogo.cn/g?b=qq&s=0&nk=${qq}`
+      }
 
       try {
         if (await Tools.fileExistsAsync(cachePath)) {
           const localStats = await fs.stat(cachePath)
-          const remoteHeaders = await Request.head(avatarUrl)
-          const remoteLastModified = new Date(remoteHeaders['last-modified'])
-          const localLastModified = localStats.mtime
+          const remoteHeaders = await Request.head(avatarUrl).catch(() => null)
 
-          if (localLastModified >= remoteLastModified) {
-            return await fs.readFile(cachePath)
+          if (remoteHeaders) {
+            const remoteLastModified = new Date(remoteHeaders['last-modified'])
+            const localLastModified = localStats.mtime
+
+            if (localLastModified >= remoteLastModified) {
+              return await fs.readFile(cachePath)
+            }
           }
         }
 
-        const buffer = await Request.get(avatarUrl, {}, 'arraybuffer')
+        const buffer = await Request.get(avatarUrl, {}, 'arraybuffer').catch(() => null)
         if (buffer && Buffer.isBuffer(buffer)) {
           await fs.writeFile(cachePath, buffer)
           return buffer

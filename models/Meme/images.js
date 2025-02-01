@@ -13,9 +13,7 @@ async function handleImages (e, memeKey, userText, min_images, max_images, allUs
   const isMasterUser = masterQQList.includes(e.user_id.toString())
   const hasAtMaster = allUsers.some((qq) => masterQQList.includes(qq.toString()))
   const protectedUsers = Config.protect.user.map((id) => id.toString())
-  const hasAtProtectedUser = allUsers.some((qq) =>
-    protectedUsers.includes(qq.toString())
-  )
+  const hasAtProtectedUser = allUsers.some((qq) => protectedUsers.includes(qq.toString()))
 
   if (allUsers.length > 0) {
     const avatarBuffers = await Utils.Common.getAvatar(allUsers)

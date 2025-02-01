@@ -29,7 +29,7 @@ async function make (e, memeKey, min_texts, max_texts, min_images, max_images, d
     /**
      * 处理图片类型
      */
-    if (max_images != 0) {
+    if (max_images !== 0) {
       const images = await handleImages(e, memeKey, userText, min_images, max_images, allUsers, formData)
       if (!images.success) {
         return e.reply(`该表情至少需要 ${min_images} 张图片`, true)
@@ -40,7 +40,7 @@ async function make (e, memeKey, min_texts, max_texts, min_images, max_images, d
     /**
      * 处理文字类型
      */
-    if (max_texts != 0){
+    if (max_texts !== 0){
       let finalTexts = await handleTexts(e, memeKey, userText, min_texts, max_texts, default_texts, allUsers, formData)
       if (!finalTexts) {
         return e.reply(`该表情至少需要 ${min_texts} 个文字描述`, true)
