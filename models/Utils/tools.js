@@ -1,6 +1,10 @@
 import fs from 'node:fs/promises'
-import { Data, Version, Config } from '../../components/index.js'
+import { Data, Version, Config } from '#components'
 import Request from './request.js'
+import chalk from 'chalk'
+
+
+const memePath = `${Version.Plugin_Path}/data/meme.json`
 
 const Tools = {
   infoMap: null,
@@ -49,8 +53,9 @@ const Tools = {
    * @returns {Promise<string>} - 返回表情包基础 URL
    */
   async getBaseUrl () {
-    return (this.baseUrl ??= Config.server.url.replace(/\/+$/, '') ?? 'https://meme.wuliya.cn')
+    return (this.baseUrl ??= Config.server.url?.replace(/\/+$/, '') ?? 'https://meme.wuliya.cn')
   },
+
 
   /**
    * 加载表情包数据
@@ -61,14 +66,13 @@ const Tools = {
     if (this.loaded) {
       return
     }
-    if (!(await this.fileExistsAsync('data/meme.json'))) {
+    if (!(await this.fileExistsAsync(memePath))) {
+      logger.debug(chalk.cyan('🚀 表情包数据不存在，开始生成...'))
       await this.generateMemeData()
+    } else {
+      logger.debug(chalk.cyan('🚀 表情包数据已存在，开始加载...'))
     }
     this.infoMap = await Data.readJSON('data/meme.json')
-
-    if (!this.infoMap || typeof this.infoMap !== 'object') {
-      return
-    }
 
     this.loaded = true
   },
@@ -121,21 +125,20 @@ const Tools = {
    */
   async generateMemeData (forceUpdate = false) {
     try {
-      const filePath = `${Version.Plugin_Path}/data/meme.json`
       await Data.createDir('data', '', false)
 
-      if (await this.fileExistsAsync(filePath) && !forceUpdate) {
+      if (await this.fileExistsAsync(memePath) && !forceUpdate) {
         return
       }
-      if (forceUpdate && await this.fileExistsAsync(filePath)) {
-        await fs.unlink(filePath)
+      if (forceUpdate && await this.fileExistsAsync(memePath)) {
+        await fs.unlink(memePath)
       }
 
       const baseUrl = await this.getBaseUrl()
       if (!baseUrl) {
-        throw new Error('无法获取表情包请求基础路径')
+        logger.error('无法获取表情包请求基础路径')
       }
-
+      logger.info(chalk.magenta.bold('🌟 开始生成表情包数据...'))
       const keysResponse = await Request.get(`${baseUrl}/memes/keys`)
 
       const memeDataArray = await Promise.all(
