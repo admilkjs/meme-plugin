@@ -1,5 +1,5 @@
 import fs from 'node:fs/promises'
-import { Version, Data } from '#components'
+import { Version, Data, Config } from '#components'
 import Request from './request.js'
 import Tools from './tools.js'
 

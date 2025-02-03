@@ -109,8 +109,10 @@ export class meme extends plugin {
     /**
          * 防误触发处理
          */
-    if (min_texts === 0 && max_texts === 0 && userText && !/^(@\s*\d+\s*)+$/.test(userText.trim())) {
-      return false
+    if (min_texts === 0 && max_texts === 0) {
+      if (userText && !/^(@\s*\d+\s*)+$/.test(userText.trim())) {
+        return false
+      }
     }
 
     return await Meme.make(e, memeKey, min_texts, max_texts, min_images, max_images, default_texts, args_type, userText)

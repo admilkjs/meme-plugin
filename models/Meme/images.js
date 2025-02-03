@@ -29,14 +29,14 @@ async function handleImages (e, memeKey, userText, min_images, max_images, allUs
    * 特殊处理：当 min_images === 1 时，因没有多余的图片，表情保护功能会失效
    */
   if (min_images === 1 && messageImages.length === 0) {
-    const triggerAvatar = await Utils.Common.getAvatar([e.user_id])
+    const triggerAvatar = await Utils.Common.getAvatar(e, [e.user_id])
     if (triggerAvatar[0]) {
       userAvatars.push(triggerAvatar[0])
     }
   }
 
   if (messageImages.length + userAvatars.length < min_images) {
-    const triggerAvatar = await Utils.Common.getAvatar([e.user_id])
+    const triggerAvatar = await Utils.Common.getAvatar(e, [e.user_id])
     if (triggerAvatar[0]) {
       userAvatars.unshift(triggerAvatar[0])
     }
