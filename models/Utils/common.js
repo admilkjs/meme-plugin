@@ -216,14 +216,15 @@ const Common = {
      */
     let quotedImages = []
     let source = null
-
-    if (e.getReply) {
-      source = await e.getReply()
-    } else if (e.source) {
-      if (e.isGroup) {
-        source = Bot[e.self_id].pickGroup(e.group_id).getChatHistory(e.source.seq, 1).pop()
-      } else if (e.isPrivate) {
-        source = Bot[e.self_id].pickFriend(e.user_id).getChatHistory(e.source.time, 1).pop()
+    if(Config.meme.quotedImages){
+      if (e.getReply) {
+        source = await e.getReply()
+      } else if (e.source) {
+        if (e.isGroup) {
+          source = Bot[e.self_id].pickGroup(e.group_id).getChatHistory(e.source.seq, 1).pop()
+        } else if (e.isPrivate) {
+          source = Bot[e.self_id].pickFriend(e.user_id).getChatHistory(e.source.time, 1).pop()
+        }
       }
     }
 
