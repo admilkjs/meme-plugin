@@ -34,6 +34,12 @@ export default [
     bottomHelpMessage: '是否强制使用#触发, 开启后必须使用#触发'
   },
   {
+    field: 'meme.quotedImages',
+    label: '引用图片',
+    component: 'Switch',
+    bottomHelpMessage: '是否开启获取引用消息中的图片'
+  },
+  {
     field: 'meme.autoRes',
     label: '自动更新资源',
     component: 'Switch',

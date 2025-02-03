@@ -55,6 +55,12 @@ const cfgSchema = {
         type: 'boolean',
         def: false
       },
+      quotedImages: {
+        title: '引用图片',
+        desc: '是否开启引用图片, 开启后会获取引用消息中的图片',
+        type: 'boolean',
+        def: true
+      },
       autoRes: {
         title: '自动更新资源',
         desc: '是否自动更新表情包资源，开启后每日凌晨会自动更新',
