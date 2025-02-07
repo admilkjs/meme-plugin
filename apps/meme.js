@@ -110,7 +110,7 @@ export class meme extends plugin {
          * 防误触发处理
          */
     if (min_texts === 0 && max_texts === 0) {
-      if (userText && !/^(@\s*\d+\s*)+$/.test(userText)) {
+      if (userText && !/^(@\s*\d+\s*)+$/.test(userText.trim())) {
         return false
       }
     }

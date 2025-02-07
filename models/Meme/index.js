@@ -1,5 +1,5 @@
 import { Utils } from '#models'
-import { Config } from '#components'
+import { Config, Version } from '#components'
 import FormData from 'form-data'
 import { handleArgs, handle } from './args.js'
 import { handleImages } from './images.js'
@@ -14,9 +14,8 @@ async function make (e, memeKey, min_texts, max_texts, min_images, max_images, d
   const manualAts = [...userText.matchAll(/@\s*(\d+)/g)].map((match) => match[1])
   const allUsers = [...new Set([...atsInMessage, ...manualAts])]
   userText = userText.replace(/@\s*\d+/g, '').trim()
-
-  try {
-    /**
+  try{
+  /**
      * 处理参数类型
      */
     if (args_type != null) {
@@ -46,22 +45,22 @@ async function make (e, memeKey, min_texts, max_texts, min_images, max_images, d
         return e.reply(`该表情至少需要 ${min_texts} 个文字描述`, true)
       }
     }
-    const endpoint = `memes/${memeKey}/`
-    const result = await Utils.Tools.request(endpoint, formData, 'POST', 'arraybuffer')
 
-    const base64Image = await Utils.Common.getImageBase64(result, true)
+    const result = await Utils.Tools.request(memeKey, formData, 'arraybuffer')
+    if (!result.success) throw new Error(result.message)
+    const base64Image = await Utils.Common.getImageBase64(result.data, true)
     await e.reply(segment.image(base64Image), Config.meme.reply)
-
     if (Config.stats.enable) {
       const redisKey = `Yz:clarity-meme:stats:${memeKey}`
       await redis.set(redisKey, (parseInt(await redis.get(redisKey)) || 0) + 1)
     }
     return true
-  } catch (error) {
-    const errorMessage = await Utils.Common.handleError(error)
-    await e.reply(`[清语表情]生成表情包失败, 状态码: ${error.status}, 错误信息: ${errorMessage}`)
+  }catch (error) {
+    logger.error(error.message)
+    return e.reply(`[${Version.Plugin_AliasName}] 生成表情包失败，错误信息: ${JSON.parse(error.message).detail}`, true)
   }
 }
+
 
 const Meme = {
   make,

@@ -1,99 +1,126 @@
-import { Config, Version } from '#components'
-import axios from 'axios'
-import FormData from 'form-data'
 import axiosRetry from 'axios-retry'
+import FormData from 'form-data'
+import axios from 'axios'
+
+import { Config, Version } from '#components'
 
 class Request {
   constructor () {
     this.axiosInstance = axios.create({
+      timeout: Config.server.timeout * 1000,
       headers: {
-        'User-Agent': Version.Plugin_Name
+        'User-Agent': `${Version.Plugin_Name}/v${Version.Plugin_Version}`
       },
-      timeout: Config.meme.timeout * 1000,
       proxy: false
     })
 
-    /**
-     * 重试机制
-     */
+    // 配置重试机制
     axiosRetry(this.axiosInstance, {
-      retries: Config.meme.retry,
+      retries: Config.server.retry,
       retryDelay: () => 0,
-      retryCondition: (error) => error.response && error.response.status === 500
+      shouldResetTimeout: true,
+      retryCondition: (error) => {
+        if (error.response) {
+          return error.response.status === 500
+        }
+        return axiosRetry.isNetworkOrIdempotentRequestError(error)
+      }
     })
   }
 
-  /**
-   * 通用请求方法
-   * @param {string} url - 请求的 URL
-   * @param {string} method - HTTP 方法 ('GET', 'POST', 'HEAD' 等)
-   * @param {object} params - 请求参数，GET/HEAD 为 query 参数，POST 为 body 参数
-   * @param {string} responseType - 响应类型（可选），如 'json', 'arraybuffer', 'blob' 等
-   * @returns {Promise<any>} - 返回 Promise，解析为响应数据
-   * @throws {Error} - 抛出网络错误或服务端错误
-   */
-  async request (url, method = 'GET', params = {}, responseType = null) {
+  async request (config) {
     try {
-      const options = {
-        method: method.toUpperCase(),
-        url
+      const response = await this.axiosInstance.request(config)
+      return {
+        success: true,
+        data: response.data
       }
-
-      if (method.toUpperCase() === 'GET' || method.toUpperCase() === 'HEAD') {
-        options.params = params
-      } else if (method.toUpperCase() === 'POST') {
-        options.data = params
-        if (params instanceof FormData) {
-          options.headers = {
-            ...options.headers,
-            ...params.getHeaders()
-          }
-        }
-      }
-
-      if (responseType) {
-        options.responseType = responseType
-      }
-
-      const response = await this.axiosInstance(options)
-
-      return responseType === 'arraybuffer' ? Buffer.from(response.data) : response.data
-
     } catch (error) {
-      logger.error(error.message)
-      if (error.response) {
-        throw {
-          status: error.response.status,
-          message: error.response.data
-        }
-      } else {
-        throw {
-          status: 500,
-          message: '网络错误'
-        }
+      const errorMessage = this.handleError(error)
+      return {
+        success: false,
+        data: {},
+        message: errorMessage
       }
     }
   }
 
   /**
-   * GET 请求方法
+   * GET 请求
    */
-  async get (url, params = {}, responseType = null) {
-    return await this.request(url, 'GET', params, responseType)
+  async get (url, params = {}, headers = {}, responseType = 'json') {
+    return this.request({
+      url,
+      method: 'GET',
+      params,
+      headers: {
+        ...this.axiosInstance.defaults.headers,
+        ...headers
+      },
+      responseType
+    })
   }
 
   /**
-   * POST 请求方法
+   * HEAD 请求
    */
-  async post (url, params = {}, responseType = null) {
-    return await this.request(url, 'POST', params, responseType)
+  async head (url, params = {}, headers = {}) {
+    return this.request({
+      url,
+      method: 'HEAD',
+      params,
+      headers: {
+        ...this.axiosInstance.defaults.headers,
+        ...headers
+      }
+    })
   }
 
   /**
-   * HEAD 请求方法
+   * POST 请求
    */
-  async head (url, params = {}) {
-    return await this.request(url, 'HEAD', params)
+  async post (url, data = {}, headers = {}, responseType = 'json') {
+    const isFormData = data instanceof FormData
+
+    return this.request({
+      url,
+      method: 'POST',
+      data,
+      headers: {
+        ...this.axiosInstance.defaults.headers,
+        ...headers,
+        ...(isFormData ? data.getHeaders() : {})
+      },
+      responseType
+    })
+  }
+
+  /**
+   * 处理错误信息
+   */
+  handleError (error) {
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status
+      let errorMessage
+
+      if (error.code === 'ECONNABORTED' || status === 502) {
+        errorMessage = '网络错误'
+      } else if (error.response?.data) {
+        if (Buffer.isBuffer(error.response.data)) {
+          errorMessage = error.response.data.toString('utf-8')
+        } else if (typeof error.response.data === 'string') {
+          errorMessage = error.response.data
+        } else {
+          errorMessage = JSON.stringify(error.response.data)
+        }
+      } else {
+        errorMessage = JSON.stringify('未知错误')
+      }
+
+      return errorMessage
+    } else {
+      return error.toString()
+    }
   }
 }
 

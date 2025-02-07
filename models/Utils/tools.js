@@ -37,7 +37,7 @@ const Tools = {
     try {
       const response = await Promise.any(urls.map(url => Request.get(url, {}, 'text')))
       const traceMap = Object.fromEntries(
-        response.split('\n').filter(line => line).map(line => line.split('='))
+        response.data.split('\n').filter(line => line).map(line => line.split('='))
       )
       return traceMap.loc !== 'CN'
     } catch (error) {
@@ -78,26 +78,16 @@ const Tools = {
   },
 
   /**
-   * 发送表情包生成请求
-   * @param {string} endpoint - API 的路径
-   * @param {object} params - 请求参数
-   * @param {string} method - HTTP 请求方法 (默认是 GET)
-   * @param {string|null} responseType - 响应类型 (例如 'json', 'text')
-   * @returns {Promise<any>} - 返回响应结果
-   */
-  async request (endpoint, params = {}, method = 'GET', responseType = null) {
+ * 发送表情包生成请求
+ */
+  async request (endpoint, params = {}, responseType = 'arraybuffer') {
     const baseUrl = await this.getBaseUrl()
-    const url = `${baseUrl}/${endpoint}`
+    const url = `${baseUrl}/memes/${endpoint}/`
 
-    try {
-      if (method.toUpperCase() === 'GET' || method.toUpperCase() === 'HEAD') {
-        return await Request.get(url, params, responseType)
-      } else {
-        return await Request.post(url, params, responseType)
-      }
-    } catch (error) {
-      throw error
-    }
+    const isFormData = params instanceof FormData
+    const headers = responseType ? { Accept: responseType } : {}
+
+    return Request.post(url, params, isFormData ? undefined : headers, responseType)
   },
 
   /**

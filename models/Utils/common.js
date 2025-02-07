@@ -40,10 +40,7 @@ const Common = {
    * @throws {Error} - 如果图片地址为空或处理失败，则抛出异常
    */
   async getImageBase64 (image, withPrefix = false) {
-    if (!image) throw {
-      status: 400,
-      message: '图片地址不能为空'
-    }
+    if (!image) logger.error(`[${Version.Plugin_AliasName}] 图片地址不能为空`)
 
     if (typeof image === 'string' && image.startsWith('base64://')) {
       return withPrefix ? image : image.replace('base64://', '')
@@ -59,10 +56,7 @@ const Common = {
       const base64Data = Buffer.from(buffer).toString('base64')
       return withPrefix ? `base64://${base64Data}` : base64Data
     } catch (error) {
-      throw {
-        status: 510,
-        message: '图片处理失败'
-      }
+      logger.error(`[${Version.Plugin_AliasName}] 图片处理失败, 错误信息: ${error}`)
     }
   },
 
