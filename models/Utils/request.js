@@ -33,12 +33,14 @@ class Request {
       const response = await this.axiosInstance.request(config)
       return {
         success: true,
+        statcode: response.status,
         data: response.data
       }
     } catch (error) {
       const errorMessage = this.handleError(error)
       return {
         success: false,
+        statcode: error.code,
         data: {},
         message: errorMessage
       }

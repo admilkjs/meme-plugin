@@ -41,10 +41,7 @@ const Tools = {
       )
       return traceMap.loc !== 'CN'
     } catch (error) {
-      throw {
-        status: 500,
-        message: `获取IP所在地区出错: ${error.message}`
-      }
+      throw new Error(`获取IP所在地区出错: ${error.message}`)
     }
   },
 
@@ -78,37 +75,6 @@ const Tools = {
   },
 
   /**
- * 发送表情包生成请求
- */
-  async request (endpoint, params = {}, responseType = 'arraybuffer') {
-    const baseUrl = await this.getBaseUrl()
-    const url = `${baseUrl}/memes/${endpoint}/`
-
-    const isFormData = params instanceof FormData
-    const headers = responseType ? { Accept: responseType } : {}
-
-    return Request.post(url, params, isFormData ? undefined : headers, responseType)
-  },
-
-  /**
-   * 获取表情包的预览图片地址
-   * @param {string} memeKey - 表情包的唯一标识符
-   * @returns {Promise<string|null>} - 返回预览图片的 URL 或 null
-   */
-  async getPreviewUrl (memeKey) {
-    if (!memeKey) {
-      throw new Error('表情键值不能为空')
-    }
-
-    try {
-      const baseUrl = await this.getBaseUrl()
-      return `${baseUrl}/memes/${memeKey}/preview`
-    } catch (error) {
-      throw error
-    }
-  },
-
-  /**
    * 生成本地表情包数据
    * @param {boolean} forceUpdate - 是否强制更新数据
    * @returns {Promise<void>}
@@ -127,19 +93,27 @@ const Tools = {
       const baseUrl = await this.getBaseUrl()
       if (!baseUrl) {
         logger.error('无法获取表情包请求基础路径')
+        return
       }
+
       logger.info(chalk.magenta.bold('🌟 开始生成表情包数据...'))
       const keysResponse = await Request.get(`${baseUrl}/memes/keys`)
 
+      if (!keysResponse.success) {
+        logger.error(`获取所有表情键值失败: ${keysResponse.message}`)
+        return
+      }
+
       const memeDataArray = await Promise.all(
-        keysResponse.map(async (key) => {
-          try {
-            const infoResponse = await Request.get(`${baseUrl}/memes/${key}/info`)
-            return { key, info: infoResponse }
-          } catch (error) {
-            logger.error(`获取 表情 详情失败: ${key} - ${error.message}`)
+        keysResponse.data.map(async (key) => {
+          const infoResponse = await Request.get(`${baseUrl}/memes/${key}/info`)
+
+          if (!infoResponse.success) {
+            logger.error(`获取表情包详情失败: ${key} - ${infoResponse.message}`)
             return null
           }
+
+          return { key, info: infoResponse.data }
         })
       )
 
@@ -152,6 +126,28 @@ const Tools = {
       logger.error(`生成本地表情包数据失败: ${error.message}`)
       throw error
     }
+  },
+
+  /**
+ * 发送表情包生成请求
+ */
+  async request (endpoint, params = {}, responseType = 'arraybuffer') {
+    const baseUrl = await this.getBaseUrl()
+    const url = `${baseUrl}/memes/${endpoint}/`
+
+    const isFormData = params instanceof FormData
+    const headers = responseType ? { Accept: responseType } : {}
+
+    return Request.post(url, params, isFormData ? undefined : headers, responseType)
+  },
+
+  /**
+   * 获取表情包的预览图片地址
+   * @param {string} memeKey - 表情包的唯一标识符
+   * @returns {Promise<string|null>} - 返回预览图片的 URL 或 null
+   */
+  async getPreviewUrl (memeKey) {
+    return memeKey ? `${this.getBaseUrl()}/memes/${memeKey}/preview` : null
   },
 
   /**
