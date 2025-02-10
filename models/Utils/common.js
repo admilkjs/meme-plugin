@@ -200,22 +200,26 @@ const Common = {
     let quotedImages = []
     let source = null
     if(Config.meme.quotedImages){
-      if (e.getReply) {
+      if (e.reply_id) {
         source = await e.getReply()
       } else if (e.source) {
         if (e.isGroup) {
-          source = Bot[e.self_id].pickGroup(e.group_id).getChatHistory(e.source.seq, 1)
+          source = await Bot[e.self_id].pickGroup(e.group_id).getChatHistory(e.source.seq, 1)
         } else if (e.isPrivate) {
-          source = Bot[e.self_id].pickFriend(e.user_id).getChatHistory(e.source.time, 1)
+          source = await Bot[e.self_id].pickFriend(e.user_id).getChatHistory(e.source.time, 1)
         }
       }
     }
 
     if (source) {
-      quotedImages = source.message
-        .filter((msg) => msg.type === 'image')
-        .map((img) => img.url)
+      const sourceArray = Array.isArray(source) ? source : [source]
+
+      quotedImages = sourceArray
+        .flatMap(item => item.message)
+        .filter(msg => msg.type === 'image')
+        .map(img => img.url)
     }
+
 
     /**
      * 引用消息中的图片任务
