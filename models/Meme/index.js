@@ -55,9 +55,16 @@ async function make (e, memeKey, min_texts, max_texts, min_images, max_images, d
       await redis.set(redisKey, (parseInt(await redis.get(redisKey)) || 0) + 1)
     }
     return true
-  }catch (error) {
+  } catch (error) {
     logger.error(error.message)
-    return e.reply(`[${Version.Plugin_AliasName}] 生成表情包失败，错误信息: ${JSON.parse(error.message).detail}`, true)
+    let errorMessage
+    try {
+      const parsedError = JSON.parse(error.message)
+      errorMessage = parsedError.detail
+    } catch (parseError) {
+      errorMessage = error.message
+    }
+    return e.reply(`[${Version.Plugin_AliasName}] 生成表情包失败，错误信息: ${errorMessage}`, true)
   }
 }
 
