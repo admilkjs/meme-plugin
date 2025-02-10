@@ -204,9 +204,9 @@ const Common = {
         source = await e.getReply()
       } else if (e.source) {
         if (e.isGroup) {
-          source = Bot[e.self_id].pickGroup(e.group_id).getChatHistory(e.source.seq, 1).pop()
+          source = Bot[e.self_id].pickGroup(e.group_id).getChatHistory(e.source.seq, 1)
         } else if (e.isPrivate) {
-          source = Bot[e.self_id].pickFriend(e.user_id).getChatHistory(e.source.time, 1).pop()
+          source = Bot[e.self_id].pickFriend(e.user_id).getChatHistory(e.source.time, 1)
         }
       }
     }
