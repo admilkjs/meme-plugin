@@ -6,39 +6,33 @@ import Tools from './tools.js'
 const Common = {
 
   /**
-   * 获取图片 Buffer
-   * @param {string | Buffer} image - 图片地址或 Buffer
-   * @returns {Promise<Buffer>} - 返回图片的 Buffer 数据
-   * @throws {Error} - 如果图片地址为空或请求失败，则抛出异常
-   */
+  * 获取图片 Buffer
+  * @param {string | Buffer} image - 图片地址或 Buffer
+  * @returns {Promise<Buffer>} - 返回图片的 Buffer 数据
+  * @throws {Error} - 如果图片地址为空或请求失败，则抛出异常
+  */
   async getImageBuffer (image) {
-    if (!image) throw {
-      status: 400,
-      message: '图片地址不能为空'
-    }
+    if (!image) throw new Error('图片地址不能为空')
 
     if (Buffer.isBuffer(image)) {
       return image
     }
 
-    try {
-      const buffer = await Request.get(image, {}, 'arraybuffer')
-      return buffer
-    } catch (error) {
-      throw {
-        status: 510,
-        message: '图片请求失败'
-      }
+    const response = await Request.get(image, {}, {}, 'arraybuffer')
+    if (response.success) {
+      return response.data
+    } else {
+      throw new Error('图片请求失败')
     }
   },
 
   /**
-   * 获取图片 Base64 字符串
-   * @param {string | Buffer} image - 图片的 URL、Buffer 或 Base64 字符串
-   * @param {boolean} withPrefix - 是否添加 base64:// 前缀，默认 false
-   * @returns {Promise<string>} - 返回图片的 Base64 字符串，带或不带前缀
-   * @throws {Error} - 如果图片地址为空或处理失败，则抛出异常
-   */
+ * 获取图片 Base64 字符串
+ * @param {string | Buffer} image - 图片的 URL、Buffer 或 Base64 字符串
+ * @param {boolean} withPrefix - 是否添加 base64:// 前缀，默认 false
+ * @returns {Promise<string>} - 返回图片的 Base64 字符串，带或不带前缀
+ * @throws {Error} - 如果图片地址为空或处理失败，则抛出异常
+ */
   async getImageBase64 (image, withPrefix = false) {
     if (!image) logger.error(`[${Version.Plugin_AliasName}] 图片地址不能为空`)
 
@@ -46,32 +40,30 @@ const Common = {
       return withPrefix ? image : image.replace('base64://', '')
     }
 
-    try {
-      if (Buffer.isBuffer(image)) {
-        const base64Data = image.toString('base64')
-        return withPrefix ? `base64://${base64Data}` : base64Data
-      }
+    if (Buffer.isBuffer(image)) {
+      const base64Data = image.toString('base64')
+      return withPrefix ? `base64://${base64Data}` : base64Data
+    }
 
-      const buffer = await Request.get(image, {}, 'arraybuffer')
+    const response = await Request.get(image, {}, 'arraybuffer')
+    if (response.success) {
+      const buffer = response.data
       const base64Data = Buffer.from(buffer).toString('base64')
       return withPrefix ? `base64://${base64Data}` : base64Data
-    } catch (error) {
-      logger.error(`[${Version.Plugin_AliasName}] 图片处理失败, 错误信息: ${error}`)
+    } else {
+      logger.error(`[${Version.Plugin_AliasName}] 图片处理失败, 错误信息: ${response.message}`)
     }
   },
 
   /**
-   * 获取用户头像
-   * @param {string | string[]} userList - 单个或多个 QQ 号
-   * @returns {Promise<Buffer[]>} - 返回头像 Buffer 数组
-   * @throws {Error} - 如果用户列表为空或头像获取失败，则抛出异常
-   */
+ * 获取用户头像
+ * @param {string | string[]} userList - 单个或多个 QQ 号
+ * @returns {Promise<Buffer[]>} - 返回头像 Buffer 数组
+ * @throws {Error} - 如果用户列表为空或头像获取失败，则抛出异常
+ */
   async getAvatar (e, userList) {
     if (!userList) {
-      throw {
-        status: 400,
-        message: 'QQ 号不能为空'
-      }
+      throw new Error('QQ 号不能为空')
     }
     if (!Array.isArray(userList)) userList = [userList]
 
@@ -101,29 +93,26 @@ const Common = {
         avatarUrl = `https://q1.qlogo.cn/g?b=qq&s=0&nk=${qq}`
       }
 
-      try {
-        if (await Tools.fileExistsAsync(cachePath)) {
-          const localStats = await fs.stat(cachePath)
-          const remoteHeaders = await Request.head(avatarUrl).catch(() => null)
+      if (await Tools.fileExistsAsync(cachePath)) {
+        const localStats = await fs.stat(cachePath)
+        const remoteHeadResponse = await Request.head(avatarUrl).catch(() => null)
 
-          if (remoteHeaders) {
-            const remoteLastModified = new Date(remoteHeaders['last-modified'])
-            const localLastModified = localStats.mtime
+        if (remoteHeadResponse && remoteHeadResponse.success) {
+          const remoteLastModified = new Date(remoteHeadResponse.data['last-modified'])
+          const localLastModified = localStats.mtime
 
-            if (localLastModified >= remoteLastModified) {
-              return await fs.readFile(cachePath)
-            }
+          if (localLastModified >= remoteLastModified) {
+            return await fs.readFile(cachePath)
           }
         }
+      }
 
-        const buffer = await Request.get(avatarUrl, {}, 'arraybuffer').catch(() => null)
-        if (buffer && Buffer.isBuffer(buffer)) {
-          await fs.writeFile(cachePath, buffer)
-          return buffer
-        } else {
-          return await fs.readFile(defaultAvatarPath)
-        }
-      } catch (error) {
+      const bufferResponse = await Request.get(avatarUrl, {}, {}, 'arraybuffer')
+      if (bufferResponse.success) {
+        const buffer = bufferResponse.data
+        await fs.writeFile(cachePath, buffer)
+        return buffer
+      } else {
         return await fs.readFile(defaultAvatarPath)
       }
     }
@@ -131,9 +120,9 @@ const Common = {
     const results = await Promise.all(
       userList.map((qq) => downloadAvatar(qq))
     )
-
     return results
   },
+
 
   /**
    * 获取用户昵称

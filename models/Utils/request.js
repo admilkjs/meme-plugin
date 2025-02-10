@@ -10,6 +10,7 @@ class Request {
       timeout: Config.server.timeout * 1000,
       headers: {
         'User-Agent': `${Version.Plugin_Name}/v${Version.Plugin_Version}`
+        /** 未来会针对插件提供的默认服务增加一个鉴权, 仅供插件使用或优先处理插件的请求, 这里暂时不做处理 */
       },
       proxy: false
     })
