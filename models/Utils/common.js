@@ -45,7 +45,7 @@ const Common = {
       return withPrefix ? `base64://${base64Data}` : base64Data
     }
 
-    const response = await Request.get(image, {}, 'arraybuffer')
+    const response = await Request.get(image, {}, {}, 'arraybuffer')
     if (response.success) {
       const buffer = response.data
       const base64Data = Buffer.from(buffer).toString('base64')
