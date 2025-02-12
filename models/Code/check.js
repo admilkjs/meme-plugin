@@ -5,7 +5,7 @@ import { getLatestCommit } from './commit.js'
 
 const execPromise = util.promisify(exec)
 
-export async function version (localPath) {
+export async function getLocalCommit (localPath) {
   try {
     const { owner, repo, currentBranch } = await getRepo()
     const localVersionCommand = `git -C "${localPath}" rev-parse HEAD`

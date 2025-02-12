@@ -113,7 +113,7 @@ export class update extends plugin {
       await Utils.Tools.generateMemeData(true)
 
       Utils.Tools.loaded = false
-      await Utils.Tools.load()
+      await Utils.Tools.init()
       const Plugin = new meme()
       const pluginName = Plugin.name
       const pluginKey = pluginsLoader.priority.find((p) => {
@@ -124,14 +124,12 @@ export class update extends plugin {
         }
         return false
       })
-
       let pluginInfo
       if (pluginKey.plugin) {
         pluginInfo = pluginKey.plugin
       } else {
         pluginInfo = new pluginKey.class()
       }
-
       pluginInfo.updateRegExp()
 
       if (!isTask && e) {
