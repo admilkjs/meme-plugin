@@ -1,51 +1,51 @@
-import { Render, Config } from '../components/index.js'
-import { Utils } from '../models/index.js'
+// import { Render, Config } from '../components/index.js'
+// import { Utils } from '../models/index.js'
 
-export class stats extends plugin {
-  constructor () {
-    super({
-      name: '清语表情:统计',
-      event: 'message',
-      priority: -Infinity,
-      rule: [
-        {
-          reg: /^#?(?:(清语)?表情|(?:clarity-)?meme)(调用)?统计$/i,
-          fnc: 'stats'
-        }
-      ]
-    })
-  }
+// export class stats extends plugin {
+//   constructor () {
+//     super({
+//       name: '清语表情:统计',
+//       event: 'message',
+//       priority: -Infinity,
+//       rule: [
+//         {
+//           reg: /^#?(?:(清语)?表情|(?:clarity-)?meme)(调用)?统计$/i,
+//           fnc: 'stats'
+//         }
+//       ]
+//     })
+//   }
 
-  async stats (e) {
-    if (!Config.meme.enable) return false
-    const keys = await redis.keys('Yz:clarity-meme:stats:*')
+//   async stats (e) {
+//     if (!Config.meme.enable) return false
+//     const keys = await redis.keys('Yz:clarity-meme:stats:*')
 
-    let total = 0
-    const statsData = []
+//     let total = 0
+//     const statsData = []
 
-    for (const key of keys) {
-      const memeKey = key.split(':').pop()
-      const count = parseInt(await redis.get(key)) || 0
-      total += count
+//     for (const key of keys) {
+//       const memeKey = key.split(':').pop()
+//       const count = parseInt(await redis.get(key)) || 0
+//       total += count
 
-      const keywords = await Utils.Tools.getKeywords(memeKey)
-      if (!keywords || keywords.length === 0) continue
+//       const keywords = await Utils.Tools.getKeywords(memeKey)
+//       if (!keywords || keywords.length === 0) continue
 
-      const keywordsString = keywords.join(', ')
-      statsData.push({ keywords: keywordsString, count })
-    }
+//       const keywordsString = keywords.join(', ')
+//       statsData.push({ keywords: keywordsString, count })
+//     }
 
-    statsData.sort((a, b) => b.count - a.count)
+//     statsData.sort((a, b) => b.count - a.count)
 
-    const img = await Render.render(
-      'meme/stats',
-      {
-        total,
-        emojiList: statsData
-      }
-    )
+//     const img = await Render.render(
+//       'meme/stats',
+//       {
+//         total,
+//         emojiList: statsData
+//       }
+//     )
 
-    await e.reply(img)
-    return true
-  }
-}
+//     await e.reply(img)
+//     return true
+//   }
+// }

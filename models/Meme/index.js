@@ -50,10 +50,10 @@ async function make (e, memeKey, min_texts, max_texts, min_images, max_images, d
     if (!result.success) throw new Error(result.message)
     const base64Image = await Utils.Common.getImageBase64(result.data, true)
     await e.reply(segment.image(base64Image), Config.meme.reply)
-    if (Config.stats.enable) {
-      const redisKey = `Yz:clarity-meme:stats:${memeKey}`
-      await redis.set(redisKey, (parseInt(await redis.get(redisKey)) || 0) + 1)
-    }
+    // if (Config.stats.enable) {
+    //   const redisKey = `Yz:clarity-meme:stats:${memeKey}`
+    //   await redis.set(redisKey, (parseInt(await redis.get(redisKey)) || 0) + 1)
+    // }
     return true
   } catch (error) {
     logger.error(error.message)
