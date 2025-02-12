@@ -1,10 +1,3 @@
-import Request from './request.js'
-import Tools from './tools.js'
-import Common from './common.js'
-
-const Utils = {
-  Request,
-  Tools,
-  Common
-}
-export default Utils
+export * from './common.js'
+export { default as Request } from './request.js'
+export * from './tools.js'

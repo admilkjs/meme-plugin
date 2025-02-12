@@ -1,6 +1,6 @@
 import { schemas, getConfigData, setConfigData } from './schemas/index.js'
 
-export default {
+export const configInfo = {
   schemas,
   getConfigData,
   setConfigData

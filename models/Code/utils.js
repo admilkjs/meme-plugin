@@ -11,9 +11,4 @@ export const parseCommitMessage = (message) => {
   return { title: title || '', content: content || '' }
 }
 
-const utils = {
-  formatCommitTime,
-  parseCommitMessage
-}
 
-export default utils

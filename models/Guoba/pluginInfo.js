@@ -1,7 +1,7 @@
 import { Version } from '#components'
 
 
-export default {
+export const pluginInfo = {
   name: `${Version.Plugin_Name}`,
   title: `${Version.Plugin_AliasName}插件`,
   author: `@${Version.Plugin_Author}`,

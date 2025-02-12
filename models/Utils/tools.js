@@ -346,4 +346,4 @@ const Tools = {
   }
 }
 
-export default Tools
+export { Tools }

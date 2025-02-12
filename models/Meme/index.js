@@ -69,17 +69,4 @@ async function make (e, memeKey, min_texts, max_texts, min_images, max_images, d
 }
 
 
-const Meme = {
-  make,
-  Args: {
-    handle,
-    handleArgs
-  },
-  Images: {
-    handleImages
-  },
-  Texts: {
-    handleTexts
-  }
-}
-export default Meme
+export { make, handle, handleArgs, handleImages, handleTexts }

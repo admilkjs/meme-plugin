@@ -158,12 +158,17 @@ export class update extends plugin {
       const shaKey = `Yz:clarity-meme:update:commit:${result.branchName}`
       let storedSHA = await redis.get(shaKey)
 
+      const localSHA = await Code.check.getLocalCommit(Version.Plugin_Path)
+
       if (!storedSHA) {
         await redis.set(shaKey, remoteSHA)
-        return
+        storedSHA = remoteSHA
       }
 
-      if (storedSHA === remoteSHA) {
+      if (localSHA === remoteSHA) {
+        if (storedSHA !== remoteSHA) {
+          await redis.set(shaKey, remoteSHA)
+        }
         if (!isTask && e) {
           await e.reply('当前已是最新版本，无需更新。')
         }
@@ -206,9 +211,9 @@ export class update extends plugin {
       }
       await redis.set(shaKey, remoteSHA)
     } catch (error) {
-      logger.error(`检测版本时出错: ${error.message}`)
+      logger.error(error.message)
       if (!isTask && e) {
-        await e.reply(`检查更新时出错：${error.message}`)
+        await e.reply(error.message)
       }
     }
   }

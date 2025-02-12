@@ -1,7 +1,7 @@
 import fs from 'node:fs/promises'
 import { Version, Data, Config } from '#components'
 import Request from './request.js'
-import Tools from './tools.js'
+import { Tools } from './tools.js'
 
 const Common = {
 
@@ -18,7 +18,7 @@ const Common = {
       return image
     }
 
-    const response = await Request.get(image, {}, {}, 'arraybuffer')
+    const response = await Utils.Request.get(image, {}, {}, 'arraybuffer')
     if (response.success) {
       return response.data
     } else {
@@ -247,51 +247,8 @@ const Common = {
       .map((res) => res.value)
 
     return images
-  },
-
-  /**
-   * 处理错误异常信息
-   * @param {object} error - 异常对象
-   * @returns {string} - 返回处理后的错误消息
-   */
-  async handleError (error) {
-    const { status, message } = error
-    let serverMsg = ''
-
-    try {
-      const parsedMessage = JSON.parse(message.toString())
-      serverMsg = parsedMessage.detail
-    } catch (e) {
-      serverMsg = message
-    }
-
-    switch (status) {
-      case 400:
-        return message
-      case 404:
-        return message || '资源不存在'
-      case 500:
-        return message || '表情服务请求失败，请稍后再试。'
-      case 510:
-        return message
-      /**
-       * 表情服务端状态码
-       */
-      case 520:
-      case 531:
-      case 532:
-      case 533:
-      case 540:
-      case 541:
-      case 542:
-      case 543:
-      case 550:
-      case 552:
-      case 560:
-        return serverMsg
-    }
   }
 
 }
 
-export default Common
+export { Common }

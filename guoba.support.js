@@ -1,4 +1,4 @@
-import { Guoba } from './models/index.js'
+import { Guoba } from '#models'
 
 export function supportGuoba () {
   return {

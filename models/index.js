@@ -1,7 +1,6 @@
-import Meme from './Meme/index.js'
-import Guoba from './Guoba/index.js'
-import Code from './Code/index.js'
-import Help from './Help/index.js'
-import Utils from './Utils/index.js'
-
-export { Meme, Guoba, Code, Help, Utils }
+export * as db from './db/index.js'
+export * as Meme from './Meme/index.js'
+export * as Guoba from './Guoba/index.js'
+export * as Code from './Code/index.js'
+export * as Help from './Help/index.js'
+export * as Utils from './Utils/index.js'

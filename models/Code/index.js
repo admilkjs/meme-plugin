@@ -1,15 +1,5 @@
-import gitApi from './gitApi.js'
-import gitRepo from './gitRepo.js'
-import commit from './commit.js'
-import check from './check.js'
-import utils from './utils.js'
-
-const Code = {
-  gitApi,
-  gitRepo,
-  commit,
-  check,
-  utils
-}
-
-export default Code
+export * as gitApi from './gitApi.js'
+export * as gitRepo from './gitRepo.js'
+export * as commit from './commit.js'
+export * as check from './check.js'
+export * as utils from './utils.js'
