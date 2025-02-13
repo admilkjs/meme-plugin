@@ -1,4 +1,4 @@
-import { Config } from '#components'
+import { Config, Version } from '#components'
 import { Meme, Utils } from '#models'
 
 /**
@@ -113,6 +113,13 @@ export class meme extends plugin {
       }
     }
 
-    return await Meme.make(e, memeKey, min_texts, max_texts, min_images, max_images, default_texts, args_type, userText)
+    try{
+      const result =  await Meme.make(e, memeKey, min_texts, max_texts, min_images, max_images, default_texts, args_type, userText)
+      await e.reply(segment.image(result), Config.meme.reply)
+      return true
+    }catch(error){
+      await e.reply(`[${Version.Plugin_AliasName}] 生成表情失败, 错误信息: ${error.message}`)
+      return false
+    }
   }
 }

@@ -99,17 +99,16 @@ const Tools = {
           }
 
           const info = infoResponse.data
-
-          const keyWords = info.keywords || []
-          const params = info.params_type || {}
-          const min_texts = params.min_texts || 0
-          const max_texts = params.max_texts || 0
-          const min_images = params.min_images || 0
-          const max_images = params.max_images || 0
-          const defText = params.default_texts || []
-          const args_type = params.args_type || null
-          const shortcuts = info.shortcuts || []
-          const tags = info.tags || []
+          const keyWords = info.keywords && info.keywords.length ? info.keywords : null
+          const params = info.params_type && Object.keys(info.params_type).length ? info.params_type : null
+          const min_texts = params?.min_texts ?? null
+          const max_texts = params?.max_texts ?? null
+          const min_images = params?.min_images ?? null
+          const max_images = params?.max_images ?? null
+          const defText = params?.default_texts && params.default_texts.length ? params.default_texts : null
+          const args_type = params?.args_type ?? null
+          const shortcuts = info.shortcuts && info.shortcuts.length ? info.shortcuts : null
+          const tags = info.tags && info.tags.length ? info.tags : null
 
           await db.meme.add(
             key,

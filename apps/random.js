@@ -1,64 +1,81 @@
-// import { Meme, Utils } from '#models'
-// import { Config } from '#components'
+import { Meme, Utils } from '#models'
+import { Config, Version } from '#components'
 
-// export class random extends plugin {
-//   constructor () {
-//     super({
-//       name: '清语表情:随机表情包',
-//       event: 'message',
-//       priority: -Infinity,
-//       rule: [
-//         {
-//           reg: /^#?(?:(清语)?表情|(?:clarity-)?meme)?随机(?:表情|meme)(包)?$/i,
-//           fnc: 'random'
-//         }
-//       ]
-//     })
-//   }
+export class random extends plugin {
+  constructor () {
+    super({
+      name: '清语表情:随机表情包',
+      event: 'message',
+      priority: -Infinity,
+      rule: [
+        {
+          reg: /^#?(?:(清语)?表情|(?:clarity-)?meme)?随机(?:表情|meme)(包)?$/i,
+          fnc: 'random'
+        }
+      ]
+    })
+  }
 
-//   async random (e) {
-//     if (!Config.meme.enable) return false
-//     try {
-//       const memeKeys = Object.keys(Utils.Tools.getInfoMap())
-//       if (memeKeys.length === 0) {
-//         return true
-//       }
+  async random (e) {
+    if (!Config.meme.enable) return false
+    try {
+      const memeKeys = await Utils.Tools.getAllKeys() ?? null
+      if (!memeKeys || memeKeys.length === 0) {
+        await e.reply('未找到可用的表情包')
+        return true
+      }
 
-//       let selectedMemeKey = null
-//       let selectedParams = null
+      for (let i = memeKeys.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1))
+        ;[memeKeys[i], memeKeys[j]] = [memeKeys[j], memeKeys[i]]
+      }
 
-//       const randomMemeKeys = memeKeys.sort(() => Math.random() - 0.5)
+      for (const memeKey of memeKeys) {
+        const params = await Utils.Tools.getParams(memeKey) ?? null
+        if (!params) continue
 
-//       randomMemeKeys.forEach(memeKey => {
-//         if (selectedMemeKey) return
+        const { min_texts, max_texts, min_images, max_images, default_texts, args_type } = params
 
-//         const params = Utils.Tools.getParams(memeKey)
-//         if (!params) return
+        if (
+          (min_texts === 1 && max_texts === 1) ||
+          (min_images === 1 && max_images === 1) ||
+          (min_texts === 1 && min_images === 1 && max_texts === 1 && max_images === 1)
+        ) {
+          try {
+            let keyWords = await Utils.Tools.getKeyWords(memeKey) ?? null
+            keyWords = Array.isArray(keyWords) ? keyWords.map(word => `[${word}]`).join(' ') : '[无]'
 
-//         const { min_texts, max_texts, min_images, max_images } = params
+            const result = await Meme.make(
+              e,
+              memeKey,
+              min_texts,
+              max_texts,
+              min_images,
+              max_images,
+              default_texts,
+              args_type,
+              ''
+            )
 
-//         const isValid =
-//           (min_texts === 1 && max_texts === 1) ||
-//           (min_images === 1 && max_images === 1) ||
-//           (min_texts === 1 && min_images === 1 && max_texts === 1 && max_images === 1)
+            let replyMessage = [
+              ('本次随机表情信息如下:\n'),
+              (`表情的名称: ${memeKey}\n`),
+              (`表情的别名: ${keyWords}\n`),
+              segment.image(result)
+            ]
+            await e.reply(replyMessage)
+            return true
+          } catch (error) {
+            await e.reply(`[${Version.Plugin_AliasName}] 生成随机表情失败, 错误信息: ${error.message}`)
+            return false
+          }
+        }
+      }
 
-//         if (isValid) {
-//           selectedMemeKey = memeKey
-//           selectedParams = params
-//         }
-//       })
-
-//       if (!selectedMemeKey) {
-//         await e.reply('未找到有效的表情包')
-//         return true
-//       }
-
-//       const { min_texts, max_texts, min_images, max_images, default_texts, args_type } = selectedParams
-
-//       await Meme.make(e, selectedMemeKey, min_texts, max_texts, min_images, max_images, default_texts, args_type, '')
-//     } catch (error) {
-//       const errorMessage = await Utils.Common.handleError(error)
-//       await e.reply(`[清语表情]生成随机表情包失败, 状态码: ${error.status}, 错误信息: ${errorMessage}`)
-//     }
-//   }
-// }
+      await e.reply('未找到有效的表情包')
+      return true
+    } catch (error) {
+      await e.reply(`[清语表情] 生成随机表情包失败, 错误信息: ${error.message}`)
+    }
+  }
+}

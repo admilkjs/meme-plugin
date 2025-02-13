@@ -32,29 +32,25 @@ export class info extends plugin {
     }
 
     const {
-      min_texts = 0,
-      max_texts = 0,
-      min_images = 0,
-      max_images = 0
+      min_texts = null,
+      max_texts = null,
+      min_images = null,
+      max_images = null
     } = memeParams
 
     const argsdescObj = await Utils.Tools.getDescriptions(memeKey) ?? null
-    const argsdesc = argsdescObj && Object.keys(argsdescObj).length > 0
+    const argsdesc = argsdescObj
       ? Object.entries(argsdescObj).map(([paramName, description]) => `[${paramName}: ${description}]`).join(' ')
       : null
 
-    let aliasList = await Utils.Tools.getKeyWords(memeKey) ?? null
-    aliasList = Array.isArray(aliasList) ? aliasList.flat() : null
+    const aliasList = await Utils.Tools.getKeyWords(memeKey) ?? null
     const alias = aliasList ? aliasList.map(text => `[${text}]`).join(' ') : '[无]'
 
-    let defTextList = await Utils.Tools.getDeftext(memeKey) ?? null
-    defTextList = Array.isArray(defTextList) ? defTextList.flat() : null
+    const defTextList = await Utils.Tools.getDeftext(memeKey) ?? null
     const defText = defTextList ? defTextList.map(text => `[${text}]`).join(' ') : '[无]'
 
-    let tagsList = await Utils.Tools.getTags(memeKey) ?? null
-    tagsList = (Array.isArray(tagsList) && tagsList.length > 0) ? tagsList.flat() : null
+    const tagsList = await Utils.Tools.getTags(memeKey) ?? null
     const tags = tagsList ? tagsList.map(tag => `[${tag}]`).join(' ') : '[无]'
-
 
     let previewImageBase64 = null
     try {
@@ -69,15 +65,15 @@ export class info extends plugin {
     const replyMessage = [
       `名称: ${memeKey}\n`,
       `别名: ${alias}\n`,
-      `最大图片数量: ${max_images}\n`,
-      `最小图片数量: ${min_images}\n`,
-      `最大文本数量: ${max_texts}\n`,
-      `最小文本数量: ${min_texts}\n`,
+      `最大图片数量: ${max_images ?? '[未知]'}\n`,
+      `最小图片数量: ${min_images ?? '[未知]'}\n`,
+      `最大文本数量: ${max_texts ?? '[未知]'}\n`,
+      `最小文本数量: ${min_texts ?? '[未知]'}\n`,
       `默认文本: ${defText}\n`,
       `标签: ${tags}`
     ]
 
-    if (argsdesc !== null) {
+    if (argsdesc) {
       replyMessage.push(`\n可选参数:\n${argsdesc}`)
     }
 
