@@ -18,7 +18,7 @@ const Common = {
       return image
     }
 
-    const response = await Utils.Request.get(image, {}, {}, 'arraybuffer')
+    const response = await Request.get(image, {}, {}, 'arraybuffer')
     if (response.success) {
       return response.data
     } else {
@@ -221,7 +221,12 @@ const Common = {
         .map(img => img.url)
     }
 
-    if (quotedImages.length === 0 && source &&( e.source.user_id || e.message.map(msg => msg.type === 'reply').includes(true))) {
+    if (
+      quotedImages.length === 0 &&
+      imagesInMessage.length === 0 &&
+      source &&
+      (e.source.user_id || e.message.some(msg => msg.type === 'reply'))
+    ) {
       sender = source.sender.user_id
       const avatarBuffer = await this.getAvatar(e, sender)
       if (avatarBuffe[0]) {
