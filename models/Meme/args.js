@@ -34,7 +34,7 @@ async function handle (e, key, allUsers, args) {
   const argsObj = {}
 
   for (const [argName, argValue] of Object.entries(args)) {
-    const paramType = Utils.Tools.getParamType(key, argName)
+    const paramType = await Utils.Tools.getParamType(key, argName)
 
     if (!paramType) {
       return {

@@ -1,62 +1,68 @@
-// import { Config, Render } from '#components'
-// import { Utils } from '#models'
+import { Config, Render, Version } from '#components'
+import { Utils } from '#models'
 
-// export class list extends plugin {
-//   constructor () {
-//     super({
-//       name: '清语表情:列表',
-//       event: 'message',
-//       priority: -Infinity,
-//       rule: [
-//         {
-//           reg: /^#?(?:(清语)?表情|(?:clarity-)?meme)列表$/i,
-//           fnc: 'list'
-//         }
-//       ]
-//     })
-//   }
+export class list extends plugin {
+  constructor () {
+    super({
+      name: '清语表情:列表',
+      event: 'message',
+      priority: -Infinity,
+      rule: [
+        {
+          reg: /^#?(?:(清语)?表情|(?:clarity-)?meme)列表$/i,
+          fnc: 'list'
+        }
+      ]
+    })
+  }
 
-//   async list (e) {
-//     if (!Config.meme.enable) return false
-//     try {
-//       const infoMap = Utils.Tools.getInfoMap()
-//       const keys = Object.keys(infoMap)
+  async list (e) {
+    if (!Config.meme.enable) return false
+    try {
+      const keys = await Utils.Tools.getAllKeys()
 
-//       if (!keys.length) {
-//         await e.reply('没有可用的表情列表', true)
-//         return true
-//       }
+      if (!keys || keys.length === 0) {
+        await e.reply(`[${Version.Plugin_AliasName}]没有找到表情列表, 请使用[#清语表情更新资源], 稍后再试`, true)
+        return true
+      }
 
-//       const emojiList = keys.flatMap(key => {
-//         const emoji = infoMap[key]
-//         const { min_texts, min_images, args_type } = emoji.params_type
+      const tasks = keys.map(async (key) => {
+        const keyWords = await Utils.Tools.getKeyWords(key) ?? null
+        const params = await Utils.Tools.getParams(key) ?? null
 
-//         const types = []
-//         if (min_texts >= 1) types.push('text')
-//         if (min_images >= 1) types.push('image')
-//         if (args_type !== null) types.push('arg')
+        const { min_texts = 0, min_images = 0, args_type = null } = params
 
-//         return emoji.keywords.map(keyword => ({
-//           name: keyword,
-//           types
-//         }))
-//       })
+        const types = []
+        if (min_texts >= 1) types.push('text')
+        if (min_images >= 1) types.push('image')
+        if (args_type !== null) types.push('arg')
 
-//       const total = keys.length
+        if (keyWords) {
+          return keyWords.map(keyword => ({
+            name: keyword,
+            types
+          }))
+        }
 
-//       const img = await Render.render(
-//         'meme/list',
-//         {
-//           emojiList,
-//           total
-//         }
-//       )
-//       await e.reply(img)
-//       return true
-//     } catch (error) {
-//       logger.error('加载表情列表失败:', error)
-//       await e.reply('加载表情列表失败，请稍后重试', true)
-//       return true
-//     }
-//   }
-// }
+        return []
+      })
+
+      const memeList = (await Promise.all(tasks)).flat()
+      const total = memeList.length
+
+      const img = await Render.render(
+        'meme/list',
+        {
+          memeList,
+          total
+        }
+      )
+      await e.reply(img)
+      return true
+    } catch (error) {
+      logger.error('加载表情列表失败:', error)
+      await e.reply('加载表情列表失败，请稍后重试', true)
+      return true
+    }
+  }
+}

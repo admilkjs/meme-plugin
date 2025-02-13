@@ -150,10 +150,9 @@ export class update extends plugin {
   async checkUpdate (e, isTask = false) {
     try {
       const { owner, repo, currentBranch } = await Code.gitRepo.getRepo()
-      const result = await Code.check.version(Version.Plugin_Path, owner, repo, currentBranch)
-      const latestCommit = result.latestCommit
+      const latestCommit = await Code.commit.getLatestCommit(owner, repo, currentBranch)
       const remoteSHA = latestCommit.sha
-      const shaKey = `Yz:clarity-meme:update:commit:${result.branchName}`
+      const shaKey = `Yz:clarity-meme:update:commit:${currentBranch}`
       let storedSHA = await redis.get(shaKey)
 
       const localSHA = await Code.check.getLocalCommit(Version.Plugin_Path)
@@ -183,7 +182,7 @@ export class update extends plugin {
 
       const img = await Render.render('code/index', {
         commitInfo,
-        branchName: result.branchName
+        branchName: currentBranch
       })
 
       if (isTask) {

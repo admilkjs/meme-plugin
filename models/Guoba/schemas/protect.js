@@ -1,4 +1,4 @@
-import list from '../list.js'
+import { getMemeList } from '../getMemeList.js'
 
 export default [
   {
@@ -35,9 +35,8 @@ export default [
     component: 'Select',
     bottomHelpMessage: '设置表情保护列表',
     componentProps: {
-      options: await list(),
-      mode: 'multiple',
-      allowClear: true
+      options: await getMemeList(),
+      mode: 'multiple'
     }
   }
 ]

@@ -68,10 +68,10 @@ try {
 
   logger.info(chalk.bold.rgb(0, 255, 0)('========= 🌟🌟🌟 ========='))
   try {
-    await Utils.Tools.load()
-    logger.info(chalk.bold.cyan('🎉 表情包数据加载成功！'))
+    await Utils.Tools.init()
+    logger.info(chalk.bold.cyan('🎉 表情包数据初始化成功！'))
   } catch (error) {
-    logger.error(chalk.bold.red(`💥 表情包数据加载失败！错误详情：${error.message}`))
+    logger.error(chalk.bold.red(`💥 表情包数据初始化失败！错误详情：${error.message}`))
   }
 
 
