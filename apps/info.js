@@ -52,8 +52,9 @@ export class info extends plugin {
     const defText = defTextList ? defTextList.map(text => `[${text}]`).join(' ') : '[无]'
 
     let tagsList = await Utils.Tools.getTags(memeKey) ?? null
-    tagsList = Array.isArray(tagsList) ? tagsList.flat() : null
+    tagsList = (Array.isArray(tagsList) && tagsList.length > 0) ? tagsList.flat() : null
     const tags = tagsList ? tagsList.map(tag => `[${tag}]`).join(' ') : '[无]'
+
 
     let previewImageBase64 = null
     try {
