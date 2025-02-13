@@ -72,8 +72,6 @@ const Common = {
       await Data.createDir('data/avatar', '', false)
     }
 
-    const defaultAvatarPath = `${Version.Plugin_Path}/resources/meme/imgs/default_avatar.png`
-
     const downloadAvatar = async (qq) => {
       const cachePath = `${cacheDir}/avatar_${qq}.png`
       let avatarUrl = ''
@@ -113,14 +111,17 @@ const Common = {
         await fs.writeFile(cachePath, buffer)
         return buffer
       } else {
-        return await fs.readFile(defaultAvatarPath)
+        throw new Error(`下载头像失败: ${avatarUrl}`)
       }
     }
 
-    const results = await Promise.all(
-      userList.map((qq) => downloadAvatar(qq))
-    )
-    return results
+    try {
+      const results = await Promise.all(userList.map((qq) => downloadAvatar(qq)))
+      return results
+    } catch (err) {
+      logger.error(`[${Version.Plugin_AliasName}]获取头像失败: ${err}`)
+      return null
+    }
   },
 
 
