@@ -1,4 +1,4 @@
-const helpCfg = {
+export const helpCfg = {
   title: '清语表情帮助',
   subTitle: 'clarity-meme',
   columnCount: 3,
@@ -13,5 +13,3 @@ const helpCfg = {
     rowBgColor1: 'rgba(6, 21, 31, .2)'
   }
 }
-
-export default helpCfg

@@ -1,3 +1,3 @@
-export * from './config.js'
-export * from './list.js'
-export * from './theme.js'
+export * as helpCfg from './config.js'
+export * as helpList from './list.js'
+export * as Theme from './theme.js'

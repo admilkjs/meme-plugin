@@ -153,19 +153,19 @@ export class update extends plugin {
       const latestCommit = await Code.commit.getLatestCommit(owner, repo, currentBranch)
       const remoteSHA = latestCommit.sha
       const shaKey = `Yz:clarity-meme:update:commit:${currentBranch}`
-      let storedSHA = await redis.get(shaKey)
-
       const localSHA = await Code.check.getLocalCommit(Version.Plugin_Path)
 
+      if (!localSHA) {
+        throw new Error('无法获取本地 commit SHA, 更新检查失败!')
+      }
+
+      let storedSHA = await redis.get(shaKey)
       if (!storedSHA) {
-        await redis.set(shaKey, remoteSHA)
         storedSHA = remoteSHA
+        await redis.set(shaKey, remoteSHA)
       }
 
       if (localSHA === remoteSHA) {
-        if (storedSHA !== remoteSHA) {
-          await redis.set(shaKey, remoteSHA)
-        }
         if (!isTask && e) {
           await e.reply('当前已是最新版本，无需更新。')
         }
@@ -206,12 +206,14 @@ export class update extends plugin {
       } else if (e) {
         await e.reply(img)
       }
+
       await redis.set(shaKey, remoteSHA)
     } catch (error) {
-      logger.error(error.message)
+      logger.error(`更新检查失败: ${error.message}`)
       if (!isTask && e) {
-        await e.reply(error.message)
+        await e.reply(`更新检查失败: ${error.message}`)
       }
     }
   }
+
 }

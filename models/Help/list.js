@@ -1,4 +1,4 @@
-const helpList = [
+export const List = [
   {
     group: '[]内为必填项,{}内为可选项'
   },
@@ -54,5 +54,3 @@ const helpList = [
     ]
   }
 ]
-
-export default helpList

@@ -22,9 +22,8 @@ export class help extends plugin {
   }
 
   async help (e) {
-    const helpGroup = []
-
-    lodash.forEach(Help.helpList, (group) => {
+    let helpGroup = []
+    lodash.forEach(Help.helpList.List, (group) => {
       if (group.auth && group.auth === 'master' && !e.isMaster) {
         return true
       }
