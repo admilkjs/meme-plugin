@@ -29,13 +29,13 @@ export class meme extends plugin {
     })
 
     this.rulesInitialized = false
-    this.initRules()
+    this.initRules().then()
   }
 
   /**
      * 初始化规则
      */
-  initRules () {
+  async initRules () {
     if (this.rulesInitialized || !memeRegExp) {
       return
     }
@@ -50,8 +50,8 @@ export class meme extends plugin {
   /**
      * 重新生成正则并更新规则
      */
-  updateRegExp () {
-    const newRegExp = createMemeRegExp()
+  async updateRegExp () {
+    const newRegExp = await createMemeRegExp()
 
     memeRegExp = newRegExp
 

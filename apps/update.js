@@ -3,6 +3,7 @@ import { update as Update } from '../../other/update.js'
 import { Utils, Code } from '#models'
 import { meme } from './meme.js'
 import pluginsLoader from '../../../lib/plugins/loader.js'
+import chalk from 'chalk'
 
 export class update extends plugin {
   constructor () {
@@ -106,14 +107,11 @@ export class update extends plugin {
     }
 
     if (!isTask && e) {
-      await e.reply('开始更新表情包数据中, 请稍后...')
+      await e.reply(`[${Version.Plugin_AliasName}] 开始更新表情包数据中, 请稍后...`)
     }
 
     try {
       await Utils.Tools.generateMemeData(true)
-
-      Utils.Tools.loaded = false
-      await Utils.Tools.init()
       const Plugin = new meme()
       const pluginName = Plugin.name
       const pluginKey = pluginsLoader.priority.find((p) => {
@@ -130,12 +128,12 @@ export class update extends plugin {
       } else {
         pluginInfo = new pluginKey.class()
       }
-      pluginInfo.updateRegExp()
+      await pluginInfo.updateRegExp()
 
       if (!isTask && e) {
-        await e.reply('表情包数据更新完成')
+        await e.reply(`[${Version.Plugin_AliasName}] 表情包数据更新完成`)
       }
-      logger.mark('表情包数据更新完成')
+      logger.mark(chalk.rgb(255, 165, 0)('✅ 表情包数据更新完成 🎉'))
       return true
     } catch (error) {
       if (!isTask && e) {
@@ -152,11 +150,11 @@ export class update extends plugin {
       const { owner, repo, currentBranch } = await Code.gitRepo.getRepo()
       const latestCommit = await Code.commit.getLatestCommit(owner, repo, currentBranch)
       const remoteSHA = latestCommit.sha
-      const shaKey = `Yz:clarity-meme:update:commit:${currentBranch}`
+      const shaKey = `Yz:${Version.Plugin_Name}:update:commit:${currentBranch}`
       const localSHA = await Code.check.getLocalCommit(Version.Plugin_Path)
 
       if (!localSHA) {
-        throw new Error('无法获取本地 commit SHA, 更新检查失败!')
+        throw new Error('无法获取本地 commit SHA，更新检查失败！')
       }
 
       let storedSHA = await redis.get(shaKey)
@@ -166,10 +164,18 @@ export class update extends plugin {
       }
 
       if (localSHA === remoteSHA) {
-        if (!isTask && e) {
-          await e.reply('当前已是最新版本，无需更新。')
+        if (storedSHA === remoteSHA) {
+          if (!isTask && e) {
+            await e.reply('当前已是最新版本，无需更新。')
+          }
+          return
+        } else {
+          await redis.set(shaKey, remoteSHA)
+          if (!isTask && e) {
+            await e.reply('Redis 已更新为最新版本。')
+          }
+          return
         }
-        return
       }
 
       const commitInfo = {
@@ -191,16 +197,14 @@ export class update extends plugin {
           return qqStr.length <= 11 && qqStr !== 'stdin'
         })
 
-        if (masterQQs.length === 0) {
-          return
-        }
-
-        for (let qq of masterQQs) {
-          try {
-            await Bot.pickFriend(qq).sendMsg(img)
-            break
-          } catch (sendError) {
-            logger.info(`发送消息给 ${qq} 失败: ${sendError.message}`)
+        if (masterQQs.length > 0) {
+          for (let qq of masterQQs) {
+            try {
+              await Bot.pickFriend(qq).sendMsg(img)
+              break
+            } catch (sendError) {
+              logger.info(`发送消息给 ${qq} 失败: ${sendError.message}`)
+            }
           }
         }
       } else if (e) {
@@ -208,6 +212,7 @@ export class update extends plugin {
       }
 
       await redis.set(shaKey, remoteSHA)
+
     } catch (error) {
       logger.error(`更新检查失败: ${error.message}`)
       if (!isTask && e) {
@@ -215,5 +220,6 @@ export class update extends plugin {
       }
     }
   }
+
 
 }
