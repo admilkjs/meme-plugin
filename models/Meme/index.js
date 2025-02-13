@@ -8,11 +8,14 @@ import { handleTexts } from './texts.js'
 async function make (e, memeKey, min_texts, max_texts, min_images, max_images, default_texts, args_type, userText) {
   const formData = new FormData()
 
-  const atsInMessage = e.message
-    .filter((m) => m.type === 'at')
-    .map((at) => at.qq)
-  const manualAts = [...userText.matchAll(/@\s*(\d+)/g)].map((match) => match[1])
-  const allUsers = [...new Set([...atsInMessage, ...manualAts])]
+  const quotedUser = e.source?.user_id?.toString() || null
+  let allUsers = [
+    ...new Set([
+      ...e.message.filter(m => m.type === 'at').map(at => at.qq.toString()),
+      ...[...userText.matchAll(/@\s*(\d+)/g)].map(match => match[1])
+    ])
+  ].filter(id => id !== quotedUser)
+
   userText = userText.replace(/@\s*\d+/g, '').trim()
   try{
   /**

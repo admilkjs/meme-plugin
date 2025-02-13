@@ -200,13 +200,13 @@ const Common = {
     let quotedImages = []
     let source = null
     if(Config.meme.quotedImages){
-      if (e.reply_id) {
+      if (e.getReply) {
         source = await e.getReply()
       } else if (e.source) {
         if (e.isGroup) {
-          source = await Bot[e.self_id].pickGroup(e.group_id).getChatHistory(e.source.seq, 1)
+          source = await Bot[e.self_id].pickGroup(e.group_id).getChatHistory(e.source.seq || e.reply_id, 1)
         } else if (e.isPrivate) {
-          source = await Bot[e.self_id].pickFriend(e.user_id).getChatHistory(e.source.time, 1)
+          source = await Bot[e.self_id].pickFriend(e.user_id).getChatHistory(e.source.time || e.reply_id, 1)
         }
       }
     }
@@ -218,6 +218,14 @@ const Common = {
         .flatMap(item => item.message)
         .filter(msg => msg.type === 'image')
         .map(img => img.url)
+    }
+
+    if (quotedImages.length === 0 && source &&( e.source.user_id || e.message.map(msg => msg.type === 'reply').includes(true))) {
+      sender = source.sender.user_id
+      const avatarBuffer = await this.getAvatar(e, sender)
+      if (avatarBuffe[0]) {
+        quotedImages.push(avatarBuffer[0])
+      }
     }
 
 
