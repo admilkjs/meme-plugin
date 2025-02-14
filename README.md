@@ -14,41 +14,32 @@
 
 ## 安装与更新 🔧
 
+### <code>Yunzai-Bot</code> 🚀
+   
 <details>
-  <summary><code>Yunzai-Bot</code> 🚀</summary>
-
-  <details>
-    <summary>使用 <code>Github</code> 🐙</summary>
+<summary>使用 <code>Github</code> 🐙</summary>
 
 ```bash
 git clone --depth=1 https://github.com/ClarityJS/meme-plugin ./plugins/meme-plugin/
 ```
-  </details>
-
-  <details>
-    <summary>使用 <code>Github</code> 镜像 🌐</summary>
+</details>
+<details>
+<summary>使用 <code>Github</code> 镜像 🌐</summary>
 
 ```bash
 git clone --depth=1 https://gh.wuliya.xin/https://github.com/ClarityJS/meme-plugin ./plugins/meme-plugin/
 ```
-
-  </details>
-
-  <details>
-    <summary>使用 <code>Release</code> 🔨</summary>
+</details>
+<details>
+<summary> 使用 <code>Release</code> 🔨</summary>
 
 在 [Release](https://github.com/ClarityJS/meme-plugin/releases/latest) 页面下载最新版本，解压后修改文件夹名称为 `meme-plugin` 然后放入 `plugins` 文件夹中即可使用。
 
-    **虽然此方式能够使用，不利于后续升级，故不推荐使用 🔔**
-  </details>
-
+**虽然此方式能够使用，不利于后续升级，故不推荐使用 🔔**
 </details>
 
-<details>
-  <summary><code>Karin</code> 🤖</summary>
-
-请前往[Karin仓库](https://github.com/ClarityJS/karin-plugin-meme)
-</details>
+### <code>Karin</code> 🤖
+请前往 [Karin仓库](https://github.com/ClarityJS/karin-plugin-meme)
 
 ### 安装依赖 📦
 ```bash
@@ -73,12 +64,13 @@ pnpm install --filter=meme-plugin
 - [x] 添加 `仓库更新检查推送` 🔄
 - [x] 添加 `自动更新表情包数据` ⏳
 - [x] 动态重载表情包数据 🔄
-- [x] 完善 `表情保护` 功能 🔒
+- [ ] 添加 `表情保护` 功能 🔒
 - [x] 自动更新插件 [@MapleLeaf2007](https://github.com/MapleLeaf2007) 🔧
+- [x] 重构 `使用Sqlite存储数据` 📦
+- [ ] `快捷指令` 实现 💟
 - [ ] 内置 `表情服务端` 🌍
 - [ ] 扩展库 `实现本地制作表情` 🎨
 - [ ] `emoji` 表情合成实现 😀🌈
-- [ ] `快捷指令` 实现 💟
 
 ## 贡献者 👨‍💻👩‍💻
 
