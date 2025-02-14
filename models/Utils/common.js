@@ -1,10 +1,42 @@
 import fs from 'node:fs/promises'
 import { Version, Data, Config } from '#components'
 import Request from './request.js'
-import { Tools } from './tools.js'
 
 const Common = {
+  /**
+   * 检查指定的文件是否存在
+   * @param {string} filePath - 文件路径
+   * @returns {Promise<boolean>} - 如果文件存在返回 true，否则返回 false
+   */
+  async fileExistsAsync (filePath) {
+    try {
+      await fs.access(filePath)
+      return true
+    } catch {
+      return false
+    }
+  },
 
+  /**
+   * 判断是否在海外环境
+   * @returns {Promise<boolean>} - 如果在海外环境返回 true，否则返回 false
+   */
+  async isAbroad () {
+    const urls = [
+      'https://blog.cloudflare.com/cdn-cgi/trace',
+      'https://developers.cloudflare.com/cdn-cgi/trace'
+    ]
+
+    try {
+      const response = await Promise.any(urls.map(url => Request.get(url, {}, {}, 'text')))
+      const traceMap = Object.fromEntries(
+        response.data.split('\n').filter(line => line).map(line => line.split('='))
+      )
+      return traceMap.loc !== 'CN'
+    } catch (error) {
+      throw new Error(`获取IP所在地区出错: ${error.message}`)
+    }
+  },
   /**
   * 获取图片 Buffer
   * @param {string | Buffer} image - 图片地址或 Buffer
@@ -68,7 +100,7 @@ const Common = {
     if (!Array.isArray(userList)) userList = [userList]
 
     const cacheDir = `${Version.Plugin_Path}/data/avatar`
-    if (!await Tools.fileExistsAsync(cacheDir)) {
+    if (!await this.fileExistsAsync(cacheDir)) {
       await Data.createDir('data/avatar', '', false)
     }
 
@@ -91,7 +123,7 @@ const Common = {
         avatarUrl = `https://q1.qlogo.cn/g?b=qq&s=0&nk=${qq}`
       }
 
-      if (await Tools.fileExistsAsync(cachePath)) {
+      if (await this.fileExistsAsync(cachePath)) {
         const localStats = await fs.stat(cachePath)
         const remoteHeadResponse = await Request.head(avatarUrl).catch(() => null)
 
@@ -262,7 +294,6 @@ const Common = {
 
     return images
   }
-
 }
 
 export { Common }

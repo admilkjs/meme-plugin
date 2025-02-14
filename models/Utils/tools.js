@@ -1,4 +1,3 @@
-import fs from 'node:fs/promises'
 import { Config } from '#components'
 import { db, Utils } from '#models'
 import chalk from 'chalk'
@@ -6,45 +5,11 @@ import chalk from 'chalk'
 
 const Tools = {
   /**
-   * 检查指定的文件是否存在
-   * @param {string} filePath - 文件路径
-   * @returns {Promise<boolean>} - 如果文件存在返回 true，否则返回 false
-   */
-  async fileExistsAsync (filePath) {
-    try {
-      await fs.access(filePath)
-      return true
-    } catch {
-      return false
-    }
-  },
-
-  /**
-   * 判断是否在海外环境
-   * @returns {Promise<boolean>} - 如果在海外环境返回 true，否则返回 false
-   */
-  async isAbroad () {
-    const urls = [
-      'https://blog.cloudflare.com/cdn-cgi/trace',
-      'https://developers.cloudflare.com/cdn-cgi/trace'
-    ]
-
-    try {
-      const response = await Promise.any(urls.map(url => Utils.Request.get(url, {}, {}, 'text')))
-      const traceMap = Object.fromEntries(
-        response.data.split('\n').filter(line => line).map(line => line.split('='))
-      )
-      return traceMap.loc !== 'CN'
-    } catch (error) {
-      throw new Error(`获取IP所在地区出错: ${error.message}`)
-    }
-  },
-
-  /**
    * 获取表情包请求的基础 URL
    * @returns {Promise<string>} - 返回表情包基础 URL
    */
   async getBaseUrl () {
+    /** 该方法后续会扩展，为rust准备 */
     return Config.server?.url?.replace(/\/+$/, '') || 'https://meme.wuliya.cn'
   },
 

@@ -5,7 +5,7 @@ import fs from 'node:fs'
 import chalk from 'chalk'
 
 const dbPath = `${Version.Plugin_Path}/data/data.db`
-if(!Utils.Tools.fileExistsAsync(dbPath)){
+if(!Utils.Common.fileExistsAsync(dbPath)){
   fs.mkdirSync(dbPath)
 }
 

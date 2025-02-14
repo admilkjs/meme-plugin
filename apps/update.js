@@ -147,51 +147,39 @@ export class update extends plugin {
 
   async checkUpdate (e, isTask = false) {
     try {
-      const { owner, repo, currentBranch } = await Code.gitRepo.getRepo()
-      const latestCommit = await Code.commit.getLatestCommit(owner, repo, currentBranch)
-      const remoteSHA = latestCommit.sha
-      const shaKey = `Yz:${Version.Plugin_Name}:update:commit:${currentBranch}`
-      const localSHA = await Code.check.getLocalCommit(Version.Plugin_Path)
-
-      if (!localSHA) {
-        throw new Error('无法获取本地 commit SHA，更新检查失败！')
+      const { owner, repo, branchName } = await Code.gitRepo.getRepo()
+      const localCommit = await Code.commit.getLocalCommit(Version.Plugin_Path)
+      const remoteCommit = await Code.commit.getRemoteCommit(owner, repo, branchName)
+      if(!await Code.gitRepo.getAllBranch()){
+        logger.debug(`${chalk.yellow(`[${Version.Plugin_AliasName}] 没有分支信息, 初始化分支信息`)}`)
+        await Code.gitRepo.addBranchInfo(branchName, localCommit.sha)
       }
-
-      let storedSHA = await redis.get(shaKey)
-      if (!storedSHA) {
-        storedSHA = remoteSHA
-        await redis.set(shaKey, remoteSHA)
-      }
-
-      if (localSHA === remoteSHA) {
-        if (storedSHA === remoteSHA) {
-          if (!isTask && e) {
-            await e.reply('当前已是最新版本，无需更新。')
-          }
+      if(isTask){
+        if (localCommit.sha === remoteCommit.sha) {
+          logger.debug(chalk.rgb(255, 165, 0)('✅ 当前版本已经是最新版本 🎉'))
           return
-        } else {
-          await redis.set(shaKey, remoteSHA)
-          if (!isTask && e) {
-            await e.reply('Redis 已更新为最新版本。')
-          }
+        } else if (localCommit.commitTime === remoteCommit.commitTime){
+          logger.debug(chalk.cyan('🔄 当前版本已经是最新版本, 但数据库数据未更新, 开始更新数据库的数据'))
+          await Code.gitRepo.addBranch(branchName, localCommit.sha)
           return
         }
       }
 
       const commitInfo = {
-        committer: latestCommit.committer.login,
-        commitTime: latestCommit.commitTime,
-        title: latestCommit.message.title,
-        content: latestCommit.message.content,
-        commitUrl: latestCommit.commitUrl
+        committer: remoteCommit.committer.login,
+        commitTime: remoteCommit.commitTime,
+        title: remoteCommit.message.title,
+        content: remoteCommit.message.content,
+        commitUrl: remoteCommit.commitUrl
       }
 
       const img = await Render.render('code/index', {
         commitInfo,
-        branchName: currentBranch
+        branchName
       })
 
       if (isTask) {
+        await Code.gitRepo.addBranchInfo(branchName, remoteCommit.sha)
         const masterQQs = Config.masterQQ.filter(qq => {
           const qqStr = String(qq)
           return qqStr.length <= 11 && qqStr !== 'stdin'
@@ -201,21 +189,20 @@ export class update extends plugin {
           for (let qq of masterQQs) {
             try {
               await Bot.pickFriend(qq).sendMsg(img)
+              await Bot.sleep(2000)
               break
             } catch (sendError) {
               logger.info(`发送消息给 ${qq} 失败: ${sendError.message}`)
             }
           }
         }
-      } else if (e) {
+      } else if (!isTask && e.isMaster) {
         await e.reply(img)
       }
 
-      await redis.set(shaKey, remoteSHA)
-
     } catch (error) {
       logger.error(`更新检查失败: ${error.message}`)
-      if (!isTask && e) {
+      if (!isTask && e.isMaster) {
         await e.reply(`更新检查失败: ${error.message}`)
       }
     }
