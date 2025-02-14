@@ -182,7 +182,7 @@ const Tools = {
      * @returns {string|null} - 返回对应的表情包键或 null
      */
   async getKey (keyword) {
-    return (await db.meme.getByField('keyWords', keyword)).toString()
+    return (await db.meme.getByField('keyWords', keyword)).toString() || null
   },
   /**
      * 获取指定表情包的关键字
@@ -201,7 +201,7 @@ const Tools = {
   async getAllKeyWords () {
     const keyWordsList = await db.meme.getAllSelect('keyWords')
 
-    return keyWordsList.map(item => JSON.parse(item)).flat()
+    return keyWordsList.map(item => JSON.parse(item)).flat() || null
   },
 
 
@@ -212,7 +212,7 @@ const Tools = {
   async getAllKeys () {
     const keyList = await db.meme.getAllSelect('key')
 
-    return keyList.flat()
+    return keyList.flat() || null
   },
 
   /**
@@ -231,7 +231,7 @@ const Tools = {
 
     const { min_texts, max_texts, min_images, max_images , default_texts, args_type } = JSON.parse(memeParams)
 
-    return { min_texts, max_texts, min_images, max_images, default_texts, args_type }
+    return { min_texts, max_texts, min_images, max_images, default_texts, args_type } || null
   },
   /**
    * 获取指定表情包参数的类型
