@@ -36,19 +36,17 @@ export class update extends plugin {
     if (Config.other.checkRepo) {
       this.task.push({
         name: '清语表情:仓库更新检测',
-        cron: Config.other.autoUpdateResCron,
-        log: false,
+        cron: Config.other.checkRepoCron,
         fnc: async () => {
           await this.checkUpdate(null, true)
         }
       })
     }
 
-    if (Config.meme.autoRes) {
+    if (Config.other.autoUpdateRes) {
       this.task.push({
         name: '清语表情:表情包数据每日更新',
         cron: Config.other.autoUpdateResCron,
-        log: false,
         fnc: async () => {
           await this.updateRes(null, true)
         }
@@ -151,17 +149,19 @@ export class update extends plugin {
       const { owner, repo, branchName } = await Code.gitRepo.getRepo()
       const localCommit = await Code.commit.getLocalCommit(Version.Plugin_Path)
       const remoteCommit = await Code.commit.getRemoteCommit(owner, repo, branchName)
+      const commitSha = await Code.gitRepo.getBranchSha(branchName)
+
       if(!await Code.gitRepo.getAllBranch()){
-        logger.debug(`${chalk.yellow(`[${Version.Plugin_AliasName}] 没有分支信息, 初始化分支信息`)}`)
+        logger.info(`${chalk.yellow(`[${Version.Plugin_AliasName}] 没有分支信息, 初始化分支信息`)}`)
         await Code.gitRepo.addBranchInfo(branchName, localCommit.sha)
       }
       if(isTask){
-        if (localCommit.sha === remoteCommit.sha) {
+        if (commitSha === remoteCommit.sha) {
           logger.debug(chalk.rgb(255, 165, 0)('✅ 当前版本已经是最新版本 🎉'))
           return
         } else if (localCommit.commitTime === remoteCommit.commitTime){
           logger.debug(chalk.cyan('🔄 当前版本已经是最新版本, 但数据库数据未更新, 开始更新数据库的数据'))
-          await Code.gitRepo.addBranch(branchName, localCommit.sha)
+          await Code.gitRepo.addBranchInfo(branchName, localCommit.sha)
           return
         }
       }
@@ -179,8 +179,7 @@ export class update extends plugin {
         branchName
       })
 
-      if (isTask) {
-        await Code.gitRepo.addBranchInfo(branchName, remoteCommit.sha)
+      if (isTask && commitSha !== remoteCommit.sha) {
         const masterQQs = Config.masterQQ.filter(qq => {
           const qqStr = String(qq)
           return qqStr.length <= 11 && qqStr !== 'stdin'
@@ -200,6 +199,7 @@ export class update extends plugin {
       } else if (!isTask && e) {
         await e.reply(img)
       }
+      await Code.gitRepo.addBranchInfo(branchName, remoteCommit.sha)
 
     } catch (error) {
       logger.error(`更新检查失败: ${error.message}`)

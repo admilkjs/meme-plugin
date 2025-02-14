@@ -126,9 +126,24 @@ await table.sync()
  * @param {object} options - 选项（`force` 是否覆盖已有记录）
  * @returns {Promise<object>} - 返回创建或更新的记录
  */
-export async function add (key, info, keyWords, params, min_texts, max_texts, min_images, max_images, defText, args_type, shortcuts, tags, { force = false }) {
+export async function add (
+  key,
+  info,
+  keyWords,
+  params,
+  min_texts,
+  max_texts,
+  min_images,
+  max_images,
+  defText,
+  args_type,
+  shortcuts,
+  tags,
+  { force = false }
+) {
   const existingRecord = await table.findOne({
-    where: { key }
+    where: { key },
+    raw: false
   })
 
   if (force && existingRecord) {
@@ -138,6 +153,19 @@ export async function add (key, info, keyWords, params, min_texts, max_texts, mi
   }
 
   if (!force && existingRecord) {
+    await existingRecord.update({
+      info,
+      keyWords,
+      params,
+      min_texts,
+      max_texts,
+      min_images,
+      max_images,
+      defText,
+      args_type,
+      shortcuts,
+      tags
+    })
     return existingRecord
   }
 
@@ -156,6 +184,7 @@ export async function add (key, info, keyWords, params, min_texts, max_texts, mi
     tags
   })
 }
+
 
 /**
  * 通过 key 查询表情包数据
