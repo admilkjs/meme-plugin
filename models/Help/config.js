@@ -1,4 +1,4 @@
-export const helpCfg = {
+export const Cfg = {
   title: '清语表情帮助',
   subTitle: 'clarity-meme',
   columnCount: 3,

@@ -26,7 +26,7 @@ async function handleTexts (e, memeKey, userText, min_texts, max_texts, default_
     default_texts &&
     default_texts.length > 0
   ) {
-    const defaultTexts = Utils.Tools.getDeftext(memeKey)
+    const defaultTexts = await Utils.Tools.getDeftext(memeKey)
     while (finalTexts.length < min_texts) {
       const randomIndex = Math.floor(Math.random() * defaultTexts.length)
       finalTexts.push(defaultTexts[randomIndex])

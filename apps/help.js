@@ -44,7 +44,7 @@ export class help extends plugin {
     const img = await Render.render(
       'help/index',
       {
-        helpCfg: Help.helpCfg,
+        helpCfg: Help.helpCfg.Cfg,
         helpGroup,
         ...themeData
       }

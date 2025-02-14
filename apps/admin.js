@@ -125,7 +125,6 @@ export class setting extends plugin {
   }
   async renderConfig (e, cfgSchema) {
     const cfg = Config.getCfg()
-    console.log(cfg)
     const img = await Render.render(
       'admin/index',
       {

@@ -1,4 +1,4 @@
-import { helpCfg } from './config.js'
+import { Cfg } from './config.js'
 
 export async function getThemeCfg () {
   const resPath = '{{_res_path}}/help/theme/'
@@ -8,7 +8,7 @@ export async function getThemeCfg () {
   return {
     main: mainImagePath,
     bg: bgImagePath,
-    style: helpCfg.style
+    style: Cfg.style
   }
 }
 export async function getThemeData (diyStyle) {
