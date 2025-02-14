@@ -1,5 +1,6 @@
 import fs from 'node:fs/promises'
 import { Version, Data, Config } from '#components'
+import { db } from '../index.js'
 import Request from './request.js'
 
 const Common = {
@@ -293,6 +294,18 @@ const Common = {
       .map((res) => res.value)
 
     return images
+  },
+
+  async addStat (key, number){
+    return await db.stat.add(key, number) || null
+  },
+
+  async getStat (key, all){
+    return await db.stat.get(key, all) || null
+  },
+
+  async getStatAll (){
+    return await db.stat.getAll() || null
   }
 }
 

@@ -4,7 +4,7 @@ export default [
     label: '表情统计设置'
   },
   {
-    field: 'stats.enable',
+    field: 'stat.enable',
     label: '表情统计',
     component: 'Switch',
     bottomHelpMessage: '是否开启表情调用统计功能'

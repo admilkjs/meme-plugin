@@ -60,8 +60,8 @@ class Config {
   }
 
   /** 统计设置 */
-  get stats () {
-    return this.getDefOrConfig('stats')
+  get stat () {
+    return this.getDefOrConfig('stat')
   }
 
   /** 自定义设置 */
@@ -158,7 +158,8 @@ class Config {
       ...this.getDefOrConfig('meme'),
       ...this.getDefOrConfig('access'),
       ...this.getDefOrConfig('protect'),
-      ...this.getDefOrConfig('server')
+      ...this.getDefOrConfig('server'),
+      ...this.getDefOrConfig('stat')
     }
   }
 
