@@ -301,7 +301,7 @@ const Common = {
   },
 
   async getStat (key){
-    return await db.stat.get(key, all) || null
+    return await db.stat.get(key, 'all') || null
   },
 
   async getStatAll (){
