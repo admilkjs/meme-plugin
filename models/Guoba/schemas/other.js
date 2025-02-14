@@ -22,6 +22,31 @@ export default [
     bottomHelpMessage: '是否开启仓库更新检测'
   },
   {
+    field: 'other.autoUpdateResCron',
+    label: '自动更新资源Cron表达式',
+    bottomHelpMessage: '定时自动更新资源Cron表达式,重启生效',
+    component: 'EasyCron',
+    componentProps: {
+      placeholder: '请输入Cron表达式'
+    }
+  },
+
+  {
+    field: 'meme.autoRes',
+    label: '自动更新资源',
+    component: 'Switch',
+    bottomHelpMessage: '是否自动更新表情包资源，开启后每日凌晨会自动更新'
+  },
+  {
+    field: 'meme.autoResCron',
+    label: '自动更新资源Cron表达式',
+    bottomHelpMessage: '定时自动更新资源Cron表达式,重启生效',
+    component: 'EasyCron',
+    componentProps: {
+      placeholder: '请输入Cron表达式'
+    }
+  },
+  {
     field: 'other.autoUpdate',
     label: '自动更新',
     component: 'Switch',

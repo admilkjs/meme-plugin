@@ -38,11 +38,5 @@ export default [
     label: '引用图片',
     component: 'Switch',
     bottomHelpMessage: '是否开启获取引用消息中的图片'
-  },
-  {
-    field: 'meme.autoRes',
-    label: '自动更新资源',
-    component: 'Switch',
-    bottomHelpMessage: '是否自动更新表情包资源，开启后每日凌晨会自动更新'
   }
 ]

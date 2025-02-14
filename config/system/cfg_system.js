@@ -60,12 +60,6 @@ const cfgSchema = {
         desc: '是否开启引用图片, 开启后会获取引用消息中的图片',
         type: 'boolean',
         def: true
-      },
-      autoRes: {
-        title: '自动更新资源',
-        desc: '是否自动更新表情包资源，开启后每日凌晨会自动更新',
-        type: 'boolean',
-        def: false
       }
     }
   },
@@ -159,19 +153,24 @@ const cfgSchema = {
   other: {
     title: '其他设置',
     cfg: {
-      checkRepo: {
-        title: '仓库更新检测',
-        type: 'boolean',
-        desc: '是否开启仓库更新检测',
-        def: false
-      },
       renderScale: {
         title: '渲染精度',
         type: 'number',
-        input: (n) => Math.min(200, Math.max(50, n * 1 || 100)),
         desc: '可选值50~200，建议100。设置高精度会提高图片的精细度，但因图片较大可能会影响渲染与发送速度',
         def: 100
       }
+    },
+    checkRepo: {
+      title: '仓库更新检测',
+      type: 'boolean',
+      desc: '是否开启仓库更新检测',
+      def: false
+    },
+    autoRes: {
+      title: '自动更新资源',
+      desc: '是否自动更新表情包资源，开启后每日凌晨会自动更新',
+      type: 'boolean',
+      def: false
     }
   }
 }

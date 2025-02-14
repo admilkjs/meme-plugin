@@ -36,7 +36,7 @@ export class update extends plugin {
     if (Config.other.checkRepo) {
       this.task.push({
         name: '清语表情:仓库更新检测',
-        cron: '0 0/20 * * * ?',
+        cron: Config.other.autoUpdateResCron,
         log: false,
         fnc: async () => {
           await this.checkUpdate(null, true)
@@ -47,7 +47,7 @@ export class update extends plugin {
     if (Config.meme.autoRes) {
       this.task.push({
         name: '清语表情:表情包数据每日更新',
-        cron: '0 20 0 * * ?',
+        cron: Config.other.autoUpdateResCron,
         log: false,
         fnc: async () => {
           await this.updateRes(null, true)
@@ -63,14 +63,14 @@ export class update extends plugin {
         const masters = Object.keys(Config.masterQQ)
         for (const master of masters) {
           if (master.toString().length > 11) {
-            logger.info('[清语表情] 更新推送跳过 QQBot')
+            logger.info(chalk.yellow(`[${Version.Plugin_AliasName}] 更新推送跳过 QQBot`))
             continue
           }
           try {
             await Bot.pickFriend(master).sendMsg(msg)
             await Bot.sleep(2000)
           } catch (err) {
-            logger.error(`[清语表情] 向好友 ${master} 发送消息时出错：`, err)
+            logger.error(`[${Version.Plugin_AliasName}] 向好友 ${master} 发送消息时出错：`, err)
           }
         }
       }
@@ -147,6 +147,7 @@ export class update extends plugin {
 
   async checkUpdate (e, isTask = false) {
     try {
+      if (!Config.other.checkRepo && (isTask || e.isMaster))return
       const { owner, repo, branchName } = await Code.gitRepo.getRepo()
       const localCommit = await Code.commit.getLocalCommit(Version.Plugin_Path)
       const remoteCommit = await Code.commit.getRemoteCommit(owner, repo, branchName)
@@ -196,13 +197,13 @@ export class update extends plugin {
             }
           }
         }
-      } else if (!isTask && e.isMaster) {
+      } else if (!isTask && e) {
         await e.reply(img)
       }
 
     } catch (error) {
       logger.error(`更新检查失败: ${error.message}`)
-      if (!isTask && e.isMaster) {
+      if (!isTask && e) {
         await e.reply(`更新检查失败: ${error.message}`)
       }
     }
