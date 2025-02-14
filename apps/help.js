@@ -40,7 +40,7 @@ export class help extends plugin {
 
       helpGroup.push(group)
     })
-    const themeData = await Help.Theme.getThemeData(Help.helpCfg)
+    const themeData = await Help.Theme.getThemeData(Help.helpCfg.Cfg)
     const img = await Render.render(
       'help/index',
       {

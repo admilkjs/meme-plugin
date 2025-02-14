@@ -1,7 +1,8 @@
+import { Version } from '#components'
 import { Cfg } from './config.js'
 
 export async function getThemeCfg () {
-  const resPath = '{{_res_path}}/help/theme/'
+  const resPath = `${Version.Plugin_Path}/resources/help/theme`
   const mainImagePath = `${resPath}/main.png`
   const bgImagePath = `${resPath}/bg.jpg`
 

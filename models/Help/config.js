@@ -1,6 +1,8 @@
+import { Version } from '#components'
+
 export const Cfg = {
-  title: '清语表情帮助',
-  subTitle: 'clarity-meme',
+  title: `${Version.Plugin_AliasName}帮助`,
+  subTitle: Version.Plugin_Name,
   columnCount: 3,
   colWidth: 265,
   theme: 'all',
