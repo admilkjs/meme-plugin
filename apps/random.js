@@ -21,8 +21,7 @@ export class random extends plugin {
     try {
       const memeKeys = await Utils.Tools.getAllKeys() ?? null
       if (!memeKeys || memeKeys.length === 0) {
-        await e.reply('未找到可用的表情包')
-        return true
+        throw new Error('未找到可用的表情包')
       }
 
       for (let i = memeKeys.length - 1; i > 0; i--) {
@@ -58,24 +57,26 @@ export class random extends plugin {
             )
 
             let replyMessage = [
-              ('本次随机表情信息如下:\n'),
-              (`表情的名称: ${memeKey}\n`),
-              (`表情的别名: ${keyWords}\n`),
+              '本次随机表情信息如下:\n',
+              `表情的名称: ${memeKey}\n`,
+              `表情的别名: ${keyWords}\n`,
               segment.image(result)
             ]
             await e.reply(replyMessage)
             return true
           } catch (error) {
-            await e.reply(`[${Version.Plugin_AliasName}] 生成随机表情失败, 错误信息: ${error.message}`)
-            return false
+            throw new Error(error.message)
           }
         }
       }
 
-      await e.reply('未找到有效的表情包')
-      return true
+      throw new Error('未找到有效的表情包')
+
     } catch (error) {
-      await e.reply(`[清语表情] 生成随机表情包失败, 错误信息: ${error.message}`)
+      logger.error(error.message)
+      if(Config.meme.errorReply){
+        await e.reply(`[${Version.Plugin_AliasName}] 生成随机表情失败, 错误信息: ${error.message}`)
+      }
     }
   }
 }

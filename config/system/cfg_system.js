@@ -60,6 +60,12 @@ const cfgSchema = {
         desc: '是否开启引用图片, 开启后会获取引用消息中的图片',
         type: 'boolean',
         def: true
+      },
+      errorReply: {
+        title: '错误回复',
+        desc: '是否开启错误信息回复',
+        type: 'boolean',
+        def: true
       }
     }
   },

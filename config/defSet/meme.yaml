@@ -15,3 +15,6 @@ userName: false
 
 # 是否开启获取引用消息中的图片
 quotedImages: true
+
+# 是否开启表情生成错误回复
+errorReply: true 

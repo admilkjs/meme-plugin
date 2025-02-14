@@ -38,5 +38,11 @@ export default [
     label: '引用图片',
     component: 'Switch',
     bottomHelpMessage: '是否开启获取引用消息中的图片'
+  },
+  {
+    field: 'meme.errorReply',
+    label: '错误回复',
+    component: 'Switch',
+    bottomHelpMessage: '是否开启错误信息回复'
   }
 ]

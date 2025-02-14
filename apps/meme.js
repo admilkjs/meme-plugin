@@ -118,7 +118,10 @@ export class meme extends plugin {
       await e.reply(segment.image(result), Config.meme.reply)
       return true
     }catch(error){
-      await e.reply(`[${Version.Plugin_AliasName}] 生成表情失败, 错误信息: ${error.message}`)
+      logger.error(error.message)
+      if(Config.meme.errorReply){
+        await e.reply(`[${Version.Plugin_AliasName}] 生成表情失败, 错误信息: ${error.message}`)
+      }
       return false
     }
   }
