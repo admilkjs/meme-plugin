@@ -54,7 +54,7 @@ async function make (e, memeKey, min_texts, max_texts, min_images, max_images, d
     const result = await Utils.Tools.request(memeKey, formData, 'arraybuffer')
     if (!result.success) throw new Error(result.message)
     if(Config.stat.enable){
-      const stat = await Utils.Common.getStat(memeKey, all)
+      const stat = await Utils.Common.getStat(memeKey)
       await Utils.Common.addStat(memeKey, stat+1)
     }
     const base64Image = await Utils.Common.getImageBase64(result.data, true)

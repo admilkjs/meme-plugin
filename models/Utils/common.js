@@ -300,7 +300,7 @@ const Common = {
     return await db.stat.add(key, number) || null
   },
 
-  async getStat (key, all){
+  async getStat (key){
     return await db.stat.get(key, all) || null
   },
 
