@@ -38,12 +38,12 @@ export const List = [
     list: [
       {
         icon: 95,
-        title: '#清语表情(插件)(强制)更新',
+        title: '#清语表情{插件}{强制}更新',
         desc: '更新插件本体'
       },
       {
         icon: 81,
-        title: '#清语表情更新资源',
+        title: '#清语表情({强制}更新资源',
         desc: '更新表情资源'
       },
       {
