@@ -245,6 +245,8 @@ const Common = {
       }
     }
 
+
+
     if (source) {
       const sourceArray = Array.isArray(source) ? source : [source]
 
@@ -258,10 +260,11 @@ const Common = {
       quotedImages.length === 0 &&
       imagesInMessage.length === 0 &&
       source &&
-      (e.source.user_id || e.message.some(msg => msg.type === 'reply'))
+      (e.source || e.message.some(msg => msg.type === 'reply'))
     ) {
-      sender = source.sender.user_id
-      const avatarBuffer = await this.getAvatar(e, sender)
+      const sourceArray = Array.isArray(source) ? source : [source]
+      quotedUser = sourceArray[0].sender.user_id
+      const avatarBuffer = await this.getAvatar(e, quotedUser)
       if (avatarBuffe[0]) {
         quotedImages.push(avatarBuffer[0])
       }
