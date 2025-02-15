@@ -25,7 +25,7 @@ const Tools = {
 
     if (!memeData || memeData.length === 0) {
       logger.debug(chalk.cyan('🚀 表情包数据不存在，开始生成...'))
-      await this.generateMemeData()
+      await this.generateMemeData(true)
     } else {
       logger.debug(chalk.cyan('✅ 表情包数据已存在，加载完成'))
     }
@@ -34,7 +34,7 @@ const Tools = {
 
   /**
    * 生成本地表情包数据
-   * @param {boolean} forceUpdate - 是否强制更新数据
+   * @param {boolean} forceUpdate - 是否进行全量更新数据, 默认为增量更新数据
    * @returns {Promise<void>}
    */
   async generateMemeData (forceUpdate = false) {
@@ -48,32 +48,30 @@ const Tools = {
       logger.info(chalk.magenta.bold('🌟 开始生成表情包数据...'))
 
       const keysResponse = await Utils.Request.get(`${baseUrl}/memes/keys`)
-
-      if (!keysResponse.success) {
-        logger.error(`获取所有表情键值失败: ${keysResponse.message}`)
+      if (!keysResponse.success || !keysResponse.data.length) {
+        logger.warn('⚠️ 未获取到任何表情包键值，跳过数据更新。')
         return
       }
 
       await Promise.all(
         keysResponse.data.map(async (key) => {
           const infoResponse = await Utils.Request.get(`${baseUrl}/memes/${key}/info`)
-
           if (!infoResponse.success) {
             logger.error(`获取表情包详情失败: ${key} - ${infoResponse.message}`)
             return
           }
 
           const info = infoResponse.data
-          const keyWords = info.keywords && info.keywords.length ? info.keywords : null
+          const keyWords = info.keywords?.length ? info.keywords : null
           const params = info.params_type && Object.keys(info.params_type).length ? info.params_type : null
           const min_texts = params?.min_texts ?? null
           const max_texts = params?.max_texts ?? null
           const min_images = params?.min_images ?? null
           const max_images = params?.max_images ?? null
-          const defText = params?.default_texts && params.default_texts.length ? params.default_texts : null
+          const defText = params?.default_texts?.length ? params.default_texts : null
           const args_type = params?.args_type ?? null
-          const shortcuts = info.shortcuts && info.shortcuts.length ? info.shortcuts : null
-          const tags = info.tags && info.tags.length ? info.tags : null
+          const shortcuts = info.shortcuts?.length ? info.shortcuts : null
+          const tags = info.tags?.length ? info.tags : null
 
           await db.meme.add(
             key,
@@ -92,6 +90,8 @@ const Tools = {
           )
         })
       )
+
+      logger.info(chalk.green.bold('✅ 表情包数据生成完成！'))
     } catch (error) {
       logger.error(`生成本地表情包数据失败: ${error.message}`)
       throw error

@@ -112,19 +112,28 @@ export const table = sequelize.define('meme', {
 await table.sync()
 
 /**
- * 添加或更新表情包记录
- * @param {string} key - 唯一标识符
- * @param {object} info - 存储的信息
- * @param {object} params - 参数 JSON
- * @param {number} min_texts - 最小文本数量
- * @param {number} max_texts - 最大文本数量
- * @param {number} min_images - 最小图片数量
- * @param {number} max_images - 最大图片数量
- * @param {object | null} args_type - 参数类型（可选）
- * @param {object | null} shortcuts - 快捷方式（可选）
- * @param {string[] | null} tags - 标签数组（可选）
- * @param {object} options - 选项（`force` 是否覆盖已有记录）
- * @returns {Promise<object>} - 返回创建或更新的记录
+ * 添加或更新表情包记录。
+ *
+ * 如果 `force` 为 `true`，将删除现有的记录并重新创建新的记录。
+ * 如果 `force` 为 `false`，将更新现有的记录（如果存在），否则创建新的记录。
+ *
+ * @param {string} key - 表情包的唯一标识符
+ * @param {object} info - 存储表情包的基本信息（JSON 格式）
+ * @param {string[] | null} keyWords - 表情包的关键字（JSON 数组），如果没有提供，传 `null`
+ * @param {object | null} params - 表情包的参数（JSON 格式），如果没有提供，传 `null`
+ * @param {number} min_texts - 表情包的最小文本数量
+ * @param {number} max_texts - 表情包的最大文本数量
+ * @param {number} min_images - 表情包的最小图片数量
+ * @param {number} max_images - 表情包的最大图片数量
+ * @param {string[] | null} defText - 默认文本数组（可选），如果没有提供，传 `null`
+ * @param {object | null} args_type - 参数类型（JSON 格式，可选），如果没有提供，传 `null`
+ * @param {object | null} shortcuts - 表情包的快捷方式（JSON 格式，可选），如果没有提供，传 `null`
+ * @param {string[] | null} tags - 表情包的标签（JSON 数组，可选），如果没有提供，传 `null`
+ * @param {object} options - 选项对象，包含 `force` 属性来控制是否全量更新（默认为 `false`，表示增量更新）
+ *
+ * @returns {Promise<object>} - 返回创建或更新的表情包记录对象
+ *
+ * @throws {Error} - 如果数据库操作失败，抛出错误
  */
 export async function add (
   key,
@@ -141,19 +150,10 @@ export async function add (
   tags,
   { force = false }
 ) {
-  const existingRecord = await table.findOne({
-    where: { key },
-    raw: false
-  })
-
-  if (force && existingRecord) {
-    await table.destroy({
-      where: { key }
-    })
-  }
-
-  if (!force && existingRecord) {
-    await existingRecord.update({
+  if (force) {
+    await table.destroy({ where: { key } })
+    return await table.create({
+      key,
       info,
       keyWords,
       params,
@@ -166,10 +166,9 @@ export async function add (
       shortcuts,
       tags
     })
-    return existingRecord
   }
 
-  return await table.create({
+  await table.upsert({
     key,
     info,
     keyWords,
@@ -184,6 +183,8 @@ export async function add (
     tags
   })
 }
+
+
 
 
 /**

@@ -21,7 +21,7 @@ export class update extends plugin {
           fnc: 'updateLog'
         },
         {
-          reg: /^#?(清语表情|clarity-meme)更新(表情包)?(资源|数据)$/i,
+          reg: /^#?(清语表情|clarity-meme)(强制)?更新(表情包)?(资源|数据)$/i,
           fnc: 'updateRes'
         },
         {
@@ -105,11 +105,14 @@ export class update extends plugin {
     }
 
     if (!isTask && e) {
-      await e.reply(`[${Version.Plugin_AliasName}] 开始更新表情包数据中, 请稍后...`)
+      await e.reply('开始更新表情包数据中, 请稍后...')
     }
 
     try {
-      await Utils.Tools.generateMemeData(true)
+      if (!isTask && e && e.msg.includes('强制')) {
+        await Utils.Tools.generateMemeData(true)
+      }
+      await Utils.Tools.generateMemeData()
       const Plugin = new meme()
       const pluginName = Plugin.name
       const pluginKey = pluginsLoader.priority.find((p) => {
@@ -129,7 +132,7 @@ export class update extends plugin {
       await pluginInfo.updateRegExp()
 
       if (!isTask && e) {
-        await e.reply(`[${Version.Plugin_AliasName}] 表情包数据更新完成`)
+        await e.reply('表情包数据更新完成')
       }
       logger.mark(chalk.rgb(255, 165, 0)('✅ 表情包数据更新完成 🎉'))
       return true
