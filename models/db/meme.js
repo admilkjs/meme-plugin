@@ -282,3 +282,15 @@ export async function getAllSelect (name) {
 export async function getAll () {
   return await table.findAll()
 }
+
+/**
+ * 删除指定 key 的表情包记录
+ * @param {string} key - 需要删除的表情包的唯一标识符
+ * @returns {Promise<boolean>} - 如果成功删除返回 `true`，否则返回 `false`
+ */
+export async function remove (key) {
+  const deletedCount = await table.destroy({
+    where: { key }
+  })
+  return deletedCount > 0
+}

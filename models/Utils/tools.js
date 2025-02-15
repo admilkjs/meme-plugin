@@ -41,37 +41,62 @@ const Tools = {
     try {
       const baseUrl = await this.getBaseUrl()
       if (!baseUrl) {
-        logger.error('无法获取表情包请求基础路径')
+        logger.error('❌ 无法获取表情包请求基础路径')
         return
       }
 
       logger.info(chalk.magenta.bold('🌟 开始生成表情包数据...'))
 
-      const keysResponse = await Utils.Request.get(`${baseUrl}/memes/keys`)
-      if (!keysResponse.success || !keysResponse.data.length) {
+      const localKeys = forceUpdate ? new Set() : new Set(await this.getAllKeys())
+
+      const remoteKeysResponse = await Utils.Request.get(`${baseUrl}/memes/keys`)
+      if (!remoteKeysResponse.success || !remoteKeysResponse.data.length) {
         logger.warn('⚠️ 未获取到任何表情包键值，跳过数据更新。')
         return
       }
+      const remoteKeys = new Set(remoteKeysResponse.data)
+
+      const keysToUpdate = forceUpdate
+        ? [...remoteKeys]
+        : [...remoteKeys].filter(key => !localKeys.has(key))
+
+      const keysToDelete = [...localKeys].filter(key => !remoteKeys.has(key))
+
+      if (!keysToUpdate.length && !keysToDelete.length) {
+        logger.info(chalk.cyan('✅ 表情包数据已是最新，无需更新或删除。'))
+        return
+      }
+
+      logger.debug(chalk.magenta(`🔄 需要更新 ${keysToUpdate.length} 个表情包`))
+      logger.debug(chalk.red(`🗑️  需要删除 ${keysToDelete.length} 个表情包`))
+
+      if (keysToDelete.length) {
+        await this.removeKey(keysToDelete)
+        logger.info(chalk.yellow(`🗑️ 已删除 ${keysToDelete.length} 个表情包`))
+      }
 
       await Promise.all(
-        keysResponse.data.map(async (key) => {
+        keysToUpdate.map(async key => {
           const infoResponse = await Utils.Request.get(`${baseUrl}/memes/${key}/info`)
           if (!infoResponse.success) {
-            logger.error(`获取表情包详情失败: ${key} - ${infoResponse.message}`)
+            logger.error(`❌ 获取表情包详情失败: ${key} - ${infoResponse.message}`)
             return
           }
 
           const info = infoResponse.data
-          const keyWords = info.keywords?.length ? info.keywords : null
-          const params = info.params_type && Object.keys(info.params_type).length ? info.params_type : null
+          const {
+            keywords: keyWords = null,
+            shortcuts = null,
+            tags = null,
+            params_type: params = null
+          } = info
+
           const min_texts = params?.min_texts ?? null
           const max_texts = params?.max_texts ?? null
           const min_images = params?.min_images ?? null
           const max_images = params?.max_images ?? null
           const defText = params?.default_texts?.length ? params.default_texts : null
           const args_type = params?.args_type ?? null
-          const shortcuts = info.shortcuts?.length ? info.shortcuts : null
-          const tags = info.tags?.length ? info.tags : null
 
           await db.meme.add(
             key,
@@ -86,14 +111,14 @@ const Tools = {
             args_type,
             shortcuts,
             tags,
-            { force: forceUpdate }
+            { force: true }
           )
         })
       )
 
-      logger.info(chalk.green.bold('✅ 表情包数据生成完成！'))
+      logger.info(chalk.green.bold('✅ 表情包数据更新完成！'))
     } catch (error) {
-      logger.error(`生成本地表情包数据失败: ${error.message}`)
+      logger.error(`❌ 生成本地表情包数据失败: ${error.message}`)
       throw error
     }
   },
@@ -263,6 +288,19 @@ const Tools = {
   async getDeftext (key) {
     return JSON.parse(await db.meme.getByKey(key, 'defText')) || null
   },
+
+  /**
+   * 删除指定key的表情
+   * @param {string||string[]} key
+   * @returns {boolean}
+   */
+  async removeKey (keys) {
+    if (!Array.isArray(keys)) {
+      keys = [keys] // 确保 keys 是数组
+    }
+    await Promise.all(keys.map(key => db.meme.remove(key)))
+  },
+
 
 
   /**
