@@ -21,6 +21,7 @@ const Common = {
   /**
    * 判断是否在海外环境
    * @returns {Promise<boolean>} - 如果在海外环境返回 true，否则返回 false
+   * @throws {Error} - 如果获取 IP 位置失败，则抛出异常
    */
   async isAbroad () {
     const urls = [
@@ -35,15 +36,16 @@ const Common = {
       )
       return traceMap.loc !== 'CN'
     } catch (error) {
-      throw new Error(`获取IP所在地区出错: ${error.message}`)
+      throw new Error(`获取 IP 所在地区出错: ${error.message}`)
     }
   },
+
   /**
-  * 获取图片 Buffer
-  * @param {string | Buffer} image - 图片地址或 Buffer
-  * @returns {Promise<Buffer>} - 返回图片的 Buffer 数据
-  * @throws {Error} - 如果图片地址为空或请求失败，则抛出异常
-  */
+   * 获取图片 Buffer
+   * @param {string | Buffer} image - 图片地址或 Buffer
+   * @returns {Promise<Buffer>} - 返回图片的 Buffer 数据
+   * @throws {Error} - 如果图片地址为空或请求失败，则抛出异常
+   */
   async getImageBuffer (image) {
     if (!image) throw new Error('图片地址不能为空')
 
@@ -60,14 +62,16 @@ const Common = {
   },
 
   /**
- * 获取图片 Base64 字符串
- * @param {string | Buffer} image - 图片的 URL、Buffer 或 Base64 字符串
- * @param {boolean} withPrefix - 是否添加 base64:// 前缀，默认 false
- * @returns {Promise<string>} - 返回图片的 Base64 字符串，带或不带前缀
- * @throws {Error} - 如果图片地址为空或处理失败，则抛出异常
- */
+   * 获取图片 Base64 字符串
+   * @param {string | Buffer} image - 图片的 URL、Buffer 或 Base64 字符串
+   * @param {boolean} [withPrefix=false] - 是否添加 `base64://` 前缀
+   * @returns {Promise<string>} - 返回 Base64 编码的图片字符串，可能包含 `base64://` 前缀
+   * @throws {Error} - 如果图片地址为空或处理失败，则抛出异常
+   */
   async getImageBase64 (image, withPrefix = false) {
-    if (!image) logger.error(`[${Version.Plugin_AliasName}] 图片地址不能为空`)
+    if (!image) {
+      logger.error('图片地址不能为空')
+    }
 
     if (typeof image === 'string' && image.startsWith('base64://')) {
       return withPrefix ? image : image.replace('base64://', '')
@@ -84,16 +88,16 @@ const Common = {
       const base64Data = Buffer.from(buffer).toString('base64')
       return withPrefix ? `base64://${base64Data}` : base64Data
     } else {
-      logger.error(`[${Version.Plugin_AliasName}] 图片处理失败, 错误信息: ${response.message}`)
+      logger.error(`图片处理失败, 错误信息: ${response.message}`)
     }
   },
-
   /**
- * 获取用户头像
- * @param {string | string[]} userList - 单个或多个 QQ 号
- * @returns {Promise<Buffer[]>} - 返回头像 Buffer 数组
- * @throws {Error} - 如果用户列表为空或头像获取失败，则抛出异常
- */
+   * 获取用户头像
+   * @param {object} e - 消息事件对象
+   * @param {string | string[]} userList - 单个或多个 QQ 号
+   * @returns {Promise<Buffer[]>} - 返回头像 Buffer 数组
+   * @throws {Error} - 如果用户列表为空或头像获取失败，则抛出异常
+   */
   async getAvatar (e, userList) {
     if (!userList) {
       throw new Error('QQ 号不能为空')
@@ -101,28 +105,29 @@ const Common = {
     if (!Array.isArray(userList)) userList = [userList]
 
     const cacheDir = `${Version.Plugin_Path}/data/avatar`
-    if (!await this.fileExistsAsync(cacheDir)) {
+
+    if (Config.meme.cache && !await this.fileExistsAsync(cacheDir)) {
       await Data.createDir('data/avatar', '', false)
     }
 
+    /**
+     * 下载用户头像
+     * @param {string} qq - QQ 号
+     * @returns {Promise<Buffer>} - 返回头像 Buffer
+     */
     const downloadAvatar = async (qq) => {
-      const cachePath = `${cacheDir}/avatar_${qq}.png`
-      let avatarUrl = ''
+      const avatarUrl = await this.getAvatarURL(e, qq)
 
-      try {
-        if (e.isGroup) {
-          const member = Bot[e.self_id].pickGroup(e.group_id).pickMember(qq)
-          avatarUrl = await member.getAvatarUrl()
-        } else if (e.isPrivate) {
-          const friend = Bot[e.self_id].pickFriend(qq)
-          avatarUrl = await friend.getAvatarUrl()
+      if (!Config.meme.cache) {
+        const response = await Request.get(avatarUrl, {}, {}, 'arraybuffer')
+        if (response.success) {
+          return response.data
+        } else {
+          throw new Error(`下载头像失败: ${avatarUrl}`)
         }
-      } catch (err) {
       }
 
-      if (!avatarUrl) {
-        avatarUrl = `https://q1.qlogo.cn/g?b=qq&s=0&nk=${qq}`
-      }
+      const cachePath = `${cacheDir}/avatar_${qq}.png`
 
       if (await this.fileExistsAsync(cachePath)) {
         const localStats = await fs.stat(cachePath)
@@ -149,73 +154,12 @@ const Common = {
     }
 
     try {
-      const results = await Promise.all(userList.map((qq) => downloadAvatar(qq)))
-      return results
+      return await Promise.all(userList.map((qq) => downloadAvatar(qq)))
     } catch (err) {
-      logger.error(`[${Version.Plugin_AliasName}]获取头像失败: ${err}`)
+      logger.error(`获取头像失败: ${err}`)
       return null
     }
   },
-
-
-  /**
-   * 获取用户昵称
-   * @param {string} qq - QQ 号
-   * @param {object} e - 消息对象，用于区分群聊或私聊
-   * @returns {Promise<string>} - 返回用户昵称，若获取失败则返回 "未知"
-   */
-  async getNickname (e, qq) {
-    if (!qq || !e) {
-      return '未知'
-    }
-
-    try {
-      if (e.isGroup) {
-        const group = Bot[e.self_id].pickGroup(e.group_id)
-        const Member = group.pickMember(qq)
-        const MemberInfo = await Member.getInfo()
-        return MemberInfo.card || MemberInfo.nickname || '未知'
-      } else if (e.isPrivate) {
-        const Friend = Bot[e.self_id].pickFriend(qq)
-        const FriendInfo = await Friend.getInfo()
-        return FriendInfo.nickname || '未知'
-      }
-    } catch (error) {
-      return '未知'
-    }
-  },
-
-  /**
-   * 获取用户性别
-   *
-   * @async
-   * @param {number} qq - 要查询的 QQ 号码。
-   * @returns {Promise<string>} - 返回一个 Promise，其解析值为：
-   *   - 'male'：男性。
-   *   - 'female'：女性。
-   *   - 'unknown'：未知性别。
-   */
-  async getGender (qq, e) {
-    if (!qq || !e) {
-      return 'unknown'
-    }
-
-    try {
-      if (e.isGroup) {
-        const group = Bot[e.self_id].pickGroup(e.group_id)
-        const Member = group.pickMember(qq)
-        const MemberInfo = await Member.getInfo()
-        return MemberInfo.sex || 'unknown'
-      } else if (e.isPrivate) {
-        const Friend = Bot[e.self_id].pickFriend(qq)
-        const FriendInfo = await Friend.getInfo()
-        return FriendInfo.sex || 'unknown'
-      }
-    } catch (error) {
-      return 'unknown'
-    }
-  },
-
   /**
    * 获取图片列表（包括消息和引用消息中的图片）
    * @param {object} e - 消息对象
@@ -229,11 +173,11 @@ const Common = {
     const tasks = []
 
     /**
-     * 获取引用消息中的图片
-     */
+       * 获取引用消息中的图片
+       */
     let quotedImages = []
     let source = null
-    if(Config.meme.quotedImages){
+    if (Config.meme.quotedImages) {
       if (e.getReply) {
         source = await e.getReply()
       } else if (e.source) {
@@ -244,8 +188,6 @@ const Common = {
         }
       }
     }
-
-
 
     if (source) {
       const sourceArray = Array.isArray(source) ? source : [source]
@@ -258,22 +200,21 @@ const Common = {
 
     if (
       quotedImages.length === 0 &&
-      imagesInMessage.length === 0 &&
-      source &&
-      (e.source || e.message.some(msg => msg.type === 'reply'))
+        imagesInMessage.length === 0 &&
+        source &&
+        (e.source || e.message.some(msg => msg.type === 'reply'))
     ) {
       const sourceArray = Array.isArray(source) ? source : [source]
-      quotedUser = sourceArray[0].sender.user_id
+      const quotedUser = sourceArray[0].sender.user_id
       const avatarBuffer = await this.getAvatar(e, quotedUser)
-      if (avatarBuffe[0]) {
+      if (avatarBuffer[0]) {
         quotedImages.push(avatarBuffer[0])
       }
     }
 
-
     /**
-     * 引用消息中的图片任务
-     */
+       * 引用消息中的图片任务
+       */
     if (quotedImages.length > 0) {
       quotedImages.forEach((item) => {
         if (Buffer.isBuffer(item)) {
@@ -285,8 +226,8 @@ const Common = {
     }
 
     /**
-     * 消息中的图片任务
-     */
+       * 消息中的图片任务
+       */
     if (imagesInMessage.length > 0) {
       tasks.push(...imagesInMessage.map((imageUrl) => this.getImageBuffer(imageUrl)))
     }
@@ -295,19 +236,101 @@ const Common = {
     const images = results
       .filter((res) => res.status === 'fulfilled' && res.value)
       .map((res) => res.value)
-
     return images
   },
 
-  async addStat (key, number){
+  /**
+   * 获取用户头像 URL
+   * @param {object} e - 消息事件对象
+   * @param {string} qq - QQ 号
+   * @returns {Promise<string>} - 返回头像 URL
+   */
+  async getAvatarURL (e, qq) {
+    if (!qq || !e) {
+      throw new Error('QQ 号不能为空')
+    }
+
+    let avatarUrl = ''
+
+    try {
+      if (e.isGroup) {
+        const member = Bot[e.self_id].pickGroup(e.group_id).pickMember(qq)
+        avatarUrl = await member.getAvatarUrl()
+      } else if (e.isPrivate) {
+        const friend = Bot[e.self_id].pickFriend(qq)
+        avatarUrl = await friend.getAvatarUrl()
+      }
+    } catch (err) {
+    }
+
+    return avatarUrl || `https://q1.qlogo.cn/g?b=qq&s=0&nk=${qq}`
+  },
+
+  /**
+   * 获取用户昵称
+   * @param {object} e - 消息事件对象
+   * @param {string} qq - QQ 号
+   * @returns {Promise<string>} - 返回用户昵称，若获取失败则返回 "未知"
+   */
+  async getNickname (e, qq) {
+    if (!qq || !e) return '未知'
+
+    try {
+      if (e.isGroup) {
+        const group = Bot[e.self_id].pickGroup(e.group_id)
+        const member = group.pickMember(qq)
+        const memberInfo = await member.getInfo()
+        return memberInfo.card || memberInfo.nickname || '未知'
+      } else if (e.isPrivate) {
+        const friend = Bot[e.self_id].pickFriend(qq)
+        const friendInfo = await friend.getInfo()
+        return friendInfo.nickname || '未知'
+      }
+    } catch {
+      return '未知'
+    }
+  },
+
+  /**
+   * 获取用户性别
+   * @param {object} e - 消息事件对象
+   * @param {string} qq - QQ 号
+   * @returns {Promise<string>} - 返回 'male'、'female' 或 'unknown'
+   */
+  async getGender (e, qq) {
+    if (!qq || !e) return 'unknown'
+
+    try {
+      if (e.isGroup) {
+        const group = Bot[e.self_id].pickGroup(e.group_id)
+        const member = group.pickMember(qq)
+        const memberInfo = await member.getInfo()
+        return memberInfo.sex || 'unknown'
+      } else if (e.isPrivate) {
+        const friend = Bot[e.self_id].pickFriend(qq)
+        const friendInfo = await friend.getInfo()
+        return friendInfo.sex || 'unknown'
+      }
+    } catch {
+      return 'unknown'
+    }
+  },
+
+  /**
+   * 统计相关操作
+   * @param {string} key - 统计项键名
+   * @param {number} number - 统计数值
+   * @returns {Promise<number|null>} - 返回更新后的统计数值或 null
+   */
+  async addStat (key, number) {
     return await db.stat.add(key, number) || null
   },
 
-  async getStat (key){
+  async getStat (key) {
     return await db.stat.get(key, 'all') || null
   },
 
-  async getStatAll (){
+  async getStatAll () {
     return await db.stat.getAll() || null
   }
 }
