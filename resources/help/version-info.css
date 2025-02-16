@@ -11,7 +11,7 @@ body {
   transform-origin: 0 0;
 }
 .container {
-  background: url("./theme/main-02.png") top left repeat;
+  background: url("./theme/main-02.webp") top left repeat;
   background-size: cover;
   width: 800px;
   padding: 10px 0 10px 0;

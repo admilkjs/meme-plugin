@@ -3,7 +3,7 @@ body {
   width: 660px;
 }
 .container {
-  background: url("./imgs/bg.png") #000144 left top repeat-y;
+  background: url("./imgs/bg.webp") #000144 left top repeat-y;
   background-size: 700px auto;
   width: 660px;
 }
@@ -42,7 +42,7 @@ body {
   font-weight: bold;
   border-radius: 16px;
   box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
-  background: url("./imgs/cfg-right.jpg") right top #cbc4be no-repeat;
+  background: url("./imgs/cfg.webp") right top #cbc4be no-repeat;
   background-size: auto 36px;
 }
 .cfg-hint {

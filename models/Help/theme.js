@@ -3,8 +3,8 @@ import { Cfg } from './config.js'
 
 export async function getThemeCfg () {
   const resPath = `${Version.Plugin_Path}/resources/help/theme`
-  const mainImagePath = `${resPath}/main.png`
-  const bgImagePath = `${resPath}/bg.jpg`
+  const mainImagePath = `${resPath}/main.webp`
+  const bgImagePath = `${resPath}/bg.webp`
 
   return {
     main: mainImagePath,
