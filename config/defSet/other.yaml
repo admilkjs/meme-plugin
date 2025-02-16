@@ -5,7 +5,7 @@ renderScale: 100
 checkRepo: true
 
 # 仓库更新检查推送Cron
-checkRepoCron: "* */20 * * * ?"
+checkRepoCron: "0 0/20 * * * ?"
 
 # 是否开启每日自动更新表情包数据
 autoUpdateRes: true
