@@ -1,6 +1,5 @@
 import { Utils } from '#models'
-import { Config, Version } from '#components'
-import FormData from 'form-data'
+import { Config } from '#components'
 import { handleArgs, handle } from './args.js'
 import { handleImages } from './images.js'
 import { handleTexts } from './texts.js'

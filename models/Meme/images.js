@@ -22,8 +22,10 @@ async function handleImages (e, memeKey, userText, min_images, max_images, allUs
   let finalImages = [...userAvatars, ...messageImages].slice(0, max_images)
 
   finalImages.forEach((buffer, index) => {
-    formData.append('images', buffer, `image${index}.png`)
+    const blob = new Blob([buffer], { type: 'image/png' })
+    formData.append('images', blob, `image${index}.png`)
   })
+
   if (finalImages.length < min_images) {
     return {
       success: false,

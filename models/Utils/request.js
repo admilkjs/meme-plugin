@@ -1,5 +1,4 @@
 import axiosRetry from 'axios-retry'
-import FormData from 'form-data'
 import axios from 'axios'
 
 import { Config, Version } from '#components'
@@ -92,7 +91,7 @@ class Request {
       headers: {
         ...this.axiosInstance.defaults.headers,
         ...headers,
-        ...(isFormData ? data.getHeaders() : {})
+        ...(isFormData ? {} : {})
       },
       responseType
     })
