@@ -29,7 +29,7 @@ const cfgSchema = {
         title: '默认表情',
         desc: '是否设置为默认表情',
         type: 'boolean',
-        def: false
+        def: true
       },
       forceSharp: {
         title: '强制触发',
@@ -145,7 +145,7 @@ const cfgSchema = {
       }
     }
   },
-  stats: {
+  stat: {
     title: '统计设置',
     cfg: {
       enable: {
@@ -172,7 +172,7 @@ const cfgSchema = {
       desc: '是否开启仓库更新检测',
       def: false
     },
-    autoRes: {
+    autoUpdateRes: {
       title: '自动更新资源',
       desc: '是否自动更新表情包资源，开启后每日凌晨会自动更新',
       type: 'boolean',

@@ -13,65 +13,32 @@ class Config {
     this.config = {}
     this.watcher = {}
 
-    this.dirCfgPath = `${Version.Plugin_Path}/config/config/`
-    this.defCfgPath = `${Version.Plugin_Path}/config/defSet/`
+    this.dirCfgPath = path.join(Version.Plugin_Path, 'config/config/')
+    this.defCfgPath = path.join(Version.Plugin_Path, 'config/defSet/')
 
     this.initCfg()
+
+    return new Proxy(this, {
+      get: (target, prop) => {
+        if (prop === 'masterQQ') return cfg.masterQQ
+        if (prop in target) return target[prop]
+        return target.getDefOrConfig(prop)
+      }
+    })
   }
 
   /** 初始化配置 */
   initCfg () {
-    if (!fs.existsSync(this.dirCfgPath)) fs.mkdirSync(this.dirCfgPath)
+    if (!fs.existsSync(this.dirCfgPath)) fs.mkdirSync(this.dirCfgPath, { recursive: true })
 
-    const files = fs
-      .readdirSync(this.defCfgPath)
+    fs.readdirSync(this.defCfgPath)
       .filter((file) => file.endsWith('.yaml'))
-
-    for (let file of files) {
-      const name = path.basename(file, '.yaml')
-      if (!fs.existsSync(`${this.dirCfgPath}${file}`)) {
-        fs.copyFileSync(`${this.defCfgPath}${file}`, `${this.dirCfgPath}${file}`)
-      }
-      this.watch(`${this.dirCfgPath}${file}`, name, 'config')
-    }
-  }
-
-  /** 主人QQ */
-  get masterQQ () {
-    return cfg.masterQQ
-  }
-  /** 服务设置 */
-  get server () {
-    return this.getDefOrConfig('server')
-  }
-  /** 表情设置 */
-  get meme () {
-    return this.getDefOrConfig('meme')
-  }
-
-  /** 权限设置 */
-  get access (){
-    return this.getDefOrConfig('access')
-  }
-
-  /** 保护设置 */
-  get protect () {
-    return this.getDefOrConfig('protect')
-  }
-
-  /** 统计设置 */
-  get stat () {
-    return this.getDefOrConfig('stat')
-  }
-
-  /** 自定义设置 */
-  get custom () {
-    return this.getDefOrConfig('custom')
-  }
-
-  /** 其他设置 */
-  get other () {
-    return this.getDefOrConfig('other')
+      .forEach((file) => {
+        const name = path.basename(file, '.yaml')
+        const userCfgPath = path.join(this.dirCfgPath, file)
+        if (!fs.existsSync(userCfgPath)) fs.copyFileSync(path.join(this.defCfgPath, file), userCfgPath)
+        this.watch(userCfgPath, name, 'config')
+      })
   }
 
   /** 读取默认或用户配置 */
@@ -91,12 +58,12 @@ class Config {
 
   /** 获取 YAML 配置 */
   getYaml (type, name) {
-    let filePath = `${Version.Plugin_Path}/config/${type}/${name}.yaml`
+    let filePath = path.join(Version.Plugin_Path, 'config', type, `${name}.yaml`)
     let key = `${type}.${name}`
 
     if (this.config[key]) return this.config[key]
 
-    this.config[key] = YAML.parse(fs.readFileSync(filePath, 'utf8'))
+    this.config[key] = new YamlReader(filePath).jsonData
     this.watch(filePath, name, type)
 
     return this.config[key]
@@ -107,111 +74,76 @@ class Config {
     let key = `${type}.${name}`
     if (this.watcher[key]) return
 
-    const watcher = chokidar.watch(file)
-    watcher.on('change', async () => {
+    const watcher = chokidar.watch(file, { persistent: true })
+    this.watcher[key] = watcher
+
+    watcher.on('change', _.debounce(async () => {
       const oldConfig = _.cloneDeep(this.config[key] || {})
 
       delete this.config[key]
-      const newConfig = this.getYaml(type, name)
+      this.config[key] = new YamlReader(file).jsonData
 
       logger.mark(`[清语表情][修改配置文件][${type}][${name}]`)
 
-      const object = this.findDifference(oldConfig, newConfig)
-      for (const key in object) {
-        if (Object.hasOwnProperty.call(object, key)) {
-          const value = object[key]
-          const arr = key.split('.')
-          if (arr[0] !== 'servers') continue
-          let data = newConfig.servers[arr[1]] || oldConfig.servers[arr[1]]
+      const changes = this.findDifference(oldConfig, this.config[key])
+      for (const key in changes) {
+        const value = changes[key]
+        if (!key.startsWith('servers.')) continue
 
-          const target = {
-            type: null,
-            data
-          }
-          if (typeof value.newValue === 'object' && typeof value.oldValue === 'undefined') {
-            target.type = 'add'
-          } else if (typeof value.newValue === 'undefined' && typeof value.oldValue === 'object') {
-            target.type = 'del'
-          } else if (value.newValue === true && (value.oldValue === false || typeof value.oldValue === 'undefined')) {
-            target.type = 'close'
-          } else if (value.newValue === false && (value.oldValue === true || typeof value.oldValue === 'undefined')) {
-            target.type = 'open'
-          }
+        let data = this.config[key].servers?.[key.split('.')[1]] || oldConfig.servers?.[key.split('.')[1]]
+        let target = { type: null, data }
 
-          await modifyWebSocket(target)
-        }
+        if (_.isObject(value.newValue) && value.oldValue === undefined) target.type = 'add'
+        else if (value.newValue === undefined && _.isObject(value.oldValue)) target.type = 'del'
+        else if (value.newValue === true && !value.oldValue) target.type = 'close'
+        else if (value.newValue === false && value.oldValue) target.type = 'open'
+
+        await modifyWebSocket(target)
       }
-    })
-
-    this.watcher[key] = watcher
-  }
-
-  /** 获取配置 Schema 映射 */
-  getCfgSchemaMap () {
-    return cfgSchema
+    }))
   }
 
   /** 获取所有配置 */
   getCfg () {
-    return {
-      ...this.getDefOrConfig('other'),
-      ...this.getDefOrConfig('meme'),
-      ...this.getDefOrConfig('access'),
-      ...this.getDefOrConfig('protect'),
-      ...this.getDefOrConfig('server'),
-      ...this.getDefOrConfig('stat')
-    }
+    return fs.readdirSync(this.defCfgPath)
+      .filter((file) => file.endsWith('.yaml'))
+      .reduce((configData, file) => {
+        const name = path.basename(file, '.yaml')
+        configData[name] = this.getDefOrConfig(name)
+        return configData
+      }, {})
   }
+
+  /** 获取配置 Schema 映射 */
+  getCfgSchemaMap () {
+    return _.cloneDeep(cfgSchema) // 防止外部修改影响原始 schema
+  }
+
 
   /** 修改配置 */
   modify (name, key, value, type = 'config') {
-    let filePath = `${Version.Plugin_Path}/config/${type}/${name}.yaml`
+    let filePath = path.join(Version.Plugin_Path, 'config', type, `${name}.yaml`)
     new YamlReader(filePath).set(key, value)
     delete this.config[`${type}.${name}`]
   }
 
-  /** 修改配置数组 */
-  modifyarr (name, key, value, category = 'add', type = 'config') {
-    let filePath = `${Version.Plugin_Path}/config/${type}/${name}.yaml`
-    let yaml = new YamlReader(filePath)
-    if (category === 'add') {
-      yaml.addIn(key, value)
-    } else {
-      let index = yaml.jsonData[key].indexOf(value)
-      yaml.delete(`${key}.${index}`)
-    }
-  }
-
-  /** 修改数组中的某个元素 */
-  setArr (name, key, item, value, type = 'config') {
-    let filePath = `${Version.Plugin_Path}/config/${type}/${name}.yaml`
-    let yaml = new YamlReader(filePath)
-    let arr = yaml.get(key).slice()
-    arr[item] = value
-    yaml.set(key, arr)
-  }
-
   /** 对比两个对象的不同值 */
-  findDifference (obj1, obj2, parentKey = '') {
-    const result = {}
-    for (const key in obj1) {
-      const fullKey = parentKey ? `${parentKey}.${key}` : key
-      if (_.isObject(obj1[key]) && _.isObject(obj2[key])) {
-        const diff = this.findDifference(obj1[key], obj2[key], fullKey)
-        if (!_.isEmpty(diff)) {
-          Object.assign(result, diff)
-        }
-      } else if (!_.isEqual(obj1[key], obj2[key])) {
-        result[fullKey] = { oldValue: obj1[key], newValue: obj2[key] }
-      }
-    }
-    for (const key in obj2) {
-      if (!Object.prototype.hasOwnProperty.call(obj1, key)) {
-        const fullKey = parentKey ? `${parentKey}.${key}` : key
-        result[fullKey] = { oldValue: undefined, newValue: obj2[key] }
-      }
-    }
-    return result
+  findDifference (obj1, obj2) {
+    return _.reduce(
+      obj1,
+      (result, value, key) => {
+        if (!_.isEqual(value, obj2[key])) result[key] = { oldValue: value, newValue: obj2[key] }
+        return result
+      },
+      _.reduce(
+        obj2,
+        (result, value, key) => {
+          if (!(key in obj1)) result[key] = { oldValue: undefined, newValue: value }
+          return result
+        },
+        {}
+      )
+    )
   }
 }
 

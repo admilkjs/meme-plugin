@@ -4,80 +4,67 @@ import _ from 'lodash'
 import chokidar from 'chokidar'
 
 export default class YamlReader {
-  /**
-   * 读写yaml文件
-   *
-   * @param yamlPath yaml文件绝对路径
-   * @param isWatch 是否监听文件变化
-   */
   constructor (yamlPath, isWatch = false) {
     this.yamlPath = yamlPath
     this.isWatch = isWatch
+    this.isSave = false
     this.initYaml()
   }
 
+  /** 初始化 YAML 解析 */
   initYaml () {
-    // parseDocument 将会保留注释
-    this.document = YAML.parseDocument(fs.readFileSync(this.yamlPath, 'utf8'))
+    if (!fs.existsSync(this.yamlPath)) fs.writeFileSync(this.yamlPath, '', 'utf8')
+    this.document = YAML.parseDocument(fs.readFileSync(this.yamlPath, 'utf8')) || new YAML.Document()
+
     if (this.isWatch && !this.watcher) {
-      this.watcher = chokidar.watch(this.yamlPath).on('change', () => {
+      this.watcher = chokidar.watch(this.yamlPath).on('change', _.debounce(() => {
         if (this.isSave) {
           this.isSave = false
           return
         }
         this.initYaml()
-      })
+      }, 300))
     }
   }
 
-  /** 返回读取的对象 */
+  /** 获取 YAML 转换后的 JSON 数据 */
   get jsonData () {
-    if (!this.document) {
-      return null
-    }
-    return this.document.toJSON()
+    return this.document?.toJSON() || {}
   }
 
-  /* 检查集合是否包含key的值 */
+  /** 检查是否包含 key */
   has (keyPath) {
     return this.document.hasIn(keyPath.split('.'))
   }
 
-  /* 返回key的值 */
+  /** 获取 key 的值 */
   get (keyPath) {
     return _.get(this.jsonData, keyPath)
   }
 
-  /* 修改某个key的值 */
+  /** 设置 key 的值 */
   set (keyPath, value) {
-    this.document.setIn([keyPath], value)
+    this.document.setIn(keyPath.split('.'), value)
     this.save()
   }
 
-  /* 删除key */
+  /** 删除 key */
   delete (keyPath) {
     this.document.deleteIn(keyPath.split('.'))
     this.save()
   }
 
-  // 数组添加数据
+  /** 数组添加数据 */
   addIn (keyPath, value) {
-    this.document.addIn(keyPath.split('.'), value)
-    this.save()
+    let arr = this.get(keyPath) || []
+    if (!Array.isArray(arr)) arr = []
+    arr.push(value)
+    this.set(keyPath, arr)
   }
 
-  // 彻底删除某个key
-  deleteKey (keyPath) {
-    let keys = keyPath.split('.')
-    keys = this.mapParentKeys(keys)
-    this.document.deleteIn(keys)
-    this.save()
-  }
-
-  // 保存yaml文件，写入文件
+  /** 保存 YAML 文件 */
   save () {
     this.isSave = true
-    let yaml = this.document.toString()
-    fs.writeFileSync(this.yamlPath, yaml, 'utf8')
+    fs.writeFileSync(this.yamlPath, this.document.toString(), 'utf8')
   }
 }
