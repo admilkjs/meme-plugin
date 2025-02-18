@@ -7,14 +7,14 @@ import { Version } from '#components'
 
 import * as Utils from '../Utils/index.js'
 
-const dbPath = `${Version.Plugin_Path}/data/data.db`
-if(!Utils.Common.fileExistsAsync(dbPath)){
+const dbPath = `${Version.Plugin_Path}/data`
+if(!await Utils.Common.fileExistsAsync(dbPath)){
   fs.mkdirSync(dbPath)
 }
 
 const sequelize = new Sequelize({
   dialect: 'sqlite',
-  storage: `${dbPath}`,
+  storage: `${dbPath}/data.db`,
   logging: false
 })
 /** 测试连接 */
