@@ -64,4 +64,4 @@ async function handle (e, key, allUsers, args) {
   })
 }
 
-export { handle,handleArgs }
+export { handle, handleArgs }

@@ -3,11 +3,10 @@ import path from 'node:path'
 
 import chalk from 'chalk'
 
-import { Version } from '#components'
+import { Version  } from '#components'
 import { Utils } from '#models'
 
 const startTime = Date.now()
-
 let apps
 
 try {

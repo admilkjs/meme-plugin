@@ -1,4 +1,4 @@
-import { DataTypes,sequelize } from './base.js'
+import { DataTypes, sequelize } from './base.js'
 
 /**
 * 定义 'stat' 表模型，用于存储 key 和 all 值。

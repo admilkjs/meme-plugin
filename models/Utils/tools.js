@@ -220,7 +220,7 @@ const Tools = {
       return null
     }
 
-    const { min_texts, max_texts, min_images, max_images , default_texts, args_type } = JSON.parse(memeParams)
+    const { min_texts, max_texts, min_images, max_images, default_texts, args_type } = JSON.parse(memeParams)
 
     return { min_texts, max_texts, min_images, max_images, default_texts, args_type } || null
   },

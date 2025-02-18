@@ -6,10 +6,10 @@ import _ from 'lodash'
 
 import cfg from '../../../lib/config/config.js'
 import cfgSchema from '../config/system/cfg_system.js'
-import Version from './Version.js'
-import YamlReader from './YamlReader.js'
+import { Version } from './Version.js'
+import { YamlReader } from './YamlReader.js'
 
-class Config {
+class Cfg {
   constructor () {
     this.config = {}
     this.watcher = {}
@@ -18,14 +18,6 @@ class Config {
     this.defCfgPath = path.join(Version.Plugin_Path, 'config/defSet/')
 
     this.initCfg()
-
-    return new Proxy(this, {
-      get: (target, prop) => {
-        if (prop === 'masterQQ') return cfg.masterQQ
-        if (prop in target) return target[prop]
-        return target.getDefOrConfig(prop)
-      }
-    })
   }
 
   /** 初始化配置 */
@@ -44,11 +36,11 @@ class Config {
 
   /** 读取默认或用户配置 */
   getDefOrConfig (name) {
-    return { ...this.getdefSet(name), ...this.getConfig(name) }
+    return { ...this.getDefSet(name), ...this.getConfig(name) }
   }
 
   /** 默认配置 */
-  getdefSet (name) {
+  getDefSet (name) {
     return this.getYaml('defSet', name)
   }
 
@@ -89,7 +81,6 @@ class Config {
       const changes = this.findDifference(oldConfig, this.config[key])
       for (const key in changes) {
         const value = changes[key]
-        if (!key.startsWith('servers.')) continue
 
         let data = this.config[key].servers?.[key.split('.')[1]] || oldConfig.servers?.[key.split('.')[1]]
         let target = { type: null, data }
@@ -117,9 +108,8 @@ class Config {
 
   /** 获取配置 Schema 映射 */
   getCfgSchemaMap () {
-    return _.cloneDeep(cfgSchema) // 防止外部修改影响原始 schema
+    return _.cloneDeep(cfgSchema)
   }
-
 
   /** 修改配置 */
   modify (name, key, value, type = 'config') {
@@ -148,4 +138,10 @@ class Config {
   }
 }
 
-export default new Config()
+export const Config = new Proxy(new Cfg(), {
+  get (target, prop) {
+    if (prop === 'masterQQ') return cfg.masterQQ
+    if (prop in target) return target[prop]
+    return target.getDefOrConfig(prop)
+  }
+})

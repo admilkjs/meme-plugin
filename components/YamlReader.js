@@ -4,7 +4,7 @@ import chokidar from 'chokidar'
 import _ from 'lodash'
 import YAML from 'yaml'
 
-export default class YamlReader {
+export class YamlReader {
   constructor (yamlPath, isWatch = false) {
     this.yamlPath = yamlPath
     this.isWatch = isWatch

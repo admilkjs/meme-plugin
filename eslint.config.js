@@ -4,6 +4,7 @@ const require = createRequire(import.meta.url)
 const globals = require('globals')
 const neostandard = require('neostandard')
 const simpleImportSort = require('eslint-plugin-simple-import-sort')
+const stylisticJs = require('@stylistic/eslint-plugin')
 
 export default [{
   languageOptions: {
@@ -39,10 +40,16 @@ export default [{
     // 要求对象字面量大括号内两侧必须有空格，设置为错误等级1。
     'object-curly-spacing': [1, 'always'],
     // 使用 simple-import-sort 自动排序 import 语句
-    'simple-import-sort/imports': 'warn',
-    'simple-import-sort/exports': 'warn'
+    'simple-import-sort/imports': 'error',
+    'simple-import-sort/exports': 'error',
+    // 要求对象字面量中的大括号内侧有一个空格。
+    'object-curly-spacing': [0, 'always'],
+    // 要求数组字面量中的方括号内侧有一个空格。
+    'array-bracket-spacing': [0, 'always'],
+    'comma-spacing': [1, { before: false, after: true }]
   },
   plugins: {
-    'simple-import-sort': simpleImportSort
+    'simple-import-sort': simpleImportSort,
+    '@stylistic/indent': stylisticJs
   }
 }]

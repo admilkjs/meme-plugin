@@ -1,6 +1,6 @@
 import fs from 'node:fs/promises'
 
-import { Config,Data, Version } from '#components'
+import { Config, Data, Version } from '#components'
 
 import { db } from '../index.js'
 import Request from './request.js'

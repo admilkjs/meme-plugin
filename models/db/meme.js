@@ -1,4 +1,4 @@
-import { col,DataTypes, fn, sequelize } from './base.js'
+import { col, DataTypes, fn, sequelize } from './base.js'
 
 /**
  * 定义 `meme` 表（包含 JSON 数据存储、关键字、参数、标签等）

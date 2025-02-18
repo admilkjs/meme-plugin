@@ -1,6 +1,6 @@
 import puppeteer from '../../../lib/puppeteer/puppeteer.js'
-import Config from './Config.js'
-import Version from './Version.js'
+import { Config } from './Config.js'
+import { Version } from './Version.js'
 
 function scale (pct = 1) {
   const renderScale = Config.other.renderScale || 100
@@ -9,7 +9,7 @@ function scale (pct = 1) {
   return `style=transform:scale(${pct})`
 }
 
-const Render = {
+export const Render = {
   /**
    *
    * @param {string} path html模板路径
@@ -44,5 +44,3 @@ const Render = {
     return await puppeteer.screenshots(`${Version.Plugin_Name}${savePath}`, data)
   }
 }
-
-export default Render

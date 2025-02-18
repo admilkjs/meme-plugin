@@ -1,4 +1,4 @@
-import { DataTypes,sequelize } from './base.js'
+import { DataTypes, sequelize } from './base.js'
 
 /**
 * 定义 'update' 表模型，用于存储分支和 SHA 值。
@@ -42,7 +42,7 @@ await table.sync()
 * @returns {Promise<object>} 返回创建或更新的记录。
 */
 export async function add (branch, sha) {
-  const existingRecord = await table.findOne({ where: { branch } , raw: false })
+  const existingRecord = await table.findOne({ where: { branch }, raw: false })
 
   if (existingRecord) {
     return await existingRecord.update({ sha })

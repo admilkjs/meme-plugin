@@ -1,11 +1,11 @@
 import fs from 'node:fs'
 
 import _ from 'lodash'
-import { basename,dirname, join } from 'path'
+import { basename, dirname, join } from 'path'
 import { fileURLToPath } from 'url'
 
 import cfg from '../../../lib/config/config.js'
-import Data from './Data.js'
+import { Data } from './Data.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
@@ -13,7 +13,7 @@ const Path = process.cwd().replace(/\\/g, '/')
 const Plugin_Path = join(__dirname, '..').replace(/\\/g, '/')
 const Plugin_Name = basename(Plugin_Path)
 
-let pkg = await Data.readJSON('package.json', `${Plugin_Path}`)
+const pkg = await Data.readJSON('package.json', `${Plugin_Path}`)
 
 let changelogs = []
 let currentVersion = ''
@@ -109,7 +109,7 @@ switch (BotName) {
 }
 
 
-const Version = {
+export const Version = {
   get Bot_Name () {
     return BotName
   },
@@ -139,5 +139,4 @@ const Version = {
   }
 }
 
-export default Version
 

@@ -1,6 +1,6 @@
 import fs from 'node:fs/promises'
 
-import Version from './Version.js'
+import { Version } from './Version.js'
 
 const getRoot = (root = '') => {
   if (root === 'root' || root === 'yunzai') {
@@ -11,7 +11,7 @@ const getRoot = (root = '') => {
   return root
 }
 
-let Data = {
+export const Data = {
   /*
    * 根据指定的path依次检查与创建目录
    */
@@ -64,4 +64,3 @@ let Data = {
   }
 }
 
-export default Data
