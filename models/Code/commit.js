@@ -1,9 +1,11 @@
 import { exec } from 'node:child_process'
 import util from 'node:util'
+
 import { Utils } from '#models'
+
 import { getGitApi } from './gitApi.js'
-import { formatCommitTime, parseCommitMessage } from './utils.js'
 import { getRepo } from './gitRepo.js'
+import { formatCommitTime, parseCommitMessage } from './utils.js'
 
 const execPromise = util.promisify(exec)
 

@@ -1,4 +1,5 @@
 import { Version } from '#components'
+
 import { Cfg } from './config.js'
 
 export async function getThemeCfg () {

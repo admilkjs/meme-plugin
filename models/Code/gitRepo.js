@@ -1,5 +1,7 @@
-import { exec } from 'child_process'
 import util from 'node:util'
+
+import { exec } from 'child_process'
+
 import { Version } from '#components'
 import { db } from '#models'
 

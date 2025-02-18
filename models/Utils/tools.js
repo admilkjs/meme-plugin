@@ -1,6 +1,7 @@
+import chalk from 'chalk'
+
 import { Config } from '#components'
 import { db, Utils } from '#models'
-import chalk from 'chalk'
 
 
 const Tools = {

@@ -1,5 +1,6 @@
-import { Config, Render, Version } from '#components'
 import lodash from 'lodash'
+
+import { Config, Render, Version } from '#components'
 
 const sysCfgReg = () => {
   const cfgSchema = Config.getCfgSchemaMap()

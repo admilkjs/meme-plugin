@@ -1,12 +1,13 @@
-import YAML from 'yaml'
-import chokidar from 'chokidar'
 import fs from 'node:fs'
 import path from 'node:path'
-import YamlReader from './YamlReader.js'
+
+import chokidar from 'chokidar'
 import _ from 'lodash'
-import Version from './Version.js'
-import cfgSchema from '../config/system/cfg_system.js'
+
 import cfg from '../../../lib/config/config.js'
+import cfgSchema from '../config/system/cfg_system.js'
+import Version from './Version.js'
+import YamlReader from './YamlReader.js'
 
 class Config {
   constructor () {

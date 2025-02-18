@@ -3,6 +3,7 @@ const require = createRequire(import.meta.url)
 
 const globals = require('globals')
 const neostandard = require('neostandard')
+const simpleImportSort = require('eslint-plugin-simple-import-sort')
 
 export default [{
   languageOptions: {
@@ -36,6 +37,12 @@ export default [{
     // 要求代码中不能有尾随空格，设置为错误等级1。
     'no-trailing-spaces': 1,
     // 要求对象字面量大括号内两侧必须有空格，设置为错误等级1。
-    'object-curly-spacing': [1, 'always']
+    'object-curly-spacing': [1, 'always'],
+    // 使用 simple-import-sort 自动排序 import 语句
+    'simple-import-sort/imports': 'warn',
+    'simple-import-sort/exports': 'warn'
+  },
+  plugins: {
+    'simple-import-sort': simpleImportSort
   }
 }]

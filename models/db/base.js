@@ -1,8 +1,11 @@
-import { Sequelize, DataTypes, Op, fn, col } from 'sequelize'
-import * as Utils from '../Utils/index.js'
-import { Version } from '#components'
 import fs from 'node:fs'
+
 import chalk from 'chalk'
+import { col,DataTypes, fn, Op, Sequelize } from 'sequelize'
+
+import { Version } from '#components'
+
+import * as Utils from '../Utils/index.js'
 
 const dbPath = `${Version.Plugin_Path}/data/data.db`
 if(!Utils.Common.fileExistsAsync(dbPath)){
@@ -23,9 +26,9 @@ try {
 }
 
 export {
-  Op,
-  fn,
   col,
   DataTypes,
+  fn,
+  Op,
   sequelize
 }

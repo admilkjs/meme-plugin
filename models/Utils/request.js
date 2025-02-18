@@ -1,5 +1,5 @@
-import axiosRetry from 'axios-retry'
 import axios from 'axios'
+import axiosRetry from 'axios-retry'
 
 import { Config, Version } from '#components'
 

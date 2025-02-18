@@ -1,4 +1,4 @@
-import { sequelize, DataTypes } from './base.js'
+import { DataTypes,sequelize } from './base.js'
 
 /**
 * 定义 'update' 表模型，用于存储分支和 SHA 值。

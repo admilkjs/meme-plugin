@@ -1,10 +1,11 @@
 import { Config } from '#components'
+
 import access from './access.js'
 import meme from './meme.js'
-import protect from './protect.js'
 import other from './other.js'
-import stat from './stat.js'
+import protect from './protect.js'
 import server from './server.js'
+import stat from './stat.js'
 
 export const schemas = [
   server,

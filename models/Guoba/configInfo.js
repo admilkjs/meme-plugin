@@ -1,4 +1,4 @@
-import { schemas, getConfigData, setConfigData } from './schemas/index.js'
+import { getConfigData, schemas, setConfigData } from './schemas/index.js'
 
 export const configInfo = {
   schemas,

@@ -1,4 +1,4 @@
-import { sequelize, DataTypes } from './base.js'
+import { col,DataTypes, fn, sequelize } from './base.js'
 
 /**
  * 定义 `meme` 表（包含 JSON 数据存储、关键字、参数、标签等）
@@ -270,7 +270,7 @@ export async function getByField (field, value, returnField = 'key') {
  */
 export async function getAllSelect (name) {
   const res = await table.findAll({
-    attributes: [[sequelize.fn('DISTINCT', sequelize.col(name)), name]]
+    attributes: [[fn('DISTINCT', col(name)), name]]
   })
   return res.map(item => item[name])
 }

@@ -1,8 +1,10 @@
-import { Version } from '#components'
-import { Utils } from '#models'
-import chalk from 'chalk'
 import fs from 'node:fs/promises'
 import path from 'node:path'
+
+import chalk from 'chalk'
+
+import { Version } from '#components'
+import { Utils } from '#models'
 
 const startTime = Date.now()
 

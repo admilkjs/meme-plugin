@@ -1,5 +1,5 @@
-import { Meme, Utils } from '#models'
 import { Config, Version } from '#components'
+import { Meme, Utils } from '#models'
 
 export class random extends plugin {
   constructor () {

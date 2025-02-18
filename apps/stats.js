@@ -1,4 +1,4 @@
-import { Render, Config } from '../components/index.js'
+import { Config,Render } from '../components/index.js'
 import { Utils } from '../models/index.js'
 
 export class stats extends plugin {

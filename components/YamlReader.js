@@ -1,7 +1,8 @@
 import fs from 'node:fs'
-import YAML from 'yaml'
-import _ from 'lodash'
+
 import chokidar from 'chokidar'
+import _ from 'lodash'
+import YAML from 'yaml'
 
 export default class YamlReader {
   constructor (yamlPath, isWatch = false) {
@@ -23,7 +24,7 @@ export default class YamlReader {
           return
         }
         this.initYaml()
-      }, 300))
+      }))
     }
   }
 

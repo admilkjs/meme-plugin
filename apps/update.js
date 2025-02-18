@@ -1,9 +1,11 @@
-import { Version, Config, Render } from '#components'
-import { update as Update } from '../../other/update.js'
-import { Utils, Code } from '#models'
-import { meme } from './meme.js'
-import pluginsLoader from '../../../lib/plugins/loader.js'
 import chalk from 'chalk'
+
+import { Config, Render,Version } from '#components'
+import { Code,Utils } from '#models'
+
+import pluginsLoader from '../../../lib/plugins/loader.js'
+import { update as Update } from '../../other/update.js'
+import { meme } from './meme.js'
 
 export class update extends plugin {
   constructor () {

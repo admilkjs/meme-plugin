@@ -1,6 +1,7 @@
-import { Utils } from '#models'
 import { Config } from '#components'
-import { handleArgs, handle } from './args.js'
+import { Utils } from '#models'
+
+import { handle,handleArgs } from './args.js'
 import { handleImages } from './images.js'
 import { handleTexts } from './texts.js'
 
@@ -73,4 +74,4 @@ async function make (e, memeKey, min_texts, max_texts, min_images, max_images, d
   }
 }
 
-export { make, handle, handleArgs, handleImages, handleTexts }
+export { handle, handleArgs, handleImages, handleTexts,make }

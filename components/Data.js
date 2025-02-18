@@ -1,4 +1,5 @@
 import fs from 'node:fs/promises'
+
 import Version from './Version.js'
 
 const getRoot = (root = '') => {
