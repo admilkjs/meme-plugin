@@ -18,3 +18,6 @@ autoUpdate: false
 
 # 自动更新Cron
 autoUpdateCron: "0 0 1 * * ?"
+
+# 劫持土块表情包
+hijackRes: true

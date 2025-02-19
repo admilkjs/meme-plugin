@@ -60,5 +60,11 @@ export default [
     componentProps: {
       placeholder: '请输入Cron表达式'
     }
+  },
+  {
+    field: 'other.hijackRes',
+    label: '劫持土块表情包',
+    component: 'Switch',
+    bottomHelpMessage: '是否开启劫持土块表情包'
   }
 ]
