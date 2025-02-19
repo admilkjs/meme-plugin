@@ -76,8 +76,14 @@ const Tools = {
         logger.info(chalk.yellow(`🗑️ 已删除 ${keysToDelete.length} 个表情包`))
       }
 
+      const processValue = (value) =>{
+        if (Array.isArray(value) && value.length === 0) return null
+        if (typeof value === 'object' && value !== null && Object.keys(value).length === 0) return null
+        return value
+      }
+
       await Promise.all(
-        keysToUpdate.map(async key => {
+        keysToUpdate.map(async (key) => {
           const infoResponse = await Utils.Request.get(`${baseUrl}/memes/${key}/info`)
           if (!infoResponse.success) {
             logger.error(`❌ 获取表情包详情失败: ${key} - ${infoResponse.message}`)
@@ -85,18 +91,17 @@ const Tools = {
           }
 
           const info = infoResponse.data
-          const {
-            keywords: keyWords = null,
-            shortcuts = null,
-            tags = null,
-            params_type: params = null
-          } = info
+
+          const keyWords = processValue(info.keywords)
+          const shortcuts = processValue(info.shortcuts)
+          const tags = processValue(info.tags)
+          const params = processValue(info.params_type)
 
           const min_texts = params?.min_texts ?? null
           const max_texts = params?.max_texts ?? null
           const min_images = params?.min_images ?? null
           const max_images = params?.max_images ?? null
-          const defText = params?.default_texts?.length ? params.default_texts : null
+          const defText = processValue(params?.default_texts)
           const args_type = params?.args_type ?? null
 
           await db.meme.add(
@@ -143,7 +148,7 @@ const Tools = {
    * @returns {Promise<string|null>} - 返回预览图片的 URL 或 null
    */
   async getPreviewUrl (memeKey) {
-    return memeKey ? `${await this.getBaseUrl()}/memes/${memeKey}/preview` : null
+    return memeKey ? `${await this.getBaseUrl()}/memes/${memeKey}/preview`.trim() : null
   },
 
 
