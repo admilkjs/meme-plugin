@@ -173,7 +173,7 @@ const Tools = {
      * @returns {string|null} - 返回对应的表情包键或 null
      */
   async getKey (keyword) {
-    return (await db.meme.getByField('keyWords', keyword)).toString() || null
+    return (await db.meme.getByField('keyWords', keyword, 'key')).toString() || null
   },
   /**
      * 获取指定表情包的关键字

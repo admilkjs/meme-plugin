@@ -73,7 +73,6 @@ export class meme extends plugin {
     const matchedKeyword = match[1]
     const userText = match[2]?.trim() || ''
     if (!matchedKeyword) return false
-
     const memeKey = await Utils.Tools.getKey(matchedKeyword)
     if (!memeKey) return false
 
