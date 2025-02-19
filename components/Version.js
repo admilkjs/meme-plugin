@@ -73,7 +73,7 @@ try {
         if (lastCategory.logs) {
           lastCategory.logs.push(logItem)
         } else {
-          temp.logs.push({ title: '', logs: [logItem] })
+          temp.logs.push({ title: '', logs: [ logItem ] })
         }
         return
       }

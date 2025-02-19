@@ -13,16 +13,16 @@ async function handleImages (e, memeKey, userText, min_images, max_images, allUs
   messageImages.push(...fetchedImages)
 
   if (messageImages.length + userAvatars.length < min_images) {
-    const triggerAvatar = await Utils.Common.getAvatar(e, [e.user_id])
+    const triggerAvatar = await Utils.Common.getAvatar(e, [ e.user_id ])
     if (triggerAvatar[0]) {
       userAvatars.unshift(triggerAvatar[0])
     }
   }
 
-  let finalImages = [...userAvatars, ...messageImages].slice(0, max_images)
+  let finalImages = [ ...userAvatars, ...messageImages ].slice(0, max_images)
 
   finalImages.forEach((buffer, index) => {
-    const blob = new Blob([buffer], { type: 'image/png' })
+    const blob = new Blob([ buffer ], { type: 'image/png' })
     formData.append('images', blob, `image${index}.png`)
   })
 

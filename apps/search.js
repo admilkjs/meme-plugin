@@ -7,10 +7,10 @@ export class search extends plugin {
       name: '清语表情:搜索',
       event: 'message',
       priority: -Infinity,
-      rule: [{
+      rule: [ {
         reg: /^#?(?:(清语)?表情|(?:clarity-)?meme)搜索\s*(.+)\s*$/i,
         fnc: 'search'
-      }]
+      } ]
     })
   }
 
@@ -40,7 +40,7 @@ export class search extends plugin {
         return true
       }
 
-      const uniqueResults = [...new Set(results)].sort()
+      const uniqueResults = [ ...new Set(results) ].sort()
 
       const replyMessage = uniqueResults
         .map((kw, index) => `${index + 1}. ${kw}`)

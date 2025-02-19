@@ -40,7 +40,7 @@ export class info extends plugin {
 
     const argsdescObj = await Utils.Tools.getDescriptions(memeKey) ?? null
     const argsdesc = argsdescObj
-      ? Object.entries(argsdescObj).map(([paramName, description]) => `[${paramName}: ${description}]`).join(' ')
+      ? Object.entries(argsdescObj).map(([ paramName, description ]) => `[${paramName}: ${description}]`).join(' ')
       : null
 
     const aliasList = await Utils.Tools.getKeyWords(memeKey) ?? null

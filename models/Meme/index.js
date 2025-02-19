@@ -12,7 +12,7 @@ async function make (e, memeKey, min_texts, max_texts, min_images, max_images, d
   let allUsers = [
     ...new Set([
       ...e.message.filter(m => m.type === 'at').map(at => at.qq.toString()),
-      ...[...userText.matchAll(/@\s*(\d+)/g)].map(match => match[1])
+      ...[ ...userText.matchAll(/@\s*(\d+)/g) ].map(match => match[1])
     ])
   ].filter(id => id !== quotedUser)
 

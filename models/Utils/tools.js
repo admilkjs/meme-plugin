@@ -58,10 +58,10 @@ const Tools = {
       const remoteKeys = new Set(remoteKeysResponse.data)
 
       const keysToUpdate = forceUpdate
-        ? [...remoteKeys]
-        : [...remoteKeys].filter(key => !localKeys.has(key))
+        ? [ ...remoteKeys ]
+        : [ ...remoteKeys ].filter(key => !localKeys.has(key))
 
-      const keysToDelete = [...localKeys].filter(key => !remoteKeys.has(key))
+      const keysToDelete = [ ...localKeys ].filter(key => !remoteKeys.has(key))
 
       if (!keysToUpdate.length && !keysToDelete.length) {
         logger.info(chalk.cyan('✅ 表情包数据已是最新，无需更新或删除。'))
@@ -268,8 +268,8 @@ const Tools = {
     const properties = args_type.args_model?.properties || null
 
     const descriptions = Object.entries(properties)
-      .filter(([paramName]) => paramName !== 'user_infos')
-      .reduce((acc, [paramName, paramInfo]) => {
+      .filter(([ paramName ]) => paramName !== 'user_infos')
+      .reduce((acc, [ paramName, paramInfo ]) => {
         acc[paramName] = paramInfo.description || paramInfo.title || null
         return acc
       }, {})
@@ -302,7 +302,7 @@ const Tools = {
    */
   async removeKey (keys) {
     if (!Array.isArray(keys)) {
-      keys = [keys] // 确保 keys 是数组
+      keys = [ keys ] // 确保 keys 是数组
     }
     await Promise.all(keys.map(key => db.meme.remove(key)))
   },

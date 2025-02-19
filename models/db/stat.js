@@ -65,7 +65,7 @@ export async function get (key, field) {
     where: {
       key: key
     },
-    attributes: [field]
+    attributes: [ field ]
   })
 
   if (record) {

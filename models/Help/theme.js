@@ -20,11 +20,11 @@ export async function getThemeData (diyStyle) {
   const width = Math.min(2500, Math.max(800, colCount * colWidth + 30))
   const theme = await getThemeCfg()
   const themeStyle = theme.style || {}
-  const ret = [`
+  const ret = [ `
       body { background-image: url(${theme.bg}); width: ${width}px; }
       .container { background-image: url(${theme.main}); width: ${width}px; }
       .help-table .td, .help-table .th { width: ${100 / colCount}%; }
-    `]
+    ` ]
 
   const defFnc = function (...args) {
     for (const idx in args) {

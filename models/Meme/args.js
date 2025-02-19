@@ -8,7 +8,7 @@ async function handleArgs (e, memeKey, userText, allUsers, formData) {
 
   if (argsMatches) {
     for (const match of argsMatches) {
-      const [_, key, value] = match.match(/#(\S+)\s+([^#]+)/)
+      const [ _, key, value ] = match.match(/#(\S+)\s+([^#]+)/)
       argsArray[key] = value.trim()
     }
 
@@ -34,7 +34,7 @@ async function handle (e, key, allUsers, args) {
 
   const argsObj = {}
 
-  for (const [argName, argValue] of Object.entries(args)) {
+  for (const [ argName, argValue ] of Object.entries(args)) {
     const paramType = await Utils.Tools.getParamType(key, argName)
 
     if (!paramType) {

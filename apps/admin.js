@@ -46,18 +46,18 @@ export class setting extends plugin {
 
     if (cfgKey) {
       if (cfgGroupName) {
-        const groupEntry = Object.entries(cfgSchema).find(([groupName, group]) => group.title === cfgGroupName)
+        const groupEntry = Object.entries(cfgSchema).find(([ groupName, group ]) => group.title === cfgGroupName)
         if (groupEntry) {
           fileName = groupEntry[0]
-          const foundItem = Object.entries(groupEntry[1].cfg).find(([key, cfgItem]) => cfgItem.title === cfgKey)
+          const foundItem = Object.entries(groupEntry[1].cfg).find(([ key, cfgItem ]) => cfgItem.title === cfgKey)
           if (foundItem) {
             cfgItemKey = foundItem[0]
             cfgSchemaItem = foundItem[1]
           }
         }
       } else {
-        for (const [groupName, group] of Object.entries(cfgSchema)) {
-          const foundItem = Object.entries(group.cfg).find(([key, cfgItem]) => cfgItem.title === cfgKey)
+        for (const [ groupName, group ] of Object.entries(cfgSchema)) {
+          const foundItem = Object.entries(group.cfg).find(([ key, cfgItem ]) => cfgItem.title === cfgKey)
           if (foundItem) {
             fileName = groupName
             cfgItemKey = foundItem[0]

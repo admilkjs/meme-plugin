@@ -104,7 +104,7 @@ const Common = {
     if (!userList) {
       throw new Error('QQ 号不能为空')
     }
-    if (!Array.isArray(userList)) userList = [userList]
+    if (!Array.isArray(userList)) userList = [ userList ]
 
     const cacheDir = `${Version.Plugin_Path}/data/avatar`
 
@@ -192,7 +192,7 @@ const Common = {
     }
 
     if (source) {
-      const sourceArray = Array.isArray(source) ? source : [source]
+      const sourceArray = Array.isArray(source) ? source : [ source ]
 
       quotedImages = sourceArray
         .flatMap(item => item.message)
@@ -206,7 +206,7 @@ const Common = {
         source &&
         (e.source || e.message.some(msg => msg.type === 'reply'))
     ) {
-      const sourceArray = Array.isArray(source) ? source : [source]
+      const sourceArray = Array.isArray(source) ? source : [ source ]
       const quotedUser = sourceArray[0].sender.user_id
       const avatarBuffer = await this.getAvatar(e, quotedUser)
       if (avatarBuffer[0]) {

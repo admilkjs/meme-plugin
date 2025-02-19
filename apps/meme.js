@@ -55,10 +55,10 @@ export class meme extends plugin {
 
     memeRegExp = newRegExp
 
-    this.rule = [{
+    this.rule = [ {
       reg: memeRegExp,
       fnc: 'meme'
-    }]
+    } ]
 
     return true
   }

@@ -210,7 +210,7 @@ export async function getByKey (key, name = '*') {
   if (name !== '*' && Array.isArray(name)) {
     queryOptions.attributes = name
   } else if (name !== '*') {
-    queryOptions.attributes = [name]
+    queryOptions.attributes = [ name ]
   }
 
   const res = await table.findByPk(key, queryOptions)
@@ -236,7 +236,7 @@ export async function getByField (field, value, returnField = 'key') {
     throw new Error('查询字段不能为空')
   }
 
-  const values = Array.isArray(value) ? value : [value]
+  const values = Array.isArray(value) ? value : [ value ]
 
   const conditions = values
     .map(v => {
@@ -249,7 +249,7 @@ export async function getByField (field, value, returnField = 'key') {
     .join(' AND ')
 
   const whereClause = sequelize.literal(`(${conditions})`)
-  const attributes = Array.isArray(returnField) ? returnField : [returnField]
+  const attributes = Array.isArray(returnField) ? returnField : [ returnField ]
 
   const res = await table.findAll({
     attributes,
@@ -270,7 +270,7 @@ export async function getByField (field, value, returnField = 'key') {
  */
 export async function getAllSelect (name) {
   const res = await table.findAll({
-    attributes: [[fn('DISTINCT', col(name)), name]]
+    attributes: [ [ fn('DISTINCT', col(name)), name ] ]
   })
   return res.map(item => item[name])
 }

@@ -26,7 +26,7 @@ export class random extends plugin {
 
       for (let i = memeKeys.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1))
-        ;[memeKeys[i], memeKeys[j]] = [memeKeys[j], memeKeys[i]]
+        ;[ memeKeys[i], memeKeys[j] ] = [ memeKeys[j], memeKeys[i] ]
       }
 
       for (const memeKey of memeKeys) {

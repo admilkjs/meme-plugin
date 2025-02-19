@@ -24,7 +24,7 @@ export async function formatCommitTime (commitDate) {
  *   @property {string} content - 提交消息的内容。
  */
 export async function parseCommitMessage (message) {
-  const [title, ...contentLines] = message.split('\n\n')
+  const [ title, ...contentLines ] = message.split('\n\n')
   const content = contentLines.join('\n\n')
   return { title: title || '', content: content || '' }
 }
