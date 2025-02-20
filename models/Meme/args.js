@@ -13,16 +13,17 @@ async function handleArgs (e, memeKey, userText, allUsers, formData) {
     }
 
     const argsString = await handle(e, memeKey, allUsers, argsArray)
-    if (argsString.success === false) {
+    if (!argsString.success) {
       return {
         success: argsString.success,
         message: argsString.message
       }
     }
-    formData.append('args', argsString)
+    formData.append('args', argsString.argsString)
   }
 
   return {
+    success: true,
     text: userText.replace(/#(\S+)\s+([^#]+)/g, '').trim()
   }
 }
@@ -40,7 +41,7 @@ async function handle (e, key, allUsers, args) {
     if (!paramType) {
       return {
         success: false,
-        message: `参数名 ${argName} 不存在`
+        message: `该参数表情不存在参数 ${argName}`
       }
     }
 
@@ -58,10 +59,13 @@ async function handle (e, key, allUsers, args) {
       gender: await Utils.Common.getGender(e, allUsers[0] || e.sender.user_id)
     }
   ]
-  return JSON.stringify({
-    user_infos: userInfos,
-    ...argsObj
-  })
+  return {
+    success: true,
+    argsString: JSON.stringify({
+      user_infos: userInfos,
+      ...argsObj
+    })
+  }
 }
 
 export { handle, handleArgs }

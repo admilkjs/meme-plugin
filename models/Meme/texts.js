@@ -34,14 +34,20 @@ async function handleTexts (e, memeKey, userText, min_texts, max_texts, default_
   }
 
   if (finalTexts.length < min_texts) {
-    return false
+    return {
+      success: false,
+      message: `该表情至少需要 ${min_texts} 个文字`
+    }
   }
 
   finalTexts.slice(0, max_texts).forEach((text) => {
     formData.append('texts', text)
   })
 
-  return true
+  return {
+    success: true,
+    texts: finalTexts
+  }
 }
 
 export { handleTexts }

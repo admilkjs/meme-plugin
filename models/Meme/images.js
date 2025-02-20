@@ -29,7 +29,8 @@ async function handleImages (e, memeKey, userText, min_images, max_images, allUs
   if (finalImages.length < min_images) {
     return {
       success: false,
-      userText: userText
+      userText: userText,
+      message: `至少需要${min_images}张图片`
     }
   }
 

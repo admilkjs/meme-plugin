@@ -12,7 +12,7 @@ try {
 if (Config.other.hijackRes) {
   try {
     dailyNoteByWidget.prototype.accept = async function () {
-      logger.info(chalk.yellow('[清语表情:表情包] 已劫持土块插件表情包'))
+      logger.debug(chalk.yellow('[清语表情:表情包] 已劫持土块插件表情包'))
     }
   }catch (error) {
     logger.error('[清语表情:表情包] 劫持土块插件表情包失败')
