@@ -180,7 +180,7 @@ const Common = {
     let quotedImages = []
     let source = null
     if (Config.meme.quotedImages) {
-      if (e.getReply) {
+      if (e.reply_id) {
         source = await e.getReply()
       } else if (e.source) {
         if (e.isGroup) {
