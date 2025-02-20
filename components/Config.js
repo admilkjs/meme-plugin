@@ -14,8 +14,8 @@ class Cfg {
     this.config = {}
     this.watcher = {}
 
-    this.dirCfgPath = path.join(Version.Plugin_Path, 'config/config/')
-    this.defCfgPath = path.join(Version.Plugin_Path, 'config/defSet/')
+    this.dirCfgPath = `${Version.Plugin_Path}/config/config/`
+    this.defCfgPath = `${Version.Plugin_Path}/config/defSet/`
 
     this.initCfg()
   }
