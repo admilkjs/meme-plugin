@@ -10,16 +10,15 @@ export class stats extends plugin {
       rule: [
         {
           reg: /^#?(?:(清语)?表情|(?:clarity-)?meme)(调用)?统计$/i,
-          fnc: 'stats'
+          fnc: 'stat'
         }
       ]
     })
   }
 
-  async stats (e) {
+  async stat (e) {
     if (!Config.meme.enable) return false
 
-    // 获取所有统计数据
     const statsData = await Utils.Common.getStatAll()
     if (!statsData || statsData.length === 0) {
       return await e.reply('当前没有统计数据')
