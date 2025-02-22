@@ -23,7 +23,7 @@ export class update extends plugin {
           fnc: 'updateLog'
         },
         {
-          reg: /^#?(清语表情|meme-plugin)(强制)?更新(表情包)?(资源|数据)$/i,
+          reg: /^#?(清语表情|meme(-plugin)?)(强制)?更新(表情包)?(资源|数据)?$/i,
           fnc: 'updateRes'
         },
         {

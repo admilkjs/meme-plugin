@@ -9,7 +9,7 @@ export class list extends plugin {
       priority: -Infinity,
       rule: [
         {
-          reg: /^#?(?:(清语)?表情|(?:clarity-)?meme)列表$/i,
+          reg: /^#?(?:(清语)?表情|meme(?:-plugin)?)列表$/i,
           fnc: 'list'
         }
       ]

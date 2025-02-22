@@ -8,7 +8,7 @@ export class search extends plugin {
       event: 'message',
       priority: -Infinity,
       rule: [ {
-        reg: /^#?(?:(清语)?表情|(?:clarity-)?meme)搜索\s*(.+)\s*$/i,
+        reg: /^#?(?:(清语)?表情|meme(?:-plugin)?)搜索\s*(.+)\s*$/i,
         fnc: 'search'
       } ]
     })

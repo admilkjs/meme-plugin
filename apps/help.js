@@ -11,11 +11,11 @@ export class help extends plugin {
       priority: -Infinity,
       rule: [
         {
-          reg: /^#?(?:(清语)?表情|(?:clarity-)?meme)(?:命令|帮助|菜单|help|说明|功能|指令|使用说明)$/i,
+          reg: /^#?(?:(清语)?表情|meme(?:-plugin)?)(?:命令|帮助|菜单|help|说明|功能|指令|使用说明)$/i,
           fnc: 'help'
         },
         {
-          reg: /^#?(?:(清语)?表情|(?:clarity-)?meme)(?:版本|版本信息|version|versioninfo)$/i,
+          reg: /^#?(?:(清语)?表情|meme(?:-plugin)?)(?:版本|版本信息|version|versioninfo)$/i,
           fnc: 'versionInfo'
         }
       ]
