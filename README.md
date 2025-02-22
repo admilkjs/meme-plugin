@@ -1,7 +1,7 @@
 # <h1 align="center">清语表情</h1>
 
 <div align="center">
-<img src="https://count.kjchmc.cn/get/@clarity-meme?theme=moebooru" alt="清语表情">
+<img src="https://count.kjchmc.cn/get/@meme-plugin?theme=moebooru" alt="清语表情">
 
 <a href="https://github.com/ClarityJS/meme-plugin"><img src="https://img.shields.io/badge/Github-清语表情-black?style=flat-square&logo=github" alt="Github"></a><a href="https://gitee.com/Le-niao/Yunzai-Bot"><img src="https://img.shields.io/badge/云崽-v3.0.0-black?style=flat-square&logo=dependabot" alt="Yunzai"></a><a href="https://qm.qq.com/q/gBs8Ri3nIQ"><img src="https://img.shields.io/badge/group-272040396-blue" alt="Group"></a>
 
