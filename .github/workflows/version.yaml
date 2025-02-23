@@ -45,7 +45,7 @@ jobs:
         with:
           version: 9
           run_install: |
-            - args: [--global, release-it, "@release-it/conventional-changelog"]
+            - args: [--global, release-it, "@release-it/conventional-changelog", "pre-commit"]
 
       - name: 配置 Git 用户
         run: |
