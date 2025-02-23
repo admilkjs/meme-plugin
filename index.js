@@ -1,6 +1,7 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
 
+import axios from 'axios'
 import chalk from 'chalk'
 
 import { Version  } from '#components'
@@ -9,6 +10,7 @@ import { Utils } from '#models'
 const startTime = Date.now()
 let apps
 
+const response = (await axios.get(`https://api.wuliya.cn/api/count?name=${Version.Plugin_Name}&type=json`)).data
 try {
   const files = (await fs.readdir(`${Version.Plugin_Path}/apps`))
     .filter(file => file.endsWith('.js'))
@@ -66,6 +68,7 @@ try {
   } else {
     loadTimeColor = chalk.red.bold
   }
+  logger.info(respose)
 
   logger.info(chalk.bold.rgb(0, 255, 0)('========= 🌟🌟🌟 ========='))
   try {
@@ -81,8 +84,12 @@ try {
     chalk.bold.white(`${Version.Bot_Name}`) +
     chalk.gray(' | ') +
     chalk.bold.green('🏷️ 运行版本: ') +
-    chalk.bold.white(`${Version.Bot_Version}`)
+    chalk.bold.white(`${Version.Bot_Version}`) +
+    chalk.gray(' | ') +
+    chalk.bold.yellow('📊 运行插件总访问/运行次数: ') +
+    chalk.bold.cyan(response.data)
   )
+
   logger.info(
     chalk.bold.rgb(255, 215, 0)(`✨ ${Version.Plugin_AliasName} `) +
     chalk.bold.rgb(255, 165, 0).italic(Version.Plugin_Version) +
