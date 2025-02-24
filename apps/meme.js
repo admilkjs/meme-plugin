@@ -107,8 +107,15 @@ export class meme extends plugin {
          * 防误触发处理
          */
     if (min_texts === 0 && max_texts === 0) {
-      if (userText && !/^(@\s*\d+\s*)+$/.test(userText.trim())) {
-        return false
+      if (userText) {
+        const trimmedText = userText.trim()
+
+        if (
+          !/^(@\s*\d+\s*)+$/.test(trimmedText) &&
+          !/^(#\S+\s+[^#]+)(\s+#\S+\s+[^#]+)*$/.test(trimmedText)
+        ) {
+          return false
+        }
       }
     }
 
