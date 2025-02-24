@@ -46,8 +46,9 @@ async function handle (e, key, allUsers, args) {
     }
 
     if (paramType === 'integer') {
-      const intValue = parseInt(argValue)
-      argsObj[argName] = intValue
+      argsObj[argName] = parseInt(argValue, 10)
+    } else if (paramType === 'boolean') {
+      argsObj[argName] = argValue === 'true' ? true : argValue === 'false' ? false : argValue
     } else {
       argsObj[argName] = argValue
     }
