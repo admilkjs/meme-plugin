@@ -68,7 +68,6 @@ try {
   } else {
     loadTimeColor = chalk.red.bold
   }
-  logger.info(respose)
 
   logger.info(chalk.bold.rgb(0, 255, 0)('========= 🌟🌟🌟 ========='))
   try {
