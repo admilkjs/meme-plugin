@@ -58,7 +58,7 @@ async function make (
      * 处理文字类型
      */
     if (max_texts !== 0) {
-      let finalTexts = await handleTexts(e, memeKey, userText, min_texts, max_texts, default_texts, allUsers, formData)
+      let finalTexts = await handleTexts(e, userText, min_texts, max_texts, default_texts, allUsers, formData)
       if (!finalTexts.success) {
         throw new Error(finalTexts.message)
       }
