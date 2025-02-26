@@ -3,7 +3,6 @@ import { Config } from '#components'
 import access from './access.js'
 import meme from './meme.js'
 import other from './other.js'
-import protect from './protect.js'
 import server from './server.js'
 import stat from './stat.js'
 
@@ -22,7 +21,6 @@ export function getConfigData () {
     meme: Config.meme,
     other: Config.other,
     access: Config.access,
-    protect: Config.protect,
     stat: Config.stat
   }
 }

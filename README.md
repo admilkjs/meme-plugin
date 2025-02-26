@@ -67,10 +67,8 @@ pnpm install --filter=meme-plugin
 - [x] 添加 `仓库更新检查推送` 🔄
 - [x] 添加 `自动更新表情包数据` ⏳
 - [x] 动态重载表情包数据 🔄
-- [ ] 添加 `表情保护` 功能 🔒
 - [x] 自动更新插件 [@MapleLeaf2007](https://github.com/MapleLeaf2007) 🔧
 - [x] 重构 `使用Sqlite存储数据` 📦
-- [ ] 内置 `表情服务端` 🌍
 - [ ] 扩展库 `实现本地制作表情` 🎨
 - [ ] `emoji` 表情合成实现 😀🌈
 
