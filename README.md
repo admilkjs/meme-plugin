@@ -71,6 +71,7 @@ pnpm install --filter=meme-plugin
 - [x] 重构 `使用Sqlite存储数据` 📦
 - [ ] 扩展库 `实现本地制作表情` 🎨
 - [ ] `emoji` 表情合成实现 😀🌈
+- [ ] 添加 `Gif 图片操作` 🔄
 
 ## 贡献者 👨‍💻👩‍💻
 
