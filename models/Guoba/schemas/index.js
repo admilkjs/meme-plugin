@@ -10,7 +10,6 @@ export const schemas = [
   server,
   meme,
   access,
-  protect,
   stat,
   other
 ].flat()
