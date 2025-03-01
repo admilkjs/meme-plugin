@@ -32,7 +32,7 @@ export class gifImage extends plugin {
         replyMessage.push(segment.image(base64Image))
       }
       replyMessage.push(('=========== 分解的图片 ==========='))
-      await e.reply(replyMessage)
+      await e.reply(Bot.makeForwardMsg(replyMessage))
     } catch (error) {
       await e.reply(`处理 GIF 时出错，请稍后再试, ${error instanceof Error ? error.message : '未知错误'}`)
     }
