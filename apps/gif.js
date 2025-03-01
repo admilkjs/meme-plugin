@@ -24,9 +24,6 @@ export class gifImage extends plugin {
       ]
 
       const gifImages = await gif.slice(image[0])
-      if (gifImages.length === 1) {
-        throw new Error('不是GIf图片')
-      }
       for (const frame of gifImages) {
         const base64Image = await Utils.Common.getImageBase64(frame, true)
         replyMessage.push(segment.image(base64Image))
