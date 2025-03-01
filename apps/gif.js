@@ -18,7 +18,7 @@ export class gifImage extends plugin {
   async silce (e) {
     try {
       const image = await Utils.Common.getImage(e)
-
+      if (!image) throw new Error('没有找到图片')
       let replyMessage = [
         ('=========== 分解的图片 ===========\n')
       ]
