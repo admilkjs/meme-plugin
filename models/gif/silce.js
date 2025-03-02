@@ -12,12 +12,13 @@ import * as base from './base.js'
 const execAsync = promisify(exec)
 
 /**
- * 解析 GIF 并提取每一帧为 PNG Buffer 数组
+ * 解析 GIF 并提取每一帧为 PNG Buffer 数组，同时返回帧延迟
  * @param {Buffer} image GIF 图像的 Buffer
- * @returns {Promise<Buffer[]>} 每一帧对应的 PNG Buffer 数组
+ * @returns {Promise<{ frames: Buffer[], delays: number[] }>} 帧数据和每帧的延迟（centiseconds）
  */
-export async function slice (image) {
+export const slice = async (image) => {
   let frames = []
+  let delays = []
 
   const gifDir = `${Version.Plugin_Path}/data/gif/`
   const gifPath = `${gifDir}/input.gif`
@@ -26,13 +27,13 @@ export async function slice (image) {
 
   if (await base.checkFFmpeg()) {
     try {
-      if (!await Utils.Common.fileExistsAsync(gifDir)) {
+      if (!(await Utils.Common.fileExistsAsync(gifDir))) {
         await fs.mkdir(gifDir)
       }
 
       await fs.writeFile(gifPath, image)
 
-      if (!await Utils.Common.fileExistsAsync(outputDir)) {
+      if (!(await Utils.Common.fileExistsAsync(outputDir))) {
         await fs.mkdir(outputDir)
       }
 
@@ -43,22 +44,24 @@ export async function slice (image) {
         files
           .filter(file => file.endsWith('.png'))
           .sort((a, b) => a.localeCompare(b))
-          .map(async file => fs.readFile(`${outputDir}/${file}`))
+          .map(file => fs.readFile(`${outputDir}/${file}`))
       )
+
+      delays = new Array(frames.length).fill(10)
 
       await fs.rm(outputDir, { recursive: true, force: true })
       await fs.rm(gifPath, { force: true })
     } catch (error) {
-      logger.warn(`FFmpeg 解析失败，尝试使用 gif-frames: ${error}`)
+      console.warn(`FFmpeg 解析失败，尝试使用 gif-frames: ${error}`)
     }
   }
 
   if (frames.length === 0) {
     try {
       const frameData = await gifFrames({ url: image, frames: 'all', outputType: 'png' })
-      frames = await Promise.all(
-        frameData.map(async frame => base.streamToBuffer(frame.getImage()))
-      )
+
+      frames = await Promise.all(frameData.map(frame => base.streamToBuffer(frame.getImage())))
+      delays = frameData.map(frame => frame.frameInfo?.delay || 10)
     } catch (error) {
       throw new Error(`解析 GIF 时出错，请稍后再试，错误信息: ${error}`)
     }
@@ -68,5 +71,5 @@ export async function slice (image) {
     throw new Error('提供的图片不是 GIF，至少需要包含两帧')
   }
 
-  return frames
+  return { frames, delays }
 }

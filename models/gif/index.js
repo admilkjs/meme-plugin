@@ -4,4 +4,5 @@
  */
 
 export * from './base.js'
+export * from './gearshift.js'
 export * from './silce.js'
