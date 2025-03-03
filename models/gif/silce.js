@@ -10,66 +10,86 @@ import * as Utils from '../Utils/index.js'
 import * as base from './base.js'
 
 const execAsync = promisify(exec)
+/**
+ * 入口函数：解析 GIF 并提取帧
+ * @param {Buffer} image GIF 图像的 Buffer
+ * @returns {Buffer[]} 提取出的帧数据
+ */
+export async function slice (image) {
+  const hasFFmpeg = await base.checkFFmpeg()
+
+  if (hasFFmpeg) {
+    try {
+      return await sliceWithFFmpeg(image)
+    } catch (error) {
+      console.warn(`FFmpeg 解析失败，回退到 gif-frames: ${error}`)
+    }
+  }
+
+  return await sliceWithGifFrames(image)
+}
 
 /**
- * 解析 GIF 并提取每一帧为 PNG Buffer 数组，同时返回帧延迟
+ * 使用 FFmpeg 解析 GIF 并提取帧
  * @param {Buffer} image GIF 图像的 Buffer
- * @returns {Promise<{ frames: Buffer[], delays: number[] }>} 帧数据和每帧的延迟（centiseconds）
+ * @returns {Buffer[]} 提取的帧数据
  */
-export const slice = async (image) => {
-  let frames = []
-  let delays = []
-
+async function sliceWithFFmpeg (image) {
+  const timestamp = Date.now()
   const gifDir = `${Version.Plugin_Path}/data/gif/`
-  const gifPath = `${gifDir}/input.gif`
-  const outputDir = `${gifDir}/output`
+  if (!(await Utils.Common.fileExistsAsync(gifDir))) {
+    await fs.mkdir(gifDir)
+  }
+
+  const gifPath = `${gifDir}/silce_input_${timestamp}.gif`
+  const outputDir = `${gifDir}/silce_output_${timestamp}`
   const framePattern = `${outputDir}/frame_%04d.png`
 
-  if (await base.checkFFmpeg()) {
-    try {
-      if (!(await Utils.Common.fileExistsAsync(gifDir))) {
-        await fs.mkdir(gifDir)
-      }
-
-      await fs.writeFile(gifPath, image)
-
-      if (!(await Utils.Common.fileExistsAsync(outputDir))) {
-        await fs.mkdir(outputDir)
-      }
-
-      await execAsync(`ffmpeg -i ${gifPath} -vsync 0 -f image2 ${framePattern}`)
-
-      const files = await fs.readdir(outputDir)
-      frames = await Promise.all(
-        files
-          .filter(file => file.endsWith('.png'))
-          .sort((a, b) => a.localeCompare(b))
-          .map(file => fs.readFile(`${outputDir}/${file}`))
-      )
-
-      delays = new Array(frames.length).fill(10)
-
-      await fs.rm(outputDir, { recursive: true, force: true })
-      await fs.rm(gifPath, { force: true })
-    } catch (error) {
-      console.warn(`FFmpeg 解析失败，尝试使用 gif-frames: ${error}`)
+  try {
+    await fs.writeFile(gifPath, image)
+    if (!(await Utils.Common.fileExistsAsync(outputDir))) {
+      await fs.mkdir(outputDir)
     }
-  }
 
-  if (frames.length === 0) {
-    try {
-      const frameData = await gifFrames({ url: image, frames: 'all', outputType: 'png' })
+    await execAsync(`ffmpeg -i ${gifPath} -vsync 0 -f image2 ${framePattern}`)
 
-      frames = await Promise.all(frameData.map(frame => base.streamToBuffer(frame.getImage())))
-      delays = frameData.map(frame => frame.frameInfo?.delay || 10)
-    } catch (error) {
-      throw new Error(`解析 GIF 时出错，请稍后再试，错误信息: ${error}`)
+    const files = await fs.readdir(outputDir)
+    const frames = await Promise.all(
+      files
+        .filter(file => file.endsWith('.png'))
+        .sort((a, b) => a.localeCompare(b))
+        .map(file => fs.readFile(`${outputDir}/${file}`))
+    )
+
+    await fs.rm(outputDir, { recursive: true, force: true })
+    await fs.rm(gifPath, { force: true })
+
+    if (frames.length < 2) {
+      throw new Error('FFmpeg 提取的帧数不足')
     }
-  }
 
-  if (frames.length < 2) {
-    throw new Error('提供的图片不是 GIF，至少需要包含两帧')
+    return frames
+  } catch (error) {
+    throw new Error(`FFmpeg 解析失败: ${error}`)
   }
+}
 
-  return { frames, delays }
+/**
+ * 使用 gif-frames 解析 GIF 并提取帧
+ * @param {Buffer} image GIF 图像的 Buffer
+ * @returns {Buffer[]} 提取的帧数据
+ */
+async function sliceWithGifFrames (image) {
+  try {
+    const frameData = await gifFrames({ url: image, frames: 'all', outputType: 'png' })
+    const frames = await Promise.all(frameData.map(frame => base.streamToBuffer(frame.getImage())))
+
+    if (frames.length < 2) {
+      throw new Error('gif-frames 提取的帧数不足')
+    }
+
+    return frames
+  } catch (error) {
+    throw new Error(`gif-frames 解析失败: ${error}`)
+  }
 }
