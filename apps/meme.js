@@ -17,7 +17,7 @@ const createMemeRegExp = async () => {
   return new RegExp(`${prefix}${keywordsRegex}(.*)`, 'i')
 }
 
-let memeRegExp = await createMemeRegExp()
+let memeRegExp
 
 export class meme extends plugin {
   constructor () {
@@ -27,24 +27,18 @@ export class meme extends plugin {
       priority: -Infinity,
       rule: []
     })
-
-    this.rulesInitialized = false
-    this.initRules().then()
+    this.initRules()
   }
 
   /**
      * 初始化规则
      */
   async initRules () {
-    if (this.rulesInitialized || !memeRegExp) {
-      return
-    }
-
+    memeRegExp = await createMemeRegExp()
     this.rule.push({
       reg: memeRegExp,
       fnc: 'meme'
     })
-    this.rulesInitialized = true
   }
 
   /**
@@ -65,11 +59,9 @@ export class meme extends plugin {
 
   async meme (e) {
     if (!Config.meme.enable) return false
-
     const message = (e.msg || '').trim()
     const match = message.match(memeRegExp)
     if (!match) return false
-
     const matchedKeyword = match[1]
     const userText = match[2]?.trim() || ''
     if (!matchedKeyword) return false
