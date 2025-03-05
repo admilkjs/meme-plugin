@@ -82,8 +82,7 @@ class Cfg {
       for (const key in changes) {
         const value = changes[key]
 
-        let data = this.config[key].servers?.[key.split('.')[1]] || oldConfig.servers?.[key.split('.')[1]]
-        let target = { type: null, data }
+        let target = { type: null }
 
         if (_.isObject(value.newValue) && value.oldValue === undefined) target.type = 'add'
         else if (value.newValue === undefined && _.isObject(value.oldValue)) target.type = 'del'
