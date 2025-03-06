@@ -1,5 +1,6 @@
 if [ ! -f .git/hooks/pre-commit ]; then
   echo "pre-commit hook 未安装，正在安装..."
+  git config --unset-all core.hooksPath
   pnpm exec pre-commit install
 else
   echo "pre-commit hook 已安装"

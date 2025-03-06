@@ -88,8 +88,6 @@ class Cfg {
         else if (value.newValue === undefined && _.isObject(value.oldValue)) target.type = 'del'
         else if (value.newValue === true && !value.oldValue) target.type = 'close'
         else if (value.newValue === false && value.oldValue) target.type = 'open'
-
-        await modifyWebSocket(target)
       }
     }))
   }
