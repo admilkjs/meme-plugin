@@ -117,8 +117,21 @@ export class update extends plugin {
       await Utils.Tools.generateMemeData()
       const Plugin = new meme()
       const pluginName = Plugin.name
-      const pluginKey = pluginsLoader.priority.find((p) => p.plugin.name === pluginName)
-      await pluginKey.updateRegExp()
+      const pluginKey = pluginsLoader.priority.find((p) => {
+        if (p.plugin) {
+          return p.plugin.name === pluginName
+        } else if (p.class) {
+          return p.name === pluginName
+        }
+        return false
+      })
+      let pluginInfo
+      if (pluginKey.plugin) {
+        pluginInfo = pluginKey.plugin
+      } else {
+        pluginInfo = new pluginKey.class()
+      }
+      await pluginInfo.updateRegExp()
 
       if (!isTask && e) {
         await e.reply('表情包数据更新完成')
