@@ -1,3 +1,4 @@
+import { Version } from '#components'
 import { gif, Utils } from '#models'
 
 export class gifImage extends plugin {
@@ -21,21 +22,29 @@ export class gifImage extends plugin {
 
   async silce (e) {
     try {
-      const image = await Utils.Common.getImage(e)
-      if (!image) throw new Error('没有找到图片')
-      let replyMessage = [
-        ('=========== 分解的图片 ===========\n')
+      const images = await Utils.Common.getImage(e)
+      if (!images || images.length === 0) {
+        throw new Error('没有找到图片')
+      }
+
+      const gifFrames = await gif.slice(images[0])
+      if (!gifFrames || gifFrames.length === 0) {
+        throw new Error('GIF 解析失败')
+      }
+
+      const replyMessage = [
+        { user_id: e.self_id, nickname: Version.Plugin_AliasName, message: '===== 分解的图片 =====' },
+        ...await Promise.all(gifFrames.map(async frame => ({
+          user_id: e.self_id,
+          nickname: Version.Plugin_AliasName,
+          message: segment.image(await Utils.Common.getImageBase64(frame, true))
+        }))),
+        { user_id: e.self_id, nickname: Version.Plugin_AliasName, message: '===== 分解的图片 =====' }
       ]
 
-      const gifImages = await gif.slice(image[0])
-      for (const frame of gifImages) {
-        const base64Image = await Utils.Common.getImageBase64(frame, true)
-        replyMessage.push(segment.image(base64Image))
-      }
-      replyMessage.push(('=========== 分解的图片 ==========='))
       await e.reply(Bot.makeForwardMsg(replyMessage))
     } catch (error) {
-      await e.reply(`处理 GIF 时出错，请稍后再试, ${error instanceof Error ? error.message : '未知错误'}`)
+      await e.reply(`处理 GIF 时出错，请稍后再试: ${error instanceof Error ? error.message : '未知错误'}`)
     }
   }
 
