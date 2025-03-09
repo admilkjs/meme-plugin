@@ -17,7 +17,7 @@ async function make (
   userText) {
   const formData = new FormData()
 
-  const quotedUser = e.source?.user_id?.toString() ?? null
+  const quotedUser = e.message.some(msg => msg?.type === 'reply') ? e.user_id : null
 
   const allUsers = [
     ...new Set([
@@ -26,6 +26,7 @@ async function make (
       ...[ ...userText.matchAll(/@\s*(\d+)/g) ].map(match => match[1] ?? '')
     ])
   ].filter(id => id && id !== quotedUser)
+
   if (userText) {
     userText = userText.replace(/@\s*\d+/g, '').trim()
   }else{
