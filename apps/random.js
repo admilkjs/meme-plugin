@@ -34,7 +34,8 @@ export class random extends plugin {
         if (!params) continue
 
         const { min_texts, max_texts, min_images, max_images, default_texts, args_type } = params
-
+        const defText = await Utils.Tools.getDeftext(memeKey) ?? null
+        if (!defText) continue
         if (
           (min_texts === 1 && max_texts === 1) ||
           (min_images === 1 && max_images === 1) ||
