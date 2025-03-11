@@ -10,7 +10,16 @@ import { Utils } from '#models'
 const startTime = Date.now()
 let apps
 
-const response = (await axios.get(`https://api.wuliya.cn/api/count?name=${Version.Plugin_Name}&type=json`)).data
+let responseData = '加载失败'
+try {
+  const response = await axios.get(
+    `https://api.wuliya.cn/api/count?name=${Version.Plugin_Name}&type=json`,
+    { timeout: 500 }
+  )
+  responseData = response.data
+} catch (error) {
+  logger.warn(chalk.red.bold('⚠️ 访问统计数据失败，超时或网络错误'))
+}
 try {
   const files = (await fs.readdir(`${Version.Plugin_Path}/apps`))
     .filter(file => file.endsWith('.js'))
@@ -86,7 +95,7 @@ try {
     chalk.bold.white(`${Version.Bot_Version}`) +
     chalk.gray(' | ') +
     chalk.bold.yellow('📊 运行插件总访问/运行次数: ') +
-    chalk.bold.cyan(response.data)
+    chalk.bold.cyan(responseData)
   )
 
   logger.info(
