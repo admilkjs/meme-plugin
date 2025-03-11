@@ -151,27 +151,6 @@ const Tools = {
     return memeKey ? `${await this.getBaseUrl()}/memes/${memeKey}/preview`.trim() : null
   },
 
-
-  /** 下面的部分待重写 */
-  /**
-   * 获取所有表情包的信息
-   * @returns {object|null} - 返回表情包信息映射表
-   */
-  //   getInfoMap () {
-  //     if (!this.inited) return
-  //     return this.infoMap || null
-  //   },
-
-  //   /**
-  //    * 获取指定表情包的信息
-  //    * @param {string} memeKey - 表情包的唯一标识符
-  //    * @returns {object|null} - 返回表情包的信息或 null
-  //    */
-  //   getInfo (memeKey) {
-  //     if (!this.inited) return
-  //     return this.infoMap[memeKey] || null
-  //   },
-
   /**
      * 将关键字转换为表情包键
      * @param {string} keyword - 表情包关键字

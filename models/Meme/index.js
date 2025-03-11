@@ -17,17 +17,18 @@ async function make (
   userText) {
   const formData = new FormData()
 
-  const quotedUser = e.message.some(msg => msg?.type === 'reply') ? e.user_id : null
+  const quotedUser = e.reply_id ? e.user_id : null
 
   const allUsers = [
     ...new Set([
-      ...(e.source
-        ? []
-        : e.message.filter(m => m?.type === 'at').map(at => at?.qq?.toString() ?? '')
-      ),
+      ...e.message
+        .filter(m => m?.type === 'at')
+        .map(at => at?.qq?.toString() ?? ''),
+
       ...[ ...userText.matchAll(/@\s*(\d+)/g) ].map(match => match[1] ?? '')
     ])
   ].filter(id => id && id !== quotedUser)
+
 
 
 
