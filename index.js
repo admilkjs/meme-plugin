@@ -19,6 +19,7 @@ try {
   responseData = response.data.data
 } catch (error) {
   logger.warn(chalk.red.bold('⚠️ 访问统计数据失败，超时或网络错误'))
+  throw new Error('访问统计数据失败')
 }
 try {
   const files = (await fs.readdir(`${Version.Plugin_Path}/apps`))

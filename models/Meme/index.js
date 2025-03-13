@@ -16,8 +16,21 @@ async function make (
   args_type,
   userText) {
   const formData = new FormData()
-
-  const quotedUser = e.source ? e.sender.user_id.toString() : null
+  let quotedUser
+  let source = null
+  if (e.reply_id) {
+    source = await e.getReply()
+  } else if (e.source) {
+    if (e.isGroup) {
+      source = await Bot[e.self_id].pickGroup(e.group_id).getChatHistory(e.source.seq, 1)
+    } else if (e.isPrivate) {
+      source = await Bot[e.self_id].pickFriend(e.user_id).getChatHistory(e.source.time, 1)
+    }
+  }
+  if (source) {
+    const sourceArray = Array.isArray(source) ? source : [ source ]
+    quotedUser = sourceArray[0].sender.user_id.toString()
+  }
   const allUsers = [
     ...new Set([
       ...e.message
