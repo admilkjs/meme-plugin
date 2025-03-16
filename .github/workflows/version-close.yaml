@@ -8,25 +8,8 @@ permissions:
   contents: write
 
 jobs:
-  sync-main-to-dev:
-    if: github.event.pull_request.merged == true
-    runs-on: ubuntu-latest
-    steps:
-      - name: 检出代码
-        uses: actions/checkout@v4
-
-      - name: 同步分支
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git fetch origin
-          git checkout dev
-          git reset --hard origin/main 
-          git push origin dev --force 
-
   push-tag:
     if: github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'release/v')
-    needs: sync-main-to-dev
     runs-on: ubuntu-latest
     steps:
       - name: 检出代码

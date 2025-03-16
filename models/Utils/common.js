@@ -256,7 +256,7 @@ const Common = {
 
     try {
       if (e.isGroup) {
-        const member = Bot[e.self_id].pickGroup(e.group_id).pickMember(qq)
+        const member = Bot[e.self_id].pickMember(e.group_id, qq)
         avatarUrl = await member.getAvatarUrl()
       } else if (e.isPrivate) {
         const friend = Bot[e.self_id].pickFriend(qq)
@@ -279,8 +279,7 @@ const Common = {
 
     try {
       if (e.isGroup) {
-        const group = Bot[e.self_id].pickGroup(e.group_id)
-        const member = group.pickMember(qq)
+        const member = Bot[e.self_id].pickMember(e.group_id, qq)
         const memberInfo = await member.getInfo()
         return memberInfo.card || memberInfo.nickname || '未知'
       } else if (e.isPrivate) {
@@ -304,8 +303,7 @@ const Common = {
 
     try {
       if (e.isGroup) {
-        const group = Bot[e.self_id].pickGroup(e.group_id)
-        const member = group.pickMember(qq)
+        const member = Bot[e.self_id].pickMember(e.group_id, qq)
         const memberInfo = await member.getInfo()
         return memberInfo.sex || 'unknown'
       } else if (e.isPrivate) {
