@@ -1,7 +1,7 @@
 import { Config, Version } from '#components'
 import { Meme, Utils } from '#models'
 
-let memeRegExp
+let memeRegExp, argRegExp
 /**
  * 生成正则
  */
@@ -18,6 +18,20 @@ const createMemeRegExp = async () => {
   return new RegExp(`${prefix}${keywordsRegex}(.*)`, 'i')
 }
 
+
+const createArgsRegex = async () => {
+  const keywords = await Utils.Tools.getArgAllKeyWords()
+  if (!keywords) return null
+
+  const prefix = Config.meme.forceSharp ? '^#' : '^#?'
+  const escapedKeywords = keywords.map((keyword) =>
+    keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  )
+  const keywordsRegex = `(${escapedKeywords.join('|')})`
+  console.log(keywordsRegex)
+  return new RegExp(`${prefix}${keywordsRegex}(.*)`, 'i')
+}
+argRegExp = await createArgsRegex()
 memeRegExp = await createMemeRegExp()
 
 export class meme extends plugin {
@@ -28,10 +42,16 @@ export class meme extends plugin {
       priority: -Infinity,
       rule: []
     })
-    this.rule.push({
-      reg: memeRegExp,
-      fnc: 'meme'
-    })
+    this.rule.push(
+      {
+        reg: memeRegExp,
+        fnc: 'meme'
+      },
+      {
+        reg: argRegExp,
+        fnc:'arg'
+      }
+    )
   }
 
   /**
@@ -86,10 +106,7 @@ export class meme extends plugin {
     /**
      * 禁用表情列表
      */
-    if (
-      Config.access.blackListEnable &&
-      (await Utils.Tools.isBlacklisted(matchedKeyword))
-    ) {
+    if ( Config.access.blackListEnable && (await Utils.Tools.isBlacklisted(matchedKeyword))) {
       logger.info(
         `[清语表情] 该表情 "${matchedKeyword}" 在禁用列表中，跳过生成`
       )
@@ -123,29 +140,81 @@ export class meme extends plugin {
         }
       }
     }
+    await makeMeme(
+      e,
+      memeKey,
+      min_texts,
+      max_texts,
+      min_images,
+      max_images,
+      default_texts,
+      args_type,
+      userText
+    )
 
-    try {
-      const result = await Meme.make(
-        e,
-        memeKey,
-        min_texts,
-        max_texts,
-        min_images,
-        max_images,
-        default_texts,
-        args_type,
-        userText
-      )
-      await e.reply(segment.image(result), Config.meme.reply)
-      return true
-    } catch (error) {
-      logger.error(error.message)
-      if (Config.meme.errorReply) {
-        await e.reply(
-          `[${Version.Plugin_AliasName}] 生成表情失败, 错误信息: ${error.message}`
-        )
-      }
-      return false
+  }
+  async arg (e) {
+    const message = (e.msg || '').trim()
+    const match = message.match(argRegExp)
+    if (!match) return false
+    const matchedKeyword = match[1]
+    const userText = match[2]?.trim() || ''
+    const memeKey = await Utils.Tools.getArgKey(matchedKeyword)
+    if (!memeKey) return false
+    const params = await Utils.Tools.getParams(memeKey)
+    if (!params) return false
+    const {
+      min_texts,
+      max_texts,
+      min_images,
+      max_images,
+      default_texts,
+      args_type
+    } = params
+    const info = await Utils.Tools.getArgInfo(matchedKeyword)
+    const Arg = {
+      name: info['arg_name'],
+      value: info['arg_value']
     }
+    await makeMeme(
+      e,
+      memeKey,
+      min_texts,
+      max_texts,
+      min_images,
+      max_images,
+      default_texts,
+      args_type,
+      userText,
+      true,
+      { Arg }
+    )
+  }
+}
+async function makeMeme (e, memeKey, min_texts, max_texts, min_images, max_images, default_texts, args_type, userText, isArg, { Arg }) {
+  try {
+    const result = await Meme.make(
+      e,
+      memeKey,
+      min_texts,
+      max_texts,
+      min_images,
+      max_images,
+      default_texts,
+      args_type,
+      userText,
+      isArg,
+      { Arg }
+    )
+    await e.reply(segment.image(result), Config.meme.reply)
+    return true
+  } catch (error) {
+    logger.error(error.message)
+    if (Config.meme.errorReply) {
+      await e.reply(
+        `[${Version.Plugin_AliasName}] 生成表情失败, 错误信息: ${error.message}`
+      )
+    }
+    return false
   }
 }
