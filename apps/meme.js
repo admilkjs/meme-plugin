@@ -66,6 +66,10 @@ export class meme extends plugin {
       {
         reg: memeRegExp,
         fnc: 'meme'
+      },
+      {
+        reg: argRegExp,
+        fnc:'arg'
       }
     ]
 
