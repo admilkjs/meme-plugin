@@ -6,7 +6,7 @@ async function handleArgs (e, memeKey, userText, allUsers, formData, isArg, { Ar
   const argsArray = {}
 
   if (isArg) {
-    argsArray[Arg.name] = Arg.value
+    argsArray[Arg.arg_name] = Arg.arg_value
   } else {
     const argsMatches = userText.match(/#(\S+)\s+([^#]+)/g)
     if (argsMatches) {
@@ -18,7 +18,7 @@ async function handleArgs (e, memeKey, userText, allUsers, formData, isArg, { Ar
   }
 
   const argsResult = isArg
-    ? { success: true, argsString: JSON.stringify({ [Arg.name]: Arg.value }) }
+    ? { success: true, argsString: JSON.stringify({ [Arg.arg_name]: Arg.arg_value }) }
     : await handle(e, memeKey, allUsers, argsArray)
   if (!argsResult.success) {
     return {
@@ -26,7 +26,6 @@ async function handleArgs (e, memeKey, userText, allUsers, formData, isArg, { Ar
       message: argsResult.message
     }
   }
-
   formData.append('args', argsResult.argsString)
 
   return {
