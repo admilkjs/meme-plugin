@@ -211,24 +211,18 @@ const Tools = {
   },
 
   /**
-   * 将关键字转换为表情包键
-   * @param {string} keyword - 表情包关键字
-   * @returns {string|null} - 返回对应的表情包键或 null
-   */
-  async getKey (keyword) {
-    return (
-      (await db.meme.getByField('keyWords', keyword, 'key')).toString() || null
-    )
-  },
+ * 将关键字转换为表情包键
+ * @param {string} keyword - 表情包关键字
+ * @param {string} [type='meme'] - 可选参数，决定从哪个数据源获取，'meme' 或 'preset'（默认 'meme'）
+ * @returns {string|null} - 返回对应的表情包键或 null
+ */
+  async getKey (keyword, type = 'meme') {
+    const dbField = type === 'preset' ? db.preset : db.meme
+    const fieldName = type === 'preset' ? 'name' : 'keyWords'
+    const key = type === 'preset' ? 'key' : 'key'
 
-  /**
-   * 将关键字转换为表情包键
-   * @param {string} keyword  - 表情包关键字(快捷指令)
-   * @returns {string|null} - 返回对应的表情包键或 null
-   */
-  async getArgKey (keyword) {
     return (
-      (await db.preset.getByField('name', keyword, 'key')).toString() || null
+      (await dbField.getByField(fieldName, keyword, key)).toString() || null
     )
   },
   /**
@@ -241,23 +235,18 @@ const Tools = {
   },
 
   /**
-   * 获取所有的关键词
-   * @returns {Promise<Array<string>>} - 返回包含所有关键词的数组
-   */
-  async getAllKeyWords () {
-    const keyWordsList = await db.meme.getAllSelect('keyWords')
+ * 获取所有的关键词
+ * @param {string} [type='meme'] - 可选参数，决定从哪个数据库获取，'meme' 或 'preset'（默认 'meme'）
+ * @returns {Promise<Array<string>>} - 返回包含所有关键词的数组
+ */
+  async getAllKeyWords (type = 'meme') {
+    const keyWordsList = type === 'preset'
+      ? await db.preset.getAllSelect('name')
+      : await db.meme.getAllSelect('keyWords')
 
     return keyWordsList.map((item) => JSON.parse(item)).flat() || null
   },
 
-  /**
-   * 获取所有的参数关键词(快捷指令)
-   * @returns {Promise<Array<string>>} - 返回包含所有关键词的数组
-   */
-  async getArgAllKeyWords () {
-    const keyWordsList = await db.preset.getAllSelect('name')
-    return keyWordsList.flat() || null
-  },
 
   /**
    * 获取所有的 key

@@ -19,8 +19,8 @@ const createRegex = async (getKeywords) => {
   return new RegExp(`${prefix}(${escapedKeywords.join('|')})(.*)`, 'i')
 }
 
-memeRegExp = await createRegex(Utils.Tools.getAllKeyWords)
-argRegExp = await createRegex(Utils.Tools.getArgAllKeyWords)
+memeRegExp = await createRegex(Utils.Tools.getAllKeyWords('meme'))
+argRegExp = await createRegex(Utils.Tools.getAllKeyWords('preset'))
 
 export class meme extends plugin {
   constructor () {
@@ -47,8 +47,8 @@ export class meme extends plugin {
    * 更新正则
    */
   async updateRegExp () {
-    memeRegExp = await createRegex(Utils.Tools.getAllKeyWords)
-    argRegExp = await createRegex(Utils.Tools.getArgAllKeyWords)
+    memeRegExp = await createRegex(Utils.Tools.getAllKeyWords('meme'))
+    argRegExp = await createRegex(Utils.Tools.getAllKeyWords('preset'))
 
     this.rule = [
       {
@@ -69,13 +69,25 @@ export class meme extends plugin {
   }
 
   async arg (e) {
-    return this.validatePrepareMeme(e, argRegExp, Utils.Tools.getArgKey, true)
+    return this.validatePrepareMeme(
+      e,
+      argRegExp,
+      Utils.Tools.getKey,
+      true,
+      'preset'
+    )
   }
 
   /**
    * 通用处理函数, 用于验证权限获取需要的参数之类的
    */
-  async validatePrepareMeme (e, regExp, getKeyFunc, isArg = false) {
+  async validatePrepareMeme (
+    e,
+    regExp,
+    getKeyFunc,
+    isArg = false,
+    type = 'meme'
+  ) {
     if (!Config.meme.enable) return false
     const message = (e.msg || '').trim()
     const match = message.match(regExp)
@@ -85,15 +97,20 @@ export class meme extends plugin {
     const userText = match[2]?.trim() || ''
     if (!matchedKeyword) return false
 
-    const memeKey = await getKeyFunc(matchedKeyword)
+    const memeKey = await getKeyFunc(matchedKeyword, type)
     if (!memeKey) return false
 
     /** 用户权限检查 */
     if (!this.checkUserAccess(e.user_id)) return false
 
     /* 黑名单检查 */
-    if (Config.access.blackListEnable && (await Utils.Tools.isBlacklisted(matchedKeyword))) {
-      logger.info(`[清语表情] 该表情 "${matchedKeyword}" 在禁用列表中，跳过生成`)
+    if (
+      Config.access.blackListEnable &&
+      (await Utils.Tools.isBlacklisted(matchedKeyword))
+    ) {
+      logger.info(
+        `[清语表情] 该表情 "${matchedKeyword}" 在禁用列表中，跳过生成`
+      )
       return false
     }
 
@@ -103,12 +120,17 @@ export class meme extends plugin {
     /* 防误触发 */
     if (params.min_texts === 0 && params.max_texts === 0 && userText) {
       const trimmedText = userText.trim()
-      if (!/^(@\s*\d+\s*)+$/.test(trimmedText) && !/^(#\S+\s+[^#]+)(\s+#\S+\s+[^#]+)*$/.test(trimmedText)) {
+      if (
+        !/^(@\s*\d+\s*)+$/.test(trimmedText) &&
+        !/^(#\S+\s+[^#]+)(\s+#\S+\s+[^#]+)*$/.test(trimmedText)
+      ) {
         return false
       }
     }
 
-    const extraData = isArg ? { Arg: await Utils.Tools.getArgInfo(matchedKeyword) } : {}
+    const extraData = isArg
+      ? { Arg: await Utils.Tools.getArgInfo(matchedKeyword) }
+      : {}
 
     return this.makeMeme(e, memeKey, params, userText, isArg, extraData)
   }
@@ -120,10 +142,13 @@ export class meme extends plugin {
     if (!Config.access.enable) return true
 
     if (
-      (Config.access.mode === 0 && !Config.access.userWhiteList.includes(userId)) ||
+      (Config.access.mode === 0 &&
+        !Config.access.userWhiteList.includes(userId)) ||
       (Config.access.mode === 1 && Config.access.userBlackList.includes(userId))
     ) {
-      logger.info(`[${Version.Plugin_AliasName}] 用户 ${userId} 没有权限，跳过生成`)
+      logger.info(
+        `[${Version.Plugin_AliasName}] 用户 ${userId} 没有权限，跳过生成`
+      )
       return false
     }
     return true
@@ -152,7 +177,9 @@ export class meme extends plugin {
     } catch (error) {
       logger.error(error.message)
       if (Config.meme.errorReply) {
-        await e.reply(`[${Version.Plugin_AliasName}] 生成表情失败, 错误信息: ${error.message}`)
+        await e.reply(
+          `[${Version.Plugin_AliasName}] 生成表情失败, 错误信息: ${error.message}`
+        )
       }
       return false
     }

