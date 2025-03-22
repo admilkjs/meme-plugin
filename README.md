@@ -55,6 +55,8 @@ pnpm install --filter=meme-plugin
 
 ## 使用帮助 ℹ️
 其他内容请查看 [官方文档](https://docs.wuliya.cn/clarity/meme)
+> [!Tip]
+> 如果遇到出现错误可尝试自建后端
 
 ### 表情后端搭建教程 🌟
 <mark>请查看文档</mark>
