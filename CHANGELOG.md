@@ -1,5 +1,12 @@
 # 变更日志
 
+## [1.15.2](https://github.com/ClarityJS/meme-plugin/compare/v1.15.1...v1.15.2) (2025-03-22)
+
+### 📚 文档更新
+
+* **README:** 补充使用帮助信息 ([a561e87](https://github.com/ClarityJS/meme-plugin/commit/a561e87215838514a5230a6fc69ccf6ea14dc04e))
+* 更新 issue 模板标题为中文 ([e07919f](https://github.com/ClarityJS/meme-plugin/commit/e07919f628edde65485e16ce64b4c39b80dd63e9))
+
 ## [1.15.1](https://github.com/ClarityJS/meme-plugin/compare/v1.15.0...v1.15.1) (2025-03-16)
 
 ### 🐛 修复
