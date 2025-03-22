@@ -5,21 +5,19 @@ import { Utils } from '#models'
 async function handleArgs (e, memeKey, userText, allUsers, formData, isArg, { Arg }) {
   const argsArray = {}
 
-  if (isArg) {
-    argsArray[Arg.arg_name] = Arg.arg_value
-  } else {
-    const argsMatches = userText.match(/#(\S+)\s+([^#]+)/g)
-    if (argsMatches) {
-      for (const match of argsMatches) {
-        const [ _, key, value ] = match.match(/#(\S+)\s+([^#]+)/)
-        argsArray[key] = value.trim()
-      }
+  const argsMatches = userText.match(/#(\S+)\s+([^#]+)/g)
+  if (argsMatches) {
+    for (const match of argsMatches) {
+      const [ _, key, value ] = match.match(/#(\S+)\s+([^#]+)/)
+      argsArray[key] = value.trim()
     }
   }
+  if (isArg && Arg?.arg_name) {
+    argsArray[Arg.arg_name] = Arg.arg_value
+  }
 
-  const argsResult = isArg
-    ? { success: true, argsString: JSON.stringify({ [Arg.arg_name]: Arg.arg_value }) }
-    : await handle(e, memeKey, allUsers, argsArray)
+  const argsResult = await handle(e, memeKey, allUsers, argsArray)
+
   if (!argsResult.success) {
     return {
       success: argsResult.success,
@@ -35,9 +33,7 @@ async function handleArgs (e, memeKey, userText, allUsers, formData, isArg, { Ar
 }
 
 async function handle (e, key, allUsers, args) {
-  if (!args) {
-    args = {}
-  }
+  if (!args) args = {}
 
   const argsObj = {}
   const paramInfos = await Utils.Tools.getParamInfo(key)
@@ -58,7 +54,7 @@ async function handle (e, key, allUsers, args) {
     if (!paramMap[argName]) {
       return {
         success: false,
-        message: `该参数表情不存在参数 ${argName}`
+        message: `该表情不支持参数：${argName}`
       }
     }
     argsObj[argName] = argValue
@@ -79,6 +75,5 @@ async function handle (e, key, allUsers, args) {
     })
   }
 }
-
 
 export { handle, handleArgs }
