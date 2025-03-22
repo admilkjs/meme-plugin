@@ -26,8 +26,7 @@ jobs:
           git push origin "v$VERSION"
 
   create-release:
-    if: github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'release/v')
-    needs: [sync-main-to-dev, push-tag]
+    needs: [push-tag]
     runs-on: ubuntu-latest
     steps:
       - name: 检出代码
