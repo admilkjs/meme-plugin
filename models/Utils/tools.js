@@ -162,7 +162,6 @@ const Tools = {
     try {
       logger.debug(chalk.blue.bold('🛠️ 开始生成预设参数数据...'))
       const preset = Meme.preset
-      console.log(preset)
       await db.preset.removeAll()
       await Promise.all(
         preset.map(async (preset) => {
@@ -274,7 +273,7 @@ const Tools = {
    */
   async gatArgAllName (memeKey) {
     const nameList = await db.preset.getAllByKey(memeKey) ?? []
-    return nameList.map((item) => item.name) || null
+    return nameList.map((item) => JSON.parse(item.name)) || null
   },
   /**
    * 获取预设参数的名称

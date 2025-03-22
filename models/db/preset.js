@@ -6,7 +6,7 @@ export const table = sequelize.define('arg', {
    * @type {string}
    */
   name: {
-    type: DataTypes.STRING,
+    type: DataTypes.JSON,
     primaryKey: true,
     allowNull: false
   },

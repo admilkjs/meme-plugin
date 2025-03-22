@@ -19,8 +19,8 @@ const createRegex = async (getKeywords) => {
   return new RegExp(`${prefix}(${escapedKeywords.join('|')})(.*)`, 'i')
 }
 
-memeRegExp = await createRegex(Utils.Tools.getAllKeyWords('meme'))
-argRegExp = await createRegex(Utils.Tools.getAllKeyWords('preset'))
+memeRegExp = await createRegex(() => Utils.Tools.getAllKeyWords('meme'))
+argRegExp = await createRegex(() => Utils.Tools.getAllKeyWords('preset'))
 
 export class meme extends plugin {
   constructor () {

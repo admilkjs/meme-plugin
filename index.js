@@ -20,6 +20,14 @@ try {
 } catch (error) {
   logger.warn('⚠️ 访问统计数据失败，超时或网络错误')
 }
+
+try {
+  await Utils.Tools.init()
+  logger.info(chalk.bold.cyan(`[${Version.Plugin_AliasName}] 🎉 表情包数据初始化成功！`))
+} catch (error) {
+  logger.error(chalk.bold.red(`[${Version.Plugin_AliasName}] 💥 表情包数据初始化失败！错误详情：${error.message}`))
+}
+
 try {
   const files = (await fs.readdir(`${Version.Plugin_Path}/apps`))
     .filter(file => file.endsWith('.js'))
@@ -79,14 +87,6 @@ try {
   }
 
   logger.info(chalk.bold.rgb(0, 255, 0)('========= 🌟🌟🌟 ========='))
-  try {
-    await Utils.Tools.init()
-    logger.info(chalk.bold.cyan('🎉 表情包数据初始化成功！'))
-  } catch (error) {
-    logger.error(chalk.bold.red(`💥 表情包数据初始化失败！错误详情：${error.message}`))
-  }
-
-
   logger.info(
     chalk.bold.blue('📦 当前运行环境: ') +
     chalk.bold.white(`${Version.Bot_Name}`) +
