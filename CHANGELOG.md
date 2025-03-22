@@ -1,5 +1,11 @@
 # 变更日志
 
+## [1.15.3](https://github.com/ClarityJS/meme-plugin/compare/v1.15.2...v1.15.3) (2025-03-22)
+
+### 🔄 持续集成
+
+* 更新创建发布任务依赖 ([ead4b0f](https://github.com/ClarityJS/meme-plugin/commit/ead4b0f6122aa407ef53d3b3df06dcc0c6bd4557))
+
 ## [1.15.2](https://github.com/ClarityJS/meme-plugin/compare/v1.15.1...v1.15.2) (2025-03-22)
 
 ### 📚 文档更新
