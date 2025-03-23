@@ -290,8 +290,5 @@ export async function getAll () {
  * @returns {Promise<boolean>} - 如果成功删除返回 `true`，否则返回 `false`
  */
 export async function remove (key) {
-  const deletedCount = await table.destroy({
-    where: { key }
-  })
-  return deletedCount > 0
+  return Boolean(await table.destroy({ where: { key } }))
 }

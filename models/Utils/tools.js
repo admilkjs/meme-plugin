@@ -397,7 +397,7 @@ const Tools = {
    */
   async removeKey (keys) {
     if (!Array.isArray(keys)) {
-      keys = [ keys ] // 确保 keys 是数组
+      keys = [ keys ]
     }
     await Promise.all(keys.map((key) => db.meme.remove(key)))
   },

@@ -143,17 +143,16 @@ export async function getAllSelect (name) {
 /**
  * 根据唯一指令标识符删除表情预设记录
  * @param {string} name - 唯一指令标识符（主键）
- * @returns {Promise<number>} 删除的记录数量
+ * @returns {Promise<boolean>} 删除的记录数量
  */
 export async function remove (name) {
-  const deletedCount = await table.destroy({ where: { name } })
-  return deletedCount > 0
+  return Boolean(await table.destroy({ where: { name } }))
 }
 
 /**
  * 删除所有表情预设记录
- * @returns {Promise<void>} 删除操作完成
+ * @returns {Promise<boolean>} 删除操作完成
  */
 export async function removeAll () {
-  await table.destroy({ truncate: true })
+  return Boolean(await table.destroy({ truncate: true }))
 }
