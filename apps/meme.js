@@ -47,8 +47,8 @@ export class meme extends plugin {
    * 更新正则
    */
   async updateRegExp () {
-    memeRegExp = await createRegex(Utils.Tools.getAllKeyWords('meme'))
-    argRegExp = await createRegex(Utils.Tools.getAllKeyWords('preset'))
+    memeRegExp = await createRegex(() => Utils.Tools.getAllKeyWords('meme'))
+    argRegExp = await createRegex(() => Utils.Tools.getAllKeyWords('preset'))
 
     this.rule = [
       {

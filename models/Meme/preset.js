@@ -81,151 +81,151 @@ const preset = [
   },
   /** 世界计划 */
   {
-    name: '(pjsk|世界计划)爱莉',
+    name: '爱莉说',
     key: 'pjsk',
     arg_name: 'character',
     arg_value: 1
   },
   {
-    name: '(pjsk|世界计划)彰人',
+    name: '彰人说',
     key: 'pjsk',
     arg_name: 'character',
     arg_value: 2
   },
   {
-    name: '(pjsk|世界计划)杏',
+    name: '杏说',
     key: 'pjsk',
     arg_name: 'character',
     arg_value: 3
   },
   {
-    name: '(pjsk|世界计划)梦',
+    name: '梦说',
     key: 'pjsk',
     arg_name: 'character',
     arg_value: 4
   },
   {
-    name: '(pjsk|世界计划)绘名',
+    name: '绘名说',
     key: 'pjsk',
     arg_name: 'character',
     arg_value: 5
   },
   {
-    name: '(pjsk|世界计划)遥',
+    name: '遥说',
     key: 'pjsk',
     arg_name: 'character',
     arg_value: 6
   },
   {
-    name: '(pjsk|世界计划)穗波',
+    name: '穗波说',
     key: 'pjsk',
     arg_name: 'character',
     arg_value: 7
   },
   {
-    name: '(pjsk|世界计划)一歌',
+    name: '一歌说',
     key: 'pjsk',
     arg_name: 'character',
     arg_value: 8
   },
   {
-    name: '(pjsk|世界计划)KAITO',
+    name: 'KAITO说',
     key: 'pjsk',
     arg_name: 'character',
     arg_value: 9
   },
   {
-    name: '(pjsk|世界计划)奏',
+    name: '奏说',
     key: 'pjsk',
     arg_name: 'character',
     arg_value: 10
   },
   {
-    name: '(pjsk|世界计划)心羽',
+    name: '心羽说',
     key: 'pjsk',
     arg_name: 'character',
     arg_value: 11
   },
   {
-    name: '(pjsk|世界计划)连',
+    name: '连说',
     key: 'pjsk',
     arg_name: 'character',
     arg_value: 12
   },
   {
-    name: '(pjsk|世界计划)流歌',
+    name: '流歌说',
     key: 'pjsk',
     arg_name: 'character',
     arg_value: 13
   },
   {
-    name: '(pjsk|世界计划)真冬',
+    name: '真冬说',
     key: 'pjsk',
     arg_name: 'character',
     arg_value: 14
   },
   {
-    name: '(pjsk|世界计划)MEIKO',
+    name: 'MEIKO说',
     key: 'pjsk',
     arg_name: 'character',
     arg_value: 15
   },
   {
-    name: '(pjsk|世界计划)初音未来',
+    name: '初音未来说',
     key: 'pjsk',
     arg_name: 'character',
     arg_value: 16
   },
   {
-    name: '(pjsk|世界计划)实乃理',
+    name: '实乃理说',
     key: 'pjsk',
     arg_name: 'character',
     arg_value: 17
   },
   {
-    name: '(pjsk|世界计划)宁宁',
+    name: '宁宁说',
     key: 'pjsk',
     arg_name: 'character',
     arg_value: 19
   },
   {
-    name: '(pjsk|世界计划)铃',
+    name: '铃说',
     key: 'pjsk',
     arg_name: 'character',
     arg_value: 20
   },
   {
-    name: '(pjsk|世界计划)类',
+    name: '类说',
     key: 'pjsk',
     arg_name: 'character',
     arg_value: 21
   },
   {
-    name: '(pjsk|世界计划)咲希',
+    name: '咲希说',
     key: 'pjsk',
     arg_name: 'character',
     arg_value: 22
   },
   {
-    name: '(pjsk|世界计划)志步',
+    name: '志步说',
     key: 'pjsk',
     arg_name: 'character',
     arg_value: 23
   },
   {
-    name: '(pjsk|世界计划)雫',
+    name: '雫说',
     key: 'pjsk',
     arg_name: 'character',
     arg_value: 24
   },
   {
-    name: '(pjsk|世界计划)冬弥',
+    name: '冬弥说',
     key: 'pjsk',
     arg_name: 'character',
     arg_value: 25
   },
   {
-    name: '(pjsk|世界计划)司',
+    name: '司说',
     key: 'pjsk',
     arg_name: 'character',
     arg_value: 26
