@@ -31,7 +31,7 @@ async function make (
   args_type,
   userText,
   isArg = false,
-  { Arg }
+  { Arg } = {}
 ) {
   const formData = new FormData()
   let quotedUser
