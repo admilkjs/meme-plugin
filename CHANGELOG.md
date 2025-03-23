@@ -1,5 +1,29 @@
 # 变更日志
 
+## [1.16.0](https://github.com/ClarityJS/meme-plugin/compare/v1.15.3...v1.16.0) (2025-03-23)
+
+### ✨ 新功能
+
+* **models:** 添加多个新角色和游戏的预设模板 ([0290e63](https://github.com/ClarityJS/meme-plugin/commit/0290e63a3d83f1257286580fc94ad49f9bc0239a))
+
+### 🐛 修复
+
+* **models:** 优化 Meme 模型的 make 函数参数定义, 以修复随机表情 ([40cfe4b](https://github.com/ClarityJS/meme-plugin/commit/40cfe4b2aac486d45154f2d1196ddf02d1efd7f5))
+* **models:** 修复单个参数时的参数名和参数值错误 ([dacf6e1](https://github.com/ClarityJS/meme-plugin/commit/dacf6e14b06e2bb07ff99936677716b90b6edcfe))
+* **Utils:** 修复关键词获取 ([4469148](https://github.com/ClarityJS/meme-plugin/commit/4469148705c4cd57bbc35f065de04aa08bf1c100))
+
+### ♻️ 重构
+
+* **db:** 重命名参数相关函数和表 ([6530876](https://github.com/ClarityJS/meme-plugin/commit/653087633bf98c949721ca400fab1d7b82d3c341))
+* **meme:** 优化正则表达式创建方式并统一模板格式 ([eed3af3](https://github.com/ClarityJS/meme-plugin/commit/eed3af328e51b2256e603d71b6da8ef0f395a003))
+* **meme:** 添加快捷指令功能并优化参数处理 ([41fae01](https://github.com/ClarityJS/meme-plugin/commit/41fae01e83b6003953785c32f80cc0ac99c82fa1))
+* **meme:** 重构表情包生成逻辑 ([0226ed0](https://github.com/ClarityJS/meme-plugin/commit/0226ed0a8cd124152da9cbfdcab3d6cfc3427433))
+* **meme:** 重构表情生成功能 ([1658b2f](https://github.com/ClarityJS/meme-plugin/commit/1658b2f319abdea284c14c43085886edc8394ef8))
+* **models:** 优化参数处理逻辑 ([cb7a2eb](https://github.com/ClarityJS/meme-plugin/commit/cb7a2eb0a2f6c4dd277b268d642588100f200bf6))
+* **models:** 重构数据库相关操作并优化工具函数 ([3160b52](https://github.com/ClarityJS/meme-plugin/commit/3160b52f8b259f0f53ec1d6bfe9e10ac0ae3eae9))
+* **models:** 重构部分代码并添加新功能 ([fa5701f](https://github.com/ClarityJS/meme-plugin/commit/fa5701fa773aa5425e32f41eceaf4dda6c7dde5c))
+* **update:** 优化更新流程并添加强制更新功能 ([aa192b8](https://github.com/ClarityJS/meme-plugin/commit/aa192b830eb773a119fc9d1f5a0d7c49ffe49300))
+
 ## [1.15.3](https://github.com/ClarityJS/meme-plugin/compare/v1.15.2...v1.15.3) (2025-03-22)
 
 ### 🔄 持续集成

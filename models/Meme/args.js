@@ -2,7 +2,7 @@ import _ from 'lodash'
 
 import { Utils } from '#models'
 
-async function handleArgs (e, memeKey, userText, allUsers, formData, isArg, { Arg }) {
+async function handleArgs (e, memeKey, userText, allUsers, formData, isPreset, Preset ) {
   const argsArray = {}
 
   const argsMatches = userText.match(/#(\S+)\s+([^#]+)/g)
@@ -12,8 +12,8 @@ async function handleArgs (e, memeKey, userText, allUsers, formData, isArg, { Ar
       argsArray[key] = value.trim()
     }
   }
-  if (isArg && Arg?.arg_name) {
-    argsArray[Arg.arg_name] = Arg.arg_value
+  if (isPreset && Preset?.arg_name) {
+    argsArray[Preset.arg_name] = Preset.arg_value
   }
 
   const argsResult = await handle(e, memeKey, allUsers, argsArray)
@@ -24,7 +24,9 @@ async function handleArgs (e, memeKey, userText, allUsers, formData, isArg, { Ar
       message: argsResult.message
     }
   }
-  formData.append('args', argsResult.argsString)
+  if (argsResult.argsString) {
+    formData.append('args', argsResult.argsString)
+  }
 
   return {
     success: true,

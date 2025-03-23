@@ -202,7 +202,7 @@ export async function get (key) {
  * 通过 key 查询指定字段的值
  * @param {string} key - 表情包的唯一标识符
  * @param {string | string[]} name - 需要查询的字段（支持单个或多个字段）
- * @returns {Promise<object | null>} - 返回查询到的数据或 null
+ * @returns {Promise<any | null>} - 返回查询到的数据或 null
  */
 export async function getByKey (key, name = '*') {
   const queryOptions = {}
@@ -229,7 +229,7 @@ export async function getByKey (key, name = '*') {
  * @param {string} field - 需要查询的字段（可能是 JSON 或字符串）
  * @param {string | number | string[] | number[]} value - 需要匹配的值（支持多个）
  * @param {string | string[]} returnField - 返回字段（默认 key）
- * @returns {Promise<object[]>} - 返回符合条件的记录数组
+ * @returns {Promise<string[]>} - 返回符合条件的记录数组
  */
 export async function getByField (field, value, returnField = 'key') {
   if (!field) {
