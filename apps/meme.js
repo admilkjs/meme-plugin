@@ -1,7 +1,7 @@
 import { Config, Version } from '#components'
 import { Meme, Utils } from '#models'
 
-let memeRegExp, argRegExp
+let memeRegExp, presetRegExp
 
 /**
  * 生成正则表达式
@@ -20,7 +20,7 @@ const createRegex = async (getKeywords) => {
 }
 
 memeRegExp = await createRegex(() => Utils.Tools.getAllKeyWords('meme'))
-argRegExp = await createRegex(() => Utils.Tools.getAllKeyWords('preset'))
+presetRegExp = await createRegex(() => Utils.Tools.getAllKeyWords('preset'))
 
 export class meme extends plugin {
   constructor () {
@@ -37,8 +37,8 @@ export class meme extends plugin {
         fnc: 'meme'
       },
       {
-        reg: argRegExp,
-        fnc: 'arg'
+        reg: presetRegExp,
+        fnc: 'preset'
       }
     )
   }
@@ -48,7 +48,7 @@ export class meme extends plugin {
    */
   async updateRegExp () {
     memeRegExp = await createRegex(() => Utils.Tools.getAllKeyWords('meme'))
-    argRegExp = await createRegex(() => Utils.Tools.getAllKeyWords('preset'))
+    presetRegExp = await createRegex(() => Utils.Tools.getAllKeyWords('preset'))
 
     this.rule = [
       {
@@ -56,8 +56,8 @@ export class meme extends plugin {
         fnc: 'meme'
       },
       {
-        reg: argRegExp,
-        fnc: 'arg'
+        reg: presetRegExp,
+        fnc: 'preset'
       }
     ]
 
@@ -68,10 +68,10 @@ export class meme extends plugin {
     return this.validatePrepareMeme(e, memeRegExp, Utils.Tools.getKey)
   }
 
-  async arg (e) {
+  async preset (e) {
     return this.validatePrepareMeme(
       e,
-      argRegExp,
+      presetRegExp,
       Utils.Tools.getKey,
       true,
       'preset'
@@ -85,7 +85,7 @@ export class meme extends plugin {
     e,
     regExp,
     getKeyFunc,
-    isArg = false,
+    isPreset = false,
     type = 'meme'
   ) {
     if (!Config.meme.enable) return false
@@ -128,11 +128,11 @@ export class meme extends plugin {
       }
     }
 
-    const extraData = isArg
-      ? { Arg: await Utils.Tools.getArgInfo(matchedKeyword) }
+    const extraData = isPreset
+      ? { Preset: await Utils.Tools.getPreseInfo(matchedKeyword) }
       : {}
 
-    return this.makeMeme(e, memeKey, params, userText, isArg, extraData)
+    return this.makeMeme(e, memeKey, params, userText, isPreset, extraData)
   }
 
   /**
@@ -157,7 +157,7 @@ export class meme extends plugin {
   /**
    * 调用 Meme 生成方法
    */
-  async makeMeme (e, memeKey, params, userText, isArg, extraData) {
+  async makeMeme (e, memeKey, params, userText, isPreset, extraData) {
     try {
       const result = await Meme.make(
         e,
@@ -169,7 +169,7 @@ export class meme extends plugin {
         params.default_texts,
         params.args_type,
         userText,
-        isArg,
+        isPreset,
         extraData
       )
       await e.reply(segment.image(result), Config.meme.reply)

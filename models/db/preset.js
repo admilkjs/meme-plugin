@@ -1,6 +1,6 @@
 import { col, DataTypes, fn, literal, Op, sequelize } from './base.js'
 
-export const table = sequelize.define('arg', {
+export const table = sequelize.define('preset', {
   /**
    * 唯一标识符, 表情的指令，相当于快捷指令
    * @type {string}
@@ -135,8 +135,9 @@ export async function getAllByKey (key) {
  */
 export async function getAllSelect (name) {
   const res = await table.findAll({
-    attributes: [ [ fn('DISTINCT', col(name)), name ] ]
-  }, { raw: true })
+    attributes: [ [ fn('DISTINCT', col(name)), name ] ],
+    raw: true
+  })
   return res.map(item => item[name])
 }
 

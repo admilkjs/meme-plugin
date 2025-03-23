@@ -116,7 +116,7 @@ export class update extends plugin {
 
       await Promise.all([
         Utils.Tools.generateMemeData(forceUpdate),
-        Utils.Tools.generateArgData()
+        Utils.Tools.generatePresetData()
       ])
       const Plugin = new meme()
       const pluginName = Plugin.name

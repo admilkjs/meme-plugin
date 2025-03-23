@@ -3,6 +3,7 @@ import { Utils } from '#models'
 
 import { handle, handleArgs } from './args.js'
 import { handleImages } from './images.js'
+import { preset } from './preset.js'
 import { handleTexts } from './texts.js'
 
 /**
@@ -30,8 +31,8 @@ async function make (
   default_texts,
   args_type,
   userText,
-  isArg = false,
-  { Arg } = {}
+  isPreset = false,
+  { Preset } = {}
 ) {
   const formData = new FormData()
   let quotedUser
@@ -70,7 +71,7 @@ async function make (
      * 处理参数类型
      */
     if (args_type != null) {
-      const args = await handleArgs(e, memeKey, userText, allUsers, formData, isArg, { Arg })
+      const args = await handleArgs(e, memeKey, userText, allUsers, formData, isPreset, Preset)
       if (!args.success) {
         throw new Error(args.message)
       }
@@ -121,5 +122,5 @@ async function make (
   }
 }
 
-export { handle, handleArgs, handleImages, handleTexts, make }
-export { preset } from './preset.js'
+export { handle, handleArgs, handleImages, handleTexts, make, preset }
+

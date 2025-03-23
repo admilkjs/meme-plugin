@@ -35,7 +35,7 @@ const Tools = {
 
     if (!argData?.length) {
       logger.debug(chalk.cyan('🚀 参数数据不存在，开始生成...'))
-      tasks.push(this.generateArgData())
+      tasks.push(this.generatePresetData())
     } else {
       logger.debug(chalk.cyan('✅ 参数数据已存在，加载完成'))
     }
@@ -158,7 +158,7 @@ const Tools = {
    * 生成预设参数数据
    * @returns {Promise<void>}
    */
-  async generateArgData () {
+  async generatePresetData () {
     try {
       logger.debug(chalk.blue.bold('🛠️ 开始生成预设参数数据...'))
       const preset = Meme.preset
@@ -262,7 +262,7 @@ const Tools = {
    * @param {string} name - 表情包的唯一标识符(快捷指令)
    * @returns {Promise<object|null>} -返回快捷指令信息
    */
-  async getArgInfo (name) {
+  async getPreseInfo (name) {
     return await db.preset.get(name)
   },
 
@@ -271,28 +271,9 @@ const Tools = {
    * @param {string} memeKey - 表情的键值
    * @returns {Promise<Array<string>>} - 返回包含所有关键词的数组
    */
-  async gatArgAllName (memeKey) {
+  async gatPresetAllName (memeKey) {
     const nameList = await db.preset.getAllByKey(memeKey) ?? []
     return nameList.map((item) => JSON.parse(item.name)) || null
-  },
-  /**
-   * 获取预设参数的名称
-   * @param {string} name - 预设参数的唯一标识符(快捷方式)
-   * @returns {Promise<string|null>} - 返回参数名称或 null
-   */
-  async getArgName (name) {
-    const Argname = await db.preset.getByKey(name, 'arg_name')
-    return Argname|| null
-  },
-
-  /**
-   * 获取预设参数的值
-   * @param {string} name - 预设参数的唯一标识符(快捷方式)
-   * @returns {Promise<string|null>} - 返回参数值或 null
-   */
-  async getArgValue (name) {
-    const value = await db.preset.getByKey(name, 'arg_value')
-    return value || null
   },
 
   /**
@@ -410,7 +391,7 @@ const Tools = {
   async isBlacklisted (input) {
     const blacklistedKeys = await Promise.all(
       Config.access.blackList.map(async (item) => {
-        return (await this.getKey(item)) || item
+        return (await this.getKey(item, 'meme')) || item
       })
     )
 
@@ -418,7 +399,7 @@ const Tools = {
       return true
     }
 
-    const memeKey = await this.getKey(input)
+    const memeKey = await this.getKey(input, 'meme')
     return blacklistedKeys.includes(memeKey)
   }
 }

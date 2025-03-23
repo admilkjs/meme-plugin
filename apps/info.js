@@ -42,7 +42,7 @@ export class info extends plugin {
     const argsdesc = argsdescObj
       ? Object.entries(argsdescObj).map(([ paramName, description ]) => `[${paramName}: ${description}]`).join(' ')
       : null
-    const argsCmd = await Utils.Tools.gatArgAllName(memeKey) ?? null
+    const argsCmd = await Utils.Tools.gatPresetAllName(memeKey) ?? null
     const argsCmdList = argsCmd?.length ? argsCmd.map(name => `[${name}]`).join(' ') : '[无]'
     const aliasList = await Utils.Tools.getKeyWords(memeKey) ?? null
     const alias = aliasList ? aliasList.map(text => `[${text}]`).join(' ') : '[无]'
