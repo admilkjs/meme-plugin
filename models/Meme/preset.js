@@ -25,13 +25,13 @@ const preset = [
     arg_value: 4
   },
   {
-    name: '濑名说',
+    name: '玛丽说',
     key: 'ba_say',
     arg_name: 'character',
     arg_value: 5
   },
   {
-    name: '玛丽说',
+    name: '濑名说',
     key: 'ba_say',
     arg_name: 'character',
     arg_value: 6
