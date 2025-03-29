@@ -1,5 +1,42 @@
 # 变更日志
 
+## [1.16.1](https://github.com/ClarityJS/meme-plugin/compare/v1.16.0...v1.16.1) (2025-03-29)
+
+
+### 🐛 错误修复
+
+* **models:** 调整玛丽说和濑名说模板的名称和顺序 ([3ce2628](https://github.com/ClarityJS/meme-plugin/commit/3ce26284b5a0c5cf469484196d2a48eae638b4fd))
+
+
+### ⚡️ 性能优化
+
+* **config:** 添加消息图片配置项 ([059b2a4](https://github.com/ClarityJS/meme-plugin/commit/059b2a4513c5407e01d6c49bcc4a5b7e0f523361))
+* **help:** 优化版本信息展示 ([3572527](https://github.com/ClarityJS/meme-plugin/commit/357252709b0d8117528ea3cdc2a99c8b013f8a83))
+* **meme:** 添加获取消息中图片的功能并优化图片处理逻辑 ([d875f38](https://github.com/ClarityJS/meme-plugin/commit/d875f3893a934c025d0a554894b30232faef597a))
+
+
+### 🎨 代码样式
+
+* **models:** 调整代码格式 ([a72210b](https://github.com/ClarityJS/meme-plugin/commit/a72210b8b31bfcdee4683c64c9406add1fa83e61))
+
+
+### ♻️ 代码重构
+
+* **eslint:** 更新 ESLint 配置文件 ([089c20a](https://github.com/ClarityJS/meme-plugin/commit/089c20abc62b38ee824ff28262fc797fab5892fe))
+* 优化 package.json 文件格式 ([3444b85](https://github.com/ClarityJS/meme-plugin/commit/3444b85109fa46fcdd05b1d141364943f48693fa))
+
+
+### 📦️ 构建系统
+
+* **eslint:** 更新 ESLint 配置 ([49eb7dc](https://github.com/ClarityJS/meme-plugin/commit/49eb7dcc63bd60c641948b7ca517182f34ac1543))
+* **lint:** 更新 ESLint 配置和依赖 ([77e176e](https://github.com/ClarityJS/meme-plugin/commit/77e176e26f85eacf6a3b1c6ec0ba14baedf4406d))
+* 移除 pre-commit hook 相关配置 ([de4e677](https://github.com/ClarityJS/meme-plugin/commit/de4e677017e5a9a5c46b693b8136827a107eeeb7))
+
+
+### 🎡 持续集成
+
+* 重构 GitHub Actions 工作流并更新代码风格 ([785b9cf](https://github.com/ClarityJS/meme-plugin/commit/785b9cfc466fa6e1874037a343cfc72fc61e5729))
+
 ## [1.16.0](https://github.com/ClarityJS/meme-plugin/compare/v1.15.3...v1.16.0) (2025-03-23)
 
 ### ✨ 新功能
