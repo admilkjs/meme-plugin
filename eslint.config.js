@@ -1,21 +1,24 @@
-import stylisticJs from '@stylistic/eslint-plugin'
-import simpleImportSort from 'eslint-plugin-simple-import-sort'
-import globals from 'globals'
+import { createRequire } from 'node:module'
 
+const require = createRequire(import.meta.url)
+const stylistic = require('@stylistic/eslint-plugin')
+const simpleImportSort = require('eslint-plugin-simple-import-sort')
+const globals = require('globals')
 
 export default (
   {
-    ignores: [ 'eslint.config.mjs' ]
+    ignores: [ 'eslint.config.js' ]
   },
   {
     languageOptions: {
+      sourceType: 'module',
       globals: { ...globals.node }
     },
     plugins: {
       'simple-import-sort': simpleImportSort,
-      '@stylistic/indent': stylisticJs
+      '@stylistic/indent': stylistic
     },
-    files: [ '**/*.js', 'eslint.config.mjs' ],
+    files: [ '**/*.js', 'eslint.config.js' ],
     rules: {
       'no-prototype-builtins': 0,
       'no-unsafe-optional-chaining': 0,
