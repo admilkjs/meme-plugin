@@ -21,6 +21,6 @@ repos:
         additional_dependencies:
           - eslint@^9.23.0
           - globals@^15.15.0
+          - neostandard@^0.12.1
           - eslint-plugin-simple-import-sort@12.1.1
-          - '@stylistic/eslint-plugin@^4.2.0'
 

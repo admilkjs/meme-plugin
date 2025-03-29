@@ -15,9 +15,9 @@
     "sqlite3": "5.1.6"
   },
   "devDependencies": {
-    "@stylistic/eslint-plugin": "^4.2.0",
     "eslint-plugin-simple-import-sort": "^12.1.1",
-    "globals": "^15.15.0"
+    "globals": "^15.15.0",
+    "neostandard": "^0.12.1"
   },
   "scripts": {
     "lint": "eslint .",

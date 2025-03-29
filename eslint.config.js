@@ -1,9 +1,9 @@
 import { createRequire } from 'node:module'
 
 const require = createRequire(import.meta.url)
-const stylistic = require('@stylistic/eslint-plugin')
 const simpleImportSort = require('eslint-plugin-simple-import-sort')
 const globals = require('globals')
+const neostandard = require('neostandard')
 
 export default (
   {
@@ -15,11 +15,11 @@ export default (
       globals: { ...globals.node }
     },
     plugins: {
-      'simple-import-sort': simpleImportSort,
-      '@stylistic/indent': stylistic
+      'simple-import-sort': simpleImportSort
     },
     files: [ '**/*.js', 'eslint.config.js' ],
     rules: {
+      ...neostandard.rules,
       'no-prototype-builtins': 0,
       'no-unsafe-optional-chaining': 0,
       'no-useless-escape': 0,
