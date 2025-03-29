@@ -35,7 +35,6 @@ function getLine (line) {
 const CHANGELOG_path = `${Plugin_Path}/CHANGELOG.md`
 
 
-
 try {
   if (fs.existsSync(CHANGELOG_path)) {
     const logs = fs.readFileSync(CHANGELOG_path, 'utf8') || ''
@@ -138,5 +137,3 @@ export const Version = {
     return pkg.author
   }
 }
-
-

@@ -75,7 +75,7 @@ export class random extends plugin {
 
     } catch (error) {
       logger.error(error.message)
-      if(Config.meme.errorReply){
+      if (Config.meme.errorReply) {
         await e.reply(`[${Version.Plugin_AliasName}] 生成随机表情失败, 错误信息: ${error.message}`)
       }
     }

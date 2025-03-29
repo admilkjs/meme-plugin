@@ -63,4 +63,3 @@ export const Data = {
     await fs.writeFile(filePath, jsonData)
   }
 }
-

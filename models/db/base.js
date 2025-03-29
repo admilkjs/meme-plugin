@@ -8,7 +8,7 @@ import { Version } from '#components'
 import * as Utils from '../Utils/index.js'
 
 const dbPath = `${Version.Plugin_Path}/data`
-if(!await Utils.Common.fileExistsAsync(dbPath)){
+if (!await Utils.Common.fileExistsAsync(dbPath)) {
   fs.mkdirSync(dbPath)
 }
 

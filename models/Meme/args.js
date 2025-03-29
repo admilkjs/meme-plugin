@@ -2,7 +2,7 @@ import _ from 'lodash'
 
 import { Utils } from '#models'
 
-async function handleArgs (e, memeKey, userText, allUsers, formData, isPreset, Preset ) {
+async function handleArgs (e, memeKey, userText, allUsers, formData, isPreset, Preset) {
   const argsArray = {}
 
   const argsMatches = userText.match(/#(\S+)\s+([^#]+)/g)

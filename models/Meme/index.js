@@ -61,7 +61,7 @@ async function make (
 
   if (userText) {
     userText = userText.replace(/@\s*\d+/g, '').trim()
-  }else{
+  } else {
     userText = ''
   }
 
@@ -70,7 +70,7 @@ async function make (
     /**
      * 处理参数类型
      */
-    if (args_type != null) {
+    if (args_type !== null) {
       const args = await handleArgs(e, memeKey, userText, allUsers, formData, isPreset, Preset)
       if (!args.success) {
         throw new Error(args.message)
@@ -101,9 +101,9 @@ async function make (
 
     const result = await Utils.Tools.request(memeKey, formData, 'arraybuffer')
     if (!result.success) throw new Error(result.message)
-    if(Config.stat.enable){
+    if (Config.stat.enable) {
       const stat = await Utils.Common.getStat(memeKey)
-      await Utils.Common.addStat(memeKey, stat+1)
+      await Utils.Common.addStat(memeKey, stat + 1)
     }
     const base64Image = await Utils.Common.getImageBase64(result.data, true)
 
@@ -123,4 +123,3 @@ async function make (
 }
 
 export { handle, handleArgs, handleImages, handleTexts, make, preset }
-

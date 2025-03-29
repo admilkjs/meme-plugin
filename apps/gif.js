@@ -48,7 +48,7 @@ export class gifImage extends plugin {
     }
   }
 
-  async gearshift (e){
+  async gearshift (e) {
     const message = (e.msg || '').trim()
     const match = message.match(this.rule[1].reg)
     if (!match) return
@@ -58,7 +58,7 @@ export class gifImage extends plugin {
       if (!image) throw new Error('没有找到图片')
       const speedImage = await gif.gearshift(image[0], spend)
       await e.reply(segment.image(`${await Utils.Common.getImageBase64(speedImage, true)}`))
-    }catch (error) {
+    } catch (error) {
       await e.reply(`处理 GIF 时出错，请稍后再试, ${error instanceof Error ? error.message : '未知错误'}`)
     }
   }

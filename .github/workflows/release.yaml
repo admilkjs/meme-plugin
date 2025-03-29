@@ -1,0 +1,54 @@
+name: 发布发行版
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+  id-token: write
+  pull-requests: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    outputs:
+      releases_created: ${{ steps.release-please.outputs.releases_created }}
+    steps:
+      - name: 运行 release-please-action
+        id: release-please
+        uses: googleapis/release-please-action@v4
+        with:
+          config-file: .release-please-config.json
+          manifest-file: .release-please-manifest.json
+
+  create-release:
+    needs: [release]
+    if: needs.release.outputs.releases_created == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+        with:
+          ref: main
+      
+      - name: 构建产物
+        run: |
+          zip -r build.zip . -x "*.git/*" -x ".github/*"
+
+      - name: 获取最新标签
+        id: get_tag
+        run: |
+          TAG=$(git describe --tags --abbrev=0)
+          echo "最新的tag标签: $TAG"
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+          
+      - name: 上传产物
+        uses: softprops/action-gh-release@v2
+        with:
+          files: build.zip
+          tag_name: ${{ steps.get_tag.outputs.tag }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

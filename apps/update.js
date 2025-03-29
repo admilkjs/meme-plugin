@@ -153,21 +153,21 @@ export class update extends plugin {
 
   async checkUpdate (e, isTask = false) {
     try {
-      if (!Config.other.checkRepo && (isTask || e.isMaster))return
+      if (!Config.other.checkRepo && (isTask || e.isMaster)) return
       const { owner, repo, branchName } = await Code.gitRepo.getRepo()
       const localCommit = await Code.commit.getLocalCommit(Version.Plugin_Path)
       const remoteCommit = await Code.commit.getRemoteCommit(owner, repo, branchName)
       const commitSha = await Code.gitRepo.getBranchSha(branchName)
 
-      if(!await Code.gitRepo.getAllBranch()){
+      if (!await Code.gitRepo.getAllBranch()) {
         logger.info(`${chalk.yellow(`[${Version.Plugin_AliasName}] 没有分支信息, 初始化分支信息`)}`)
         await Code.gitRepo.addBranchInfo(branchName, localCommit.sha)
       }
-      if(isTask){
+      if (isTask) {
         if (commitSha === remoteCommit.sha) {
           logger.debug(chalk.rgb(255, 165, 0)('✅ 当前版本已经是最新版本 🎉'))
           return
-        } else if (localCommit.commitTime === remoteCommit.commitTime){
+        } else if (localCommit.commitTime === remoteCommit.commitTime) {
           logger.debug(chalk.cyan('🔄 当前版本已经是最新版本, 但数据库数据未更新, 开始更新数据库的数据'))
           await Code.gitRepo.addBranchInfo(branchName, localCommit.sha)
           return

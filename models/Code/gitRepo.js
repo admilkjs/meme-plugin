@@ -72,7 +72,7 @@ export async function getBranchSha (branch) {
 * @function getAllBranch
 * @returns {Promise<BranchInfo[]|null>} 包含所有分支信息的数组，如果没有任何分支信息则返回 null。
 */
-export async function getAllBranch (){
+export async function getAllBranch () {
   const results = await db.update.getAll()
   return results.length > 0 ? results : null
 }

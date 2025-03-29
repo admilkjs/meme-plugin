@@ -204,8 +204,7 @@ const Common = {
       quotedImages.length === 0 &&
       imagesInMessage.length === 0 &&
       source &&
-      (e.source || e.reply_id))
-    {
+      (e.source || e.reply_id)) {
       const sourceArray = Array.isArray(source) ? source : [ source ]
       const quotedUser = sourceArray[0].sender.user_id
       const avatarBuffer = await this.getAvatar(e, quotedUser)
