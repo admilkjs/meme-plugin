@@ -17,19 +17,10 @@
     "@stylistic/eslint-plugin": "^4.2.0",
     "eslint-plugin-simple-import-sort": "^12.1.1",
     "globals": "^15.15.0",
-    "husky": "^9.1.7",
-    "lint-staged": "^15.5.0",
-    "pre-commit": "^1.2.2"
   },
   "scripts": {
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "prepare": "husky install"
-  },
-  "lint-staged": {
-    "*.js": [
-      "eslint --fix"
-    ]
   },
   "imports": {
     "#components": "./components/index.js",
