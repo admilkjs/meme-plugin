@@ -13,6 +13,9 @@ reply: false
 # 是否开启默认使用用户昵称
 userName: false
 
+# 是否开启获取消息中的图片
+imagesInMessage: true
+
 # 是否开启获取引用消息中的图片
 quotedImages: true
 

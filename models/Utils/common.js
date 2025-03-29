@@ -200,6 +200,9 @@ const Common = {
         .map(img => img.url)
     }
 
+    /**
+     * 如果没有引用消息中的图片，且消息中没有图片，则获取引用消息的发送者头像
+     */
     if (
       quotedImages.length === 0 &&
       imagesInMessage.length === 0 &&
@@ -229,8 +232,10 @@ const Common = {
     /**
        * 消息中的图片任务
        */
-    if (imagesInMessage.length > 0) {
-      tasks.push(...imagesInMessage.map((imageUrl) => this.getImageBuffer(imageUrl)))
+    if(Config.meme.imagesInMessage){
+      if (imagesInMessage.length > 0) {
+        tasks.push(...imagesInMessage.map((imageUrl) => this.getImageBuffer(imageUrl)))
+      }  
     }
 
     const results = await Promise.allSettled(tasks)
