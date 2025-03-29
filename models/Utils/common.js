@@ -232,10 +232,10 @@ const Common = {
     /**
        * 消息中的图片任务
        */
-    if(Config.meme.imagesInMessage){
+    if (Config.meme.imagesInMessage) {
       if (imagesInMessage.length > 0) {
         tasks.push(...imagesInMessage.map((imageUrl) => this.getImageBuffer(imageUrl)))
-      }  
+      }
     }
 
     const results = await Promise.allSettled(tasks)
