@@ -1,65 +1,65 @@
-import globals from 'globals';
-import simpleImportSort from 'eslint-plugin-simple-import-sort';
-import stylisticJs from '@stylistic/eslint-plugin';
+import stylisticJs from '@stylistic/eslint-plugin'
+import simpleImportSort from 'eslint-plugin-simple-import-sort'
+import globals from 'globals'
 
 
-export default tseslint.config(
+export default (
   {
-    ignores: ['eslint.config.mjs'],
+    ignores: [ 'eslint.config.mjs' ]
   },
   {
     languageOptions: {
-      globals: { ...globals.node },
+      globals: { ...globals.node }
     },
     plugins: {
       'simple-import-sort': simpleImportSort,
       '@stylistic/indent': stylisticJs
     },
-    files: ['**/*.js', 'eslint.config.mjs'],
+    files: [ '**/*.js', 'eslint.config.mjs' ],
     rules: {
       'no-prototype-builtins': 0,
       'no-unsafe-optional-chaining': 0,
       'no-useless-escape': 0,
       'prefer-regex-literals': 0,
       'line-comment-position': 'off',
-      'quotes': [1, 'single'],
+      'quotes': [ 1, 'single' ],
       'camelcase': 'off',
-      'eqeqeq': [1, 'always'],
+      'eqeqeq': [ 1, 'always' ],
       'prefer-const': 'off',
-      'comma-dangle': [1, {
+      'comma-dangle': [ 1, {
         arrays: 'never',
         objects: 'never',
         imports: 'never',
         exports: 'never',
         functions: 'never'
-      }],
+      } ],
       'arrow-body-style': 'off',
-      'indent': [1, 2, { 'SwitchCase': 1 }],
+      'indent': [ 1, 2, { 'SwitchCase': 1 } ],
       'space-before-function-paren': 1,
-      'semi': [2, 'never'],
+      'semi': [ 2, 'never' ],
       'no-trailing-spaces': 1,
-      'object-curly-spacing': [1, 'always'],
-      'array-bracket-spacing': [1, 'always'],
-      'no-multiple-empty-lines': [1, { max: 2, maxEOF: 0, maxBOF: 0 }],
+      'object-curly-spacing': [ 1, 'always' ],
+      'array-bracket-spacing': [ 1, 'always' ],
+      'no-multiple-empty-lines': [ 1, { max: 2, maxEOF: 0, maxBOF: 0 } ],
       'simple-import-sort/imports': 'error',
       'simple-import-sort/exports': 'error',
-      'comma-spacing': [1, { before: false, after: true }],
-      'key-spacing': [1, { beforeColon: false, afterColon: true }],
+      'comma-spacing': [ 1, { before: false, after: true } ],
+      'key-spacing': [ 1, { beforeColon: false, afterColon: true } ],
       'space-infix-ops': 1,
-      'space-unary-ops': [1, {
+      'space-unary-ops': [ 1, {
         words: true,
         nonwords: false
-      }],
-      'space-before-blocks': [1, 'always'],
-      'space-in-parens': [1, 'never'],
-      'keyword-spacing': [1, {
+      } ],
+      'space-before-blocks': [ 1, 'always' ],
+      'space-in-parens': [ 1, 'never' ],
+      'keyword-spacing': [ 1, {
         before: true,
         after: true,
         overrides: {
           if: { after: true }
         }
-      }],
-      'brace-style': [1, '1tbs']
+      } ],
+      'brace-style': [ 1, '1tbs' ]
     }
   }
 )

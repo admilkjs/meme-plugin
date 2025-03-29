@@ -10,6 +10,7 @@
     "eslint": "^9.23.0",
     "gif-frames": "^1.0.1",
     "gifwrap": "^0.10.1",
+    "markdown-it": "^14.1.0",
     "sequelize": "^6.37.7",
     "sqlite3": "5.1.6"
   },

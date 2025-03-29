@@ -1,4 +1,7 @@
+import fs from 'node:fs/promises'
+
 import lodash from 'lodash'
+import MarkdownIt from 'markdown-it'
 
 import { Render, Version } from '#components'
 import { Help } from '#models'
@@ -55,11 +58,12 @@ export class help extends plugin {
   }
 
   async versionInfo (e) {
+    const md = new MarkdownIt({ html: true })
+    const makdown = md.render(await fs.readFile(`${Version.Plugin_Path}/CHANGELOG.md`, 'utf-8'))
     const img = await Render.render(
       'help/version-info',
       {
-        currentVersion: Version.Plugin_Version,
-        changelogs: Version.Plugin_Logs
+        Markdown: makdown
       }
     )
     await e.reply(img)
