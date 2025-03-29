@@ -55,6 +55,12 @@ const cfgSchema = {
         type: 'boolean',
         def: false
       },
+      imagesInMessage: {
+        title: '消息图片',
+        desc: '是否开启消息中的图片, 开启后会获取消息中的图片',
+        type: 'boolean',
+        def: true
+      },
       quotedImages: {
         title: '引用图片',
         desc: '是否开启引用图片, 开启后会获取引用消息中的图片',
