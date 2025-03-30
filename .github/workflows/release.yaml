@@ -41,7 +41,7 @@ jobs:
       - name: 获取最新标签
         id: get_tag
         run: |
-          TAG=$(git describe --tags --abbrev=0)
+          TAG=$(git describe --tags --abbrev=0 origin/main)
           echo "最新的tag标签: $TAG"
           echo "tag=$TAG" >> $GITHUB_OUTPUT
           
