@@ -109,8 +109,8 @@ const cfgSchema = {
         def: []
       },
       blackList: {
-        title: '禁用表情列表',
-        desc: '禁用表情列表',
+        title: '黑名单表情列表',
+        desc: '黑名单表情列表',
         type: 'list',
         def: []
       }
