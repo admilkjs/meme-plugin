@@ -1,5 +1,5 @@
-import { Config, Render } from '../components/index.js'
-import { Utils } from '../models/index.js'
+import { Config, Render } from '#components'
+import { Utils } from '#models'
 
 export class stats extends plugin {
   constructor () {
@@ -27,15 +27,15 @@ export class stats extends plugin {
     let total = 0
     const formattedStats = []
 
-    for (const data of statsData) {
+    statsData.forEach(async (data) => {
       const { key, all: count } = data
       total += count
 
       const keywords = await Utils.Tools.getKeyWords(key)
-      if (!keywords || keywords.length === 0) continue
+      if (!keywords || keywords.length === 0) return
 
       formattedStats.push({ keywords: keywords.join(', '), count })
-    }
+    })
 
     formattedStats.sort((a, b) => b.count - a.count)
 
