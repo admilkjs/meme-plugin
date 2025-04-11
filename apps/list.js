@@ -51,7 +51,7 @@ export class list extends plugin {
       const total = memeList.length
 
       const img = await Render.render(
-        'meme/list',
+        'list/index',
         {
           memeList,
           total

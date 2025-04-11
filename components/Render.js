@@ -20,7 +20,7 @@ export const Render = {
    */
   async render (path, params) {
     path = path.replace(/.html$/, '')
-    const savePath = `/${path.replace('html/', '')}`
+    const savePath = `${path.replace('html/', '')}`
     const data = {
       _Plugin_AliasName: `${Version.Plugin_AliasName}`,
       _res_path: `${Version.Plugin_Path}/resources`.replace(/\\/g, '/'),
@@ -41,6 +41,6 @@ export const Render = {
       multiPageHeight: 12000,
       ...params
     }
-    return await puppeteer.screenshots(`${Version.Plugin_Name}${savePath}`, data)
+    return await puppeteer.screenshots(`${Version.Plugin_Name}/${savePath}`, data)
   }
 }

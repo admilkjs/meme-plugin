@@ -39,10 +39,13 @@ export class stats extends plugin {
 
     formattedStats.sort((a, b) => b.count - a.count)
 
-    const img = await Render.render('meme/stat', {
-      total,
-      emojiList: formattedStats
-    })
+    const img = await Render.render(
+      'stat/index',
+      {
+        total,
+        emojiList: formattedStats
+      }
+    )
 
     await e.reply(img)
     return true
