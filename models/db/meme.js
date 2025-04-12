@@ -150,25 +150,7 @@ export async function add (
   tags,
   { force = false }
 ) {
-  if (force) {
-    await table.destroy({ where: { key } })
-    return await table.create({
-      key,
-      info,
-      keyWords,
-      params,
-      min_texts,
-      max_texts,
-      min_images,
-      max_images,
-      defText,
-      args_type,
-      shortcuts,
-      tags
-    })
-  }
-
-  await table.upsert({
+  const data = {
     key,
     info,
     keyWords,
@@ -181,7 +163,14 @@ export async function add (
     args_type,
     shortcuts,
     tags
-  })
+  }
+
+  if (force) {
+    await table.destroy({ where: { key } })
+    return await table.create(data)
+  }
+
+  return await table.upsert(data)
 }
 
 

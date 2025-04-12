@@ -42,13 +42,7 @@ await table.sync()
 * @returns {Promise<object>} 返回创建或更新的记录。
 */
 export async function add (key, all) {
-  const existingRecord = await table.findOne({ where: { key }, raw: false })
-
-  if (existingRecord) {
-    return await existingRecord.update({ all })
-  } else {
-    return await table.create({ key, all })
-  }
+  return await table.upsert({ key, all })
 }
 
 /**
@@ -62,17 +56,10 @@ export async function add (key, all) {
 */
 export async function get (key, field) {
   const record = await table.findOne({
-    where: {
-      key: key
-    },
+    where: { key },
     attributes: [ field ]
   })
-
-  if (record) {
-    return record[field]
-  } else {
-    return null
-  }
+  return record?.[field] ?? null
 }
 
 export async function getAll () {

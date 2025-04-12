@@ -53,13 +53,12 @@ await table.sync()
  * @returns {Promise<Model>} 创建或更新后的记录对象
  */
 export async function add (name, key, arg_name, arg_value) {
-  const existingRecord = await table.findOne({ where: { name }, raw: false })
-
-  if (existingRecord) {
-    return await existingRecord.update({ key, arg_name, arg_value })
-  } else {
-    return await table.create({ name, key, arg_name, arg_value })
-  }
+  return await table.upsert({
+    name,
+    key,
+    arg_name,
+    arg_value
+  })
 }
 
 /**
