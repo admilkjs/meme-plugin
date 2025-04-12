@@ -118,7 +118,6 @@ const Tools = {
           const info = infoResponse.data
 
           const keyWords = processValue(info.keywords)
-          const shortcuts = processValue(info.shortcuts)
           const tags = processValue(info.tags)
           const params = processValue(info.params_type)
 
@@ -140,7 +139,6 @@ const Tools = {
             max_images,
             defText,
             args_type,
-            shortcuts,
             tags,
             { force: true }
           )

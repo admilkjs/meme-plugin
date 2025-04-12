@@ -87,14 +87,6 @@ export const table = sequelize.define('meme', {
     allowNull: true
   },
   /**
-   * 快捷方式（可选 JSON 字段）
-   * @type {object | null}
-   */
-  shortcuts: {
-    type: DataTypes.JSON,
-    allowNull: true
-  },
-  /**
    * 标签（可选 JSON 数组）
    * @type {string[] | null}
    */
@@ -127,7 +119,6 @@ await table.sync()
  * @param {number} max_images - 表情包的最大图片数量
  * @param {string[] | null} defText - 默认文本数组（可选），如果没有提供，传 `null`
  * @param {object | null} args_type - 参数类型（JSON 格式，可选），如果没有提供，传 `null`
- * @param {object | null} shortcuts - 表情包的快捷方式（JSON 格式，可选），如果没有提供，传 `null`
  * @param {string[] | null} tags - 表情包的标签（JSON 数组，可选），如果没有提供，传 `null`
  * @param {object} options - 选项对象，包含 `force` 属性来控制是否全量更新（默认为 `false`，表示增量更新）
  *
@@ -146,7 +137,6 @@ export async function add (
   max_images,
   defText,
   args_type,
-  shortcuts,
   tags,
   { force = false }
 ) {
@@ -161,7 +151,6 @@ export async function add (
     max_images,
     defText,
     args_type,
-    shortcuts,
     tags
   }
 
@@ -170,7 +159,7 @@ export async function add (
     return await table.create(data)
   }
 
-  return await table.upsert(data)
+  return (await table.upsert(data))[0]
 }
 
 
