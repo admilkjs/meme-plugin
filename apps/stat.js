@@ -27,16 +27,14 @@ export class stats extends plugin {
     let total = 0
     const formattedStats = []
 
-    statsData.forEach(async (data) => {
+    await Promise.all(statsData.map(async (data) => {
       const { key, all: count } = data
       total += count
-
       const keywords = await Utils.Tools.getKeyWords(key)
-      if (!keywords || keywords.length === 0) return
-
-      formattedStats.push({ keywords: keywords.join(', '), count })
-    })
-
+      if (keywords?.length) {
+        formattedStats.push({ keywords: keywords.join(', '), count })
+      }
+    }))
     formattedStats.sort((a, b) => b.count - a.count)
 
     const img = await Render.render(
