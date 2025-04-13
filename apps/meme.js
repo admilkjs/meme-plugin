@@ -122,7 +122,7 @@ export class meme extends plugin {
       const trimmedText = userText.trim()
       if (
         !/^(@\s*\d+\s*)+$/.test(trimmedText) &&
-        !/^(#\S+\s+[^#]+)(\s+#\S+\s+[^#]+)*$/.test(trimmedText)
+        !/^(#\S+\s+[^#]+(?:\s+#\S+\s+[^#]+)*)$/.test(trimmedText)
       ) {
         return false
       }
