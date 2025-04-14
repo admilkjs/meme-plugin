@@ -121,10 +121,6 @@ await table.sync()
  * @param {object | null} args_type - 参数类型（JSON 格式，可选），如果没有提供，传 `null`
  * @param {string[] | null} tags - 表情包的标签（JSON 数组，可选），如果没有提供，传 `null`
  * @param {object} options - 选项对象，包含 `force` 属性来控制是否全量更新（默认为 `false`，表示增量更新）
- *
- * @returns {Promise<object>} - 返回创建或更新的表情包记录对象
- *
- * @throws {Error} - 如果数据库操作失败，抛出错误
  */
 export async function add (
   key,
@@ -156,17 +152,16 @@ export async function add (
 
   if (force) {
     await table.destroy({ where: { key } })
-    return await table.create(data)
   }
 
-  return (await table.upsert(data))[0]
+  return await table.upsert(data)
 }
 
 
 /**
  * 通过 key 查询表情包数据
  * @param {string} key - 唯一标识符
- * @returns {Promise<object | null>} - 返回查询到的记录或 null
+ * @returns 返回查询到的记录或 null
  */
 export async function get (key) {
   return await table.findOne({
@@ -178,7 +173,7 @@ export async function get (key) {
  * 通过 key 查询指定字段的值
  * @param {string} key - 表情包的唯一标识符
  * @param {string | string[]} name - 需要查询的字段（支持单个或多个字段）
- * @returns {Promise<any | null>} - 返回查询到的数据或 null
+ * @returns 返回查询到的数据或 null
  */
 export async function getByKey (key, name = '*') {
   const queryOptions = {}
@@ -205,7 +200,7 @@ export async function getByKey (key, name = '*') {
  * @param {string} field - 需要查询的字段（可能是 JSON 或字符串）
  * @param {string | number | string[] | number[]} value - 需要匹配的值（支持多个）
  * @param {string | string[]} returnField - 返回字段（默认 key）
- * @returns {Promise<string[]>} - 返回符合条件的记录数组
+ * @returns 返回符合条件的记录
  */
 export async function getByField (field, value, returnField = 'key') {
   if (!field) {
@@ -243,7 +238,7 @@ export async function getByField (field, value, returnField = 'key') {
 /**
  * 通过字段名查询所有不同的值
  * @param {string} name - 需要查询的字段
- * @returns {Promise<any[]>} - 返回该字段的所有值数组
+ * @returns 返回该字段的所有值
  */
 export async function getAllSelect (name) {
   const res = await table.findAll({
@@ -254,7 +249,7 @@ export async function getAllSelect (name) {
 
 /**
  * 获取所有记录
- * @returns {Promise<object[]>} - 返回所有记录的数组
+ * @returns 返回所有记录
  */
 export async function getAll () {
   return await table.findAll()

@@ -50,7 +50,7 @@ await table.sync()
  * @param {string} key - 表情包键值
  * @param {string} arg_name - 参数名称
  * @param {string} arg_value - 参数值
- * @returns {Promise<Model>} 创建或更新后的记录对象
+ * @returns 创建或更新后的记录
  */
 export async function add (name, key, arg_name, arg_value) {
   return await table.upsert({
@@ -64,7 +64,7 @@ export async function add (name, key, arg_name, arg_value) {
 /**
  * 根据唯一指令标识符获取表情预设记录
  * @param {string} name - 唯一指令标识符（主键）
- * @returns {Promise<Model|null>} 找到的记录对象，如果未找到则返回 null
+ * @returns 找到的记录对象，如果未找到则返回 null
  */
 export async function get (name) {
   return await table.findOne({ where: { name } })
@@ -72,7 +72,7 @@ export async function get (name) {
 
 /**
  * 获取所有表情预设记录
- * @returns {Promise<Model[]>} 找到的记录对象数组
+ * @returns 找到的记录对象
  */
 export async function getAll () {
   return await table.findAll()
@@ -83,7 +83,7 @@ export async function getAll () {
  * @param {string} field - 字段名（可能是 JSON 数组、字符串或数值）
  * @param {string | number | string[] | number[]} value - 需要匹配的值（支持多个）
  * @param {string | string[]} returnField - 返回字段（默认 key）
- * @returns {Promise<object[]>} - 返回符合条件的记录数组
+ * @returns 返回符合条件的记录
  */
 export async function getByField (field, value, returnField = 'key') {
   if (!field) {
@@ -121,7 +121,7 @@ export async function getByField (field, value, returnField = 'key') {
 /**
  * 根据表情包键值获取所有表情预设记录
  * @param {string} key - 表情包键值
- * @returns {Promise<Model[]>} 找到的记录对象数组
+ * @returns 找到的记录对象
  */
 export async function getAllByKey (key) {
   return await table.findAll({ where: { key } })
@@ -130,7 +130,7 @@ export async function getAllByKey (key) {
 /**
  * 根据参数名称获取所有表情预设记录
  * @param {string} name - 参数名称
- * @returns {Promise<Model[]>} 找到的记录对象数组
+ * @returns 找到的记录对象
  */
 export async function getAllSelect (name) {
   const res = await table.findAll({
@@ -143,7 +143,7 @@ export async function getAllSelect (name) {
 /**
  * 根据唯一指令标识符删除表情预设记录
  * @param {string} name - 唯一指令标识符（主键）
- * @returns {Promise<boolean>} 删除的记录数量
+ * @returns 删除的记录数量
  */
 export async function remove (name) {
   return Boolean(await table.destroy({ where: { name } }))
@@ -151,7 +151,7 @@ export async function remove (name) {
 
 /**
  * 删除所有表情预设记录
- * @returns {Promise<boolean>} 删除操作完成
+ * @returns 删除操作完成
  */
 export async function removeAll () {
   return Boolean(await table.destroy({ truncate: true }))

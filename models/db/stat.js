@@ -39,7 +39,7 @@ await table.sync()
 * @function add
 * @param {string} key - meme 的 key 值。
 * @param {number} all - meme 的 all 值。
-* @returns {Promise<object>} 返回创建或更新的记录。
+* @returns 返回创建或更新的记录
 */
 export async function add (key, all) {
   return await table.upsert({ key, all })
@@ -52,7 +52,7 @@ export async function add (key, all) {
 * @function get
 * @param {string} key - 要查询的 meme 的 key 值。
 * @param {string} field - 要查询的字段名 (例如: 'all', 'key')。
-* @returns {Promise<any | null>} 返回查询到的字段值，如果记录不存在或字段不存在则返回 null。
+* @returns 返回查询到的字段值，如果记录不存在或字段不存在则返回 null。
 */
 export async function get (key, field) {
   const record = await table.findOne({
