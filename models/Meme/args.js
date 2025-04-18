@@ -64,8 +64,8 @@ async function handle (e, key, allUsers, args) {
 
   const userInfos = [
     {
-      text: await Utils.Common.getNickname(e, allUsers[0] || e.sender.user_id),
-      gender: await Utils.Common.getGender(e, allUsers[0] || e.sender.user_id)
+      text: await Utils.Common.getNickname(e, allUsers[0] || e.user_id),
+      gender: await Utils.Common.getGender(e, allUsers[0] || e.user_id)
     }
   ]
 
