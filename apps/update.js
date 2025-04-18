@@ -1,7 +1,7 @@
 import chalk from 'chalk'
 
-import { Config, Render, Version } from '#components'
-import { Code, Utils } from '#models'
+import { Config, Version } from '#components'
+import { Utils } from '#models'
 
 import pluginsLoader from '../../../lib/plugins/loader.js'
 import { update as Update } from '../../other/update.js'
@@ -147,73 +147,6 @@ export class update extends plugin {
       }
       logger.error(`表情包数据更新出错: ${error.message}`)
       return false
-    }
-  }
-
-
-  async checkUpdate (e, isTask = false) {
-    try {
-      if (!Config.other.checkRepo && (isTask || e.isMaster)) return
-      const { owner, repo, branchName } = await Code.gitRepo.getRepo()
-      const localCommit = await Code.commit.getLocalCommit(Version.Plugin_Path)
-      const remoteCommit = await Code.commit.getRemoteCommit(owner, repo, branchName)
-      const commitSha = await Code.gitRepo.getBranchSha(branchName)
-
-      if (!await Code.gitRepo.getAllBranch()) {
-        logger.info(`${chalk.yellow(`[${Version.Plugin_AliasName}] 没有分支信息, 初始化分支信息`)}`)
-        await Code.gitRepo.addBranchInfo(branchName, localCommit.sha)
-      }
-      if (isTask) {
-        if (commitSha === remoteCommit.sha) {
-          logger.debug(chalk.rgb(255, 165, 0)('✅ 当前版本已经是最新版本 🎉'))
-          return
-        } else if (localCommit.commitTime === remoteCommit.commitTime) {
-          logger.debug(chalk.cyan('🔄 当前版本已经是最新版本, 但数据库数据未更新, 开始更新数据库的数据'))
-          await Code.gitRepo.addBranchInfo(branchName, localCommit.sha)
-          return
-        }
-      }
-
-      const commitInfo = {
-        committer: remoteCommit.committer.login,
-        commitTime: remoteCommit.commitTime,
-        title: remoteCommit.message.title,
-        content: remoteCommit.message.content,
-        commitUrl: remoteCommit.commitUrl
-      }
-
-      const img = await Render.render('code/index', {
-        commitInfo,
-        branchName
-      })
-
-      if (isTask && commitSha !== remoteCommit.sha) {
-        const masterQQs = Config.masterQQ.filter(qq => {
-          const qqStr = String(qq)
-          return qqStr.length <= 11 && qqStr !== 'stdin'
-        })
-
-        if (masterQQs.length > 0) {
-          for (let qq of masterQQs) {
-            try {
-              await Bot.pickFriend(qq).sendMsg(img)
-              await Bot.sleep(2000)
-              break
-            } catch (sendError) {
-              logger.info(`发送消息给 ${qq} 失败: ${sendError.message}`)
-            }
-          }
-        }
-      } else if (!isTask && e) {
-        await e.reply(img)
-      }
-      await Code.gitRepo.addBranchInfo(branchName, remoteCommit.sha)
-
-    } catch (error) {
-      logger.error(`更新检查失败: ${error.message}`)
-      if (!isTask && e) {
-        await e.reply(`更新检查失败: ${error.message}`)
-      }
     }
   }
 
