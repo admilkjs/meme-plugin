@@ -16,22 +16,6 @@ export default [
     }
   },
   {
-    field: 'other.checkRepo',
-    label: '仓库更新检测推送',
-    component: 'Switch',
-    bottomHelpMessage: '是否开启仓库更新检测'
-  },
-  {
-    field: 'other.checkRepoCron',
-    label: '仓库更新检测推送Cron表达式',
-    bottomHelpMessage: '定时仓库更新检测推送Cron表达式,重启生效',
-    component: 'EasyCron',
-    componentProps: {
-      placeholder: '请输入Cron表达式'
-    }
-  },
-
-  {
     field: 'other.autoUpdateRes',
     label: '自动更新资源',
     component: 'Switch',

@@ -25,25 +25,12 @@ export class update extends plugin {
         {
           reg: /^#?(清语表情|meme(-plugin)?)(强制)?更新(表情包)?(资源|数据)?$/i,
           fnc: 'updateRes'
-        },
-        {
-          reg: /^#?(清语表情|meme-plugin)检查更新$/i,
-          fnc: 'checkUpdate'
         }
       ]
     })
 
     this.task = []
 
-    if (Config.other.checkRepo) {
-      this.task.push({
-        name: '清语表情:仓库更新检测',
-        cron: Config.other.checkRepoCron,
-        fnc: async () => {
-          await this.checkUpdate(null, true)
-        }
-      })
-    }
 
     if (Config.other.autoUpdateRes) {
       this.task.push({

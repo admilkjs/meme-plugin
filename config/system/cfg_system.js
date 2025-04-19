@@ -137,12 +137,6 @@ const cfgSchema = {
         def: 100
       }
     },
-    checkRepo: {
-      title: '仓库更新检测',
-      type: 'boolean',
-      desc: '是否开启仓库更新检测',
-      def: false
-    },
     autoUpdateRes: {
       title: '自动更新资源',
       desc: '是否自动更新表情包资源，开启后每日凌晨会自动更新',
