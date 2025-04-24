@@ -30,7 +30,7 @@ export default [
     bottomHelpMessage: '设置要保护的用户，如123456'
   },
   {
-    field: 'protect.blackList',
+    field: 'protect.list',
     label: '保护表情列表',
     component: 'Select',
     bottomHelpMessage: '设置要保护表情列表，如骑',

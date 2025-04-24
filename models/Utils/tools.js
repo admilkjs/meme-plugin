@@ -9,6 +9,7 @@ const Tools = {
    * @returns {Promise<string>} - 返回表情包基础 URL
    */
   async getBaseUrl () {
+    if (!Config.server.url) throw new Error('未设置表情包API')
     return Config.server?.url?.replace(/\/+$/, '')
   },
 
