@@ -116,6 +116,35 @@ const cfgSchema = {
       }
     }
   },
+  protect: {
+    title: '表情保护设置',
+    cfg: {
+      enable: {
+        title: '表情保护',
+        desc: '是否开启表情保护',
+        type: 'boolean',
+        def: false
+      },
+      master: {
+        title: '主人保护',
+        desc: '是否开启主人保护',
+        type: 'boolean',
+        def: false
+      },
+      user: {
+        title: '保护用户列表',
+        desc: '设置要保护的用户，如123456',
+        type: 'list',
+        def: []
+      },
+      list: {
+        title: '表情保护列表',
+        desc: '表情保护列表',
+        type: 'list',
+        def: []
+      }
+    }
+  },
   stat: {
     title: '统计设置',
     cfg: {
