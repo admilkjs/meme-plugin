@@ -4,17 +4,14 @@
   "author": "ClarityJS",
   "type": "module",
   "dependencies": {
-    "@napi-rs/canvas": "^0.1.68",
     "axios": "^1.8.4",
     "axios-retry": "4.5.0",
-    "eslint": "^9.23.0",
-    "gif-frames": "^1.0.1",
-    "gifwrap": "^0.10.1",
     "markdown-it": "^14.1.0",
     "sequelize": "^6.37.7",
     "sqlite3": "5.1.6"
   },
   "devDependencies": {
+    "eslint": "^9.25.0",
     "eslint-plugin-simple-import-sort": "^12.1.1",
     "globals": "^15.15.0",
     "neostandard": "^0.12.1"
