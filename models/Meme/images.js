@@ -30,7 +30,7 @@ async function handleImages (e, memeKey, userText, min_images, max_images, allUs
     return {
       success: false,
       userText: userText,
-      message: `至少需要${min_images}张图片`
+      message: `该表情需要${min_images} ~ ${max_images}张图片`
     }
   }
 

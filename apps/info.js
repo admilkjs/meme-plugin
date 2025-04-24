@@ -66,10 +66,8 @@ export class info extends plugin {
     const replyMessage = [
       `名称: ${memeKey}\n`,
       `别名: ${alias}\n`,
-      `最大图片数量: ${max_images ?? '[未知]'}\n`,
-      `最小图片数量: ${min_images ?? '[未知]'}\n`,
-      `最大文本数量: ${max_texts ?? '[未知]'}\n`,
-      `最小文本数量: ${min_texts ?? '[未知]'}\n`,
+      `图片数量: ${min_images} ~ ${max_images ?? '[未知]'}\n`,
+      `文本数量: ${min_texts} ~ ${max_texts ?? '[未知]'}\n`,
       `默认文本: ${defText}\n`,
       `标签: ${tags}`
     ]

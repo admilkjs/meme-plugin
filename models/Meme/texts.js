@@ -35,7 +35,7 @@ async function handleTexts (e, userText, min_texts, max_texts, default_texts, al
   if (finalTexts.length < min_texts) {
     return {
       success: false,
-      message: `该表情至少需要 ${min_texts} 个文字`
+      message: `该表情需要 ${min_texts} ~ ${max_texts}个文字`
     }
   }
 

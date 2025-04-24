@@ -1,5 +1,4 @@
 export * as db from './db/index.js'
-export * as gif from './gif/index.js'
 export * as Guoba from './Guoba/index.js'
 export * as Help from './Help/index.js'
 export * as Meme from './Meme/index.js'
