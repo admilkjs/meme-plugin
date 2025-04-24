@@ -1,6 +1,5 @@
 node_modules/*
 config/config
-config/defSet/protect.yaml
 data
 pnpm-lock.yaml
 apps/test.js
