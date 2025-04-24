@@ -1,43 +1,37 @@
 import { Utils } from '#models'
 
 async function handleImages (e, memeKey, userText, min_images, max_images, allUsers, formData) {
-  let messageImages = []
+  const messageImages = await Utils.Common.getImage(e)
   let userAvatars = []
 
   if (allUsers.length > 0) {
     const avatarBuffers = await Utils.Common.getAvatar(e, allUsers)
-    userAvatars.push(...avatarBuffers.filter(Boolean))
+    userAvatars = avatarBuffers.filter(Boolean)
   }
-
-  const fetchedImages = await Utils.Common.getImage(e)
-  messageImages.push(...fetchedImages)
 
   if (messageImages.length + userAvatars.length < min_images) {
-    const triggerAvatar = await Utils.Common.getAvatar(e, [ e.user_id ])
-    if (triggerAvatar[0]) {
-      userAvatars.unshift(triggerAvatar[0])
+    const [ triggerAvatar ] = await Utils.Common.getAvatar(e, [ e.user_id ])
+    if (triggerAvatar) {
+      userAvatars.unshift(triggerAvatar)
     }
   }
 
-  let finalImages = [ ...userAvatars, ...messageImages ].slice(0, max_images)
+  const finalImages = [ ...userAvatars, ...messageImages ].slice(0, max_images)
 
   finalImages.forEach((buffer, index) => {
-    const blob = new Blob([ buffer ], { type: 'image/png' })
-    formData.append('images', blob, `image${index}.png`)
+    formData.append('images', new Blob([ buffer ], { type: 'image/png' }), `image${index}.png`)
   })
 
-  if (finalImages.length < min_images) {
-    return {
+  return finalImages.length < min_images
+    ? {
       success: false,
-      userText: userText,
+      userText,
       message: `该表情需要${min_images} ~ ${max_images}张图片`
     }
-  }
-
-  return {
-    success: true,
-    userText: userText
-  }
+    : {
+      success: true,
+      userText
+    }
 }
 
 export { handleImages }
