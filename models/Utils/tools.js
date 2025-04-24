@@ -9,7 +9,7 @@ const Tools = {
    * @returns {Promise<string>} - 返回表情包基础 URL
    */
   async getBaseUrl () {
-    return Config.server?.url?.replace(/\/+$/, '') || 'https://meme.wuliya.cn'
+    return Config.server?.url?.replace(/\/+$/, '')
   },
 
   /**
