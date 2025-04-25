@@ -9,7 +9,8 @@ const sysCfgReg = () => {
     Object.values(group.cfg).map(cfgItem => cfgItem.title)
   )
 
-  return new RegExp(`^#清语表情设置\\s*(?:(${groupNames.join('|')}))?\\s*(?:(${keys.join('|')}))?\\s*(.*)`)
+  const sortedKeys = keys.sort((a, b) => b.length - a.length)
+  return new RegExp(`^#清语表情设置\\s*(?:(${groupNames.join('|')}))?\\s*(?:(${sortedKeys.join('|')}))?\\s*(.*)`)
 }
 
 export class setting extends plugin {
