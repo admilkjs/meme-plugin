@@ -11,12 +11,13 @@
 </div>
 
 ## 介绍 📝
-`清语表情` 是一个 `Yunzai-Bot` | `Karin` 的扩展插件，提供表情包合成等功能。
+`清语表情` 是一个 `Yunzai-Bot`的扩展插件，提供表情包合成等功能。
 
-如有问题请提交 `issue` 或加入 Q 群: `272040396` 📬
+如有问题请卸载
 
 >[!TIP]
 > 插件不再提供表情包api, 需自行搭建后端
+>皮皮自用api：https://meme.pippi.top/
 
 > [!WARNING]
 > 主体内容已完成，不再更新新内容，已跑路
@@ -24,19 +25,9 @@
 ## 安装与更新 🔧
 
 ### <code>Yunzai-Bot</code> 🚀
-   
-<details>
-<summary>使用 <code>Github</code> 🐙</summary>
 
 ```bash
-git clone --depth=1 https://github.com/ClarityJS/meme-plugin ./plugins/meme-plugin/
-```
-</details>
-<details>
-<summary>使用 <code>Github</code> 镜像 🌐</summary>
-
-```bash
-git clone --depth=1 https://gh.wuliya.xin/https://github.com/ClarityJS/meme-plugin ./plugins/meme-plugin/
+git clone --depth=1 https://github.com/chinoyui/meme-plugin ./plugins/meme-plugin/
 ```
 </details>
 <details>
