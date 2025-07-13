@@ -15,6 +15,7 @@
 雾公主已跑路不再进行任何维护
 皮皮自用版本
 安装即用内置api
+安装完成后先#清语更新表情资源、第一次更新会因为表情过多报错，多更新几次直到无报错即可
 
 如有问题请卸载
 
@@ -35,8 +36,6 @@ git clone --depth=1 https://github.com/chinoyui/meme-plugin ./plugins/meme-plugi
 <details>
 <summary> 使用 <code>Release</code> 🔨</summary>
 
-在 [Release](https://github.com/ClarityJS/meme-plugin/releases/latest) 页面下载最新版本，解压后修改文件夹名称为 `meme-plugin` 然后放入 `plugins` 文件夹中即可使用。
-
 **虽然此方式能够使用，不利于后续升级，故不推荐使用 🔔**
 </details>
 
@@ -47,31 +46,6 @@ git clone --depth=1 https://github.com/chinoyui/meme-plugin ./plugins/meme-plugi
 ```bash
 pnpm install --filter=meme-plugin
 ```
-
-## 使用帮助 ℹ️
-其他内容请查看 [官方文档](https://docs.wuliya.cn/clarity/meme)
-> [!Tip]
-> 如果遇到出现错误可尝试自建后端
-
-### 表情后端搭建教程 🌟
-<mark>请查看文档</mark>
-
-<!-- ## 更新计划 🛠
-
-- [x] 支持手动输入 QQ 获取头像 🖼️
-- [x] 参数支持 ⚙️
-- [x] 锅巴兼容 🍲
-- [x] 修改列表渲染 ✍️
-- [x] 支持从艾特中获取昵称 👥
-- [x] 支持 `其他协议` 从艾特中获取昵称 🌐
-- [x] 添加 `表情调用统计` 📊
-- [x] 添加 `仓库更新检查推送` 🔄
-- [x] 添加 `自动更新表情包数据` ⏳
-- [x] 动态重载表情包数据 🔄
-- [x] 自动更新插件 [@MapleLeaf2007](https://github.com/MapleLeaf2007) 🔧
-- [x] 重构 `使用Sqlite存储数据` 📦
-- [ ] 扩展库 `实现本地制作表情` 🎨
-- [ ] `emoji` 表情合成实现 😀🌈 -->
 
 ## 贡献者 👨‍💻👩‍💻
 
