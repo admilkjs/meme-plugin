@@ -107,7 +107,7 @@ const Tools = {
       await Promise.all(
         keysToUpdate.map(async (key) => {
           const infoResponse = await Utils.Request.get(
-            `${baseUrl}/memes/${key}/info`
+            `${baseUrl}/meme/${key}/info`
           )
           if (!infoResponse.success) {
             logger.error(
@@ -184,7 +184,7 @@ const Tools = {
    */
   async request (endpoint, params = {}, responseType = 'arraybuffer') {
     const baseUrl = await this.getBaseUrl()
-    const url = `${baseUrl}/memes/${endpoint}/`
+    const url = `${baseUrl}/meme/${endpoint}/`
 
     const isFormData = params instanceof FormData
     const headers = responseType ? { Accept: responseType } : {}
@@ -204,7 +204,7 @@ const Tools = {
    */
   async getPreviewUrl (memeKey) {
     return memeKey
-      ? `${await this.getBaseUrl()}/memes/${memeKey}/preview`.trim()
+      ? `${await this.getBaseUrl()}/meme/${memeKey}/preview`.trim()
       : null
   },
 
