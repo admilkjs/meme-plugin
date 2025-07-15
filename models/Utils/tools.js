@@ -64,7 +64,7 @@ const Tools = {
         : new Set(await this.getAllKeys())
 
       const remoteKeysResponse = await Utils.Request.get(
-        `${baseUrl}/meme/keys`
+        `${baseUrl}/memes/keys`
       )
       if (!remoteKeysResponse.success || !remoteKeysResponse.data.length) {
         logger.warn('⚠️ 未获取到任何表情包键值，跳过数据更新。')
@@ -107,7 +107,7 @@ const Tools = {
       await Promise.all(
         keysToUpdate.map(async (key) => {
           const infoResponse = await Utils.Request.get(
-            `${baseUrl}/meme/${key}/info`
+            `${baseUrl}/memes/${key}/info`
           )
           if (!infoResponse.success) {
             logger.error(
@@ -184,7 +184,7 @@ const Tools = {
    */
   async request (endpoint, params = {}, responseType = 'arraybuffer') {
     const baseUrl = await this.getBaseUrl()
-    const url = `${baseUrl}/meme/${endpoint}/`
+    const url = `${baseUrl}/memes/${endpoint}/`
 
     const isFormData = params instanceof FormData
     const headers = responseType ? { Accept: responseType } : {}
@@ -204,7 +204,7 @@ const Tools = {
    */
   async getPreviewUrl (memeKey) {
     return memeKey
-      ? `${await this.getBaseUrl()}/meme/${memeKey}/preview`.trim()
+      ? `${await this.getBaseUrl()}/memes/${memeKey}/preview`.trim()
       : null
   },
 
