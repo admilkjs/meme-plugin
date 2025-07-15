@@ -64,7 +64,7 @@ const Tools = {
         : new Set(await this.getAllKeys())
 
       const remoteKeysResponse = await Utils.Request.get(
-        `${baseUrl}/memes/keys`
+        `${baseUrl}/meme/keys`
       )
       if (!remoteKeysResponse.success || !remoteKeysResponse.data.length) {
         logger.warn('⚠️ 未获取到任何表情包键值，跳过数据更新。')
