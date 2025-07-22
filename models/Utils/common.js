@@ -173,7 +173,7 @@ const Common = {
       .map((img) => {
         if (img.type === 'bface' && img.file) {
           const fileMd5 = Buffer.from(img.file, 'utf-8').slice(0, 32)
-          return `https://gxh.vip.qq.com/club/item/parcel/item/2f/${fileMd5}/raw300.gif`
+          return `https://gxh.vip.qq.com/club/item/parcel/${fileMd5.slice(0, 2)}/2f/${fileMd5}/raw300.gif`
         }
         return img.url
       })
@@ -206,7 +206,7 @@ const Common = {
         .map(img => {
           if (img.type === 'bface' && img.file) {
             const fileMd5 = Buffer.from(img.file, 'utf-8').slice(0, 32)
-            return `https://gxh.vip.qq.com/club/item/parcel/item/2f/${fileMd5}/raw300.gif`
+            return `https://gxh.vip.qq.com/club/item/parcel/item/${fileMd5.slice(0, 2)}/${fileMd5}/raw300.gif`
           }
           return img.url
         })
