@@ -11,7 +11,7 @@ const Common = {
    * @param {string} filePath - 文件路径
    * @returns {Promise<boolean>} - 如果文件存在返回 true，否则返回 false
    */
-  async fileExistsAsync (filePath) {
+  async fileExistsAsync(filePath) {
     try {
       await fs.access(filePath)
       return true
@@ -25,7 +25,7 @@ const Common = {
    * @returns {Promise<boolean>} - 如果在海外环境返回 true，否则返回 false
    * @throws {Error} - 如果获取 IP 位置失败，则抛出异常
    */
-  async isAbroad () {
+  async isAbroad() {
     const urls = [
       'https://blog.cloudflare.com/cdn-cgi/trace',
       'https://developers.cloudflare.com/cdn-cgi/trace'
@@ -48,7 +48,7 @@ const Common = {
    * @returns {Promise<Buffer>} - 返回图片的 Buffer 数据
    * @throws {Error} - 如果图片地址为空或请求失败，则抛出异常
    */
-  async getImageBuffer (image) {
+  async getImageBuffer(image) {
     if (!image) throw new Error('图片地址不能为空')
 
     if (Buffer.isBuffer(image)) {
@@ -70,7 +70,7 @@ const Common = {
    * @returns {Promise<string>} - 返回 Base64 编码的图片字符串，可能包含 `base64://` 前缀
    * @throws {Error} - 如果图片地址为空或处理失败，则抛出异常
    */
-  async getImageBase64 (image, withPrefix = false) {
+  async getImageBase64(image, withPrefix = false) {
     if (!image) {
       logger.error('图片地址不能为空')
     }
@@ -100,11 +100,11 @@ const Common = {
    * @returns {Promise<Buffer[]>} - 返回头像 Buffer 数组
    * @throws {Error} - 如果用户列表为空或头像获取失败，则抛出异常
    */
-  async getAvatar (e, userList) {
+  async getAvatar(e, userList) {
     if (!userList) {
       throw new Error('QQ 号不能为空')
     }
-    if (!Array.isArray(userList)) userList = [ userList ]
+    if (!Array.isArray(userList)) userList = [userList]
 
     const cacheDir = `${Version.Plugin_Path}/data/avatar`
 
@@ -163,20 +163,26 @@ const Common = {
     }
   },
   /**
-   * 获取图片列表（包括消息和引用消息中的图片）
-   * @param {object} e - 消息对象
-   * @returns {Promise<Buffer[]>} - 返回图片 Buffer 数组
-   */
-  async getImage (e) {
+  * 获取图片列表（包括消息和引用消息中的图片）
+  * @param {object} e - 消息对象
+  * @returns {Promise<Buffer[]>} - 返回图片 Buffer 数组
+  */
+  async getImage(e) {
     const imagesInMessage = e.message
-      .filter((m) => m.type === 'image')
-      .map((img) => img.url)
+      .filter((m) => m.type === 'image' || m.type === 'bface')
+      .map((img) => {
+        if (img.type === 'bface' && img.file) {
+          const fileMd5 = Buffer.from(img.file, 'utf-8').slice(0, 32)
+          return `https://gxh.vip.qq.com/club/item/parcel/item/2f/${fileMd5}/raw300.gif`
+        }
+        return img.url
+      })
 
     const tasks = []
 
     /**
-       * 获取引用消息中的图片
-       */
+     * 获取引用消息中的图片
+     */
     let quotedImages = []
     let source = null
     if (Config.meme.quotedImages) {
@@ -192,12 +198,18 @@ const Common = {
     }
 
     if (source) {
-      const sourceArray = Array.isArray(source) ? source : [ source ]
+      const sourceArray = Array.isArray(source) ? source : [source]
 
       quotedImages = sourceArray
         .flatMap(item => item.message)
-        .filter(msg => msg.type === 'image')
-        .map(img => img.url)
+        .filter(msg => msg.type === 'image' || msg.type === 'bface')
+        .map(img => {
+          if (img.type === 'bface' && img.file) {
+            const fileMd5 = Buffer.from(img.file, 'utf-8').slice(0, 32)
+            return `https://gxh.vip.qq.com/club/item/parcel/item/2f/${fileMd5}/raw300.gif`
+          }
+          return img.url
+        })
     }
 
     /**
@@ -208,7 +220,7 @@ const Common = {
       imagesInMessage.length === 0 &&
       source &&
       (e.source || e.reply_id)) {
-      const sourceArray = Array.isArray(source) ? source : [ source ]
+      const sourceArray = Array.isArray(source) ? source : [source]
       const quotedUser = sourceArray[0].sender.user_id
       const avatarBuffer = await this.getAvatar(e, quotedUser)
       if (avatarBuffer[0]) {
@@ -217,8 +229,8 @@ const Common = {
     }
 
     /**
-       * 引用消息中的图片任务
-       */
+     * 引用消息中的图片任务
+     */
     if (quotedImages.length > 0) {
       quotedImages.forEach((item) => {
         if (Buffer.isBuffer(item)) {
@@ -230,8 +242,8 @@ const Common = {
     }
 
     /**
-       * 消息中的图片任务
-       */
+     * 消息中的图片任务
+     */
     if (Config.meme.imagesInMessage) {
       if (imagesInMessage.length > 0) {
         tasks.push(...imagesInMessage.map((imageUrl) => this.getImageBuffer(imageUrl)))
@@ -251,7 +263,7 @@ const Common = {
    * @param {string} qq - QQ 号
    * @returns {Promise<string>} - 返回头像 URL
    */
-  async getAvatarURL (e, qq) {
+  async getAvatarURL(e, qq) {
     if (!qq || !e) {
       throw new Error('QQ 号不能为空')
     }
@@ -278,7 +290,7 @@ const Common = {
    * @param {string} qq - QQ 号
    * @returns {Promise<string>} - 返回用户昵称，若获取失败则返回 "未知"
    */
-  async getNickname (e, qq) {
+  async getNickname(e, qq) {
     if (!qq || !e) return '未知'
 
     try {
@@ -302,7 +314,7 @@ const Common = {
    * @param {string} qq - QQ 号
    * @returns {Promise<string>} - 返回 'male'、'female' 或 'unknown'
    */
-  async getGender (e, qq) {
+  async getGender(e, qq) {
     if (!qq || !e) return 'unknown'
 
     try {
@@ -326,15 +338,15 @@ const Common = {
    * @param {number} number - 统计数值
    * @returns {Promise<number|null>} - 返回更新后的统计数值或 null
    */
-  async addStat (key, number) {
+  async addStat(key, number) {
     return await db.stat.add(key, number) || null
   },
 
-  async getStat (key) {
+  async getStat(key) {
     return await db.stat.get(key, 'all') || null
   },
 
-  async getStatAll () {
+  async getStatAll() {
     return await db.stat.getAll() || null
   }
 }
