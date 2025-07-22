@@ -12,25 +12,20 @@
 
 ## 介绍 📝
 `清语表情` 是一个 `Yunzai-Bot`的扩展插件，提供表情包合成等功能。
-雾公主已跑路不再进行任何维护
-皮皮自用版本
-安装即用内置api
+
 安装完成后先#清语更新表情资源、第一次更新会因为表情过多报错，多更新几次直到无报错即可
 
 如有问题请卸载
 
 >[!TIP]
->皮皮自用api：https://meme.pippi.top/
-
-> [!WARNING]
-> 主体内容已完成，不再更新新内容，已跑路
+>公共api：https://meme.141941.xyz
 
 ## 安装与更新 🔧
 
 ### <code>Yunzai-Bot</code> 🚀
 
 ```bash
-git clone --depth=1 https://github.com/chinoyui/meme-plugin ./plugins/meme-plugin/
+git clone --depth=1 https://github.com/admilkjs/meme-plugin.git ./plugins/meme-plugin/
 ```
 </details>
 <details>
@@ -39,18 +34,16 @@ git clone --depth=1 https://github.com/chinoyui/meme-plugin ./plugins/meme-plugi
 **虽然此方式能够使用，不利于后续升级，故不推荐使用 🔔**
 </details>
 
-### <code>Karin</code> 🤖
-请前往 [Karin仓库](https://github.com/ClarityJS/karin-plugin-meme)
 
 ### 安装依赖 📦
 ```bash
-pnpm install --filter=meme-plugin
+pnpm install --filter=meme-plugin -P
 ```
 
 ## 贡献者 👨‍💻👩‍💻
 
-<a href="https://github.com/ClarityJS/meme-plugin/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=ClarityJS/meme-plugin" />
+<a href="https://github.com/admilkjs/meme-plugin/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=admilkjs/meme-plugin" />
 </a>
 
 ![Alt](https://repobeats.axiom.co/api/embed/04d06e4e2d0cdfb7ef436a681dee7a2c83f199a6.svg "Repobeats analytics image")

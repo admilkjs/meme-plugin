@@ -19,8 +19,12 @@ const createRegex = async (getKeywords) => {
   return new RegExp(`${prefix}(${escapedKeywords.join('|')})(.*)`, 'i')
 }
 
-memeRegExp = await createRegex(() => Utils.Tools.getAllKeyWords('meme'))
-presetRegExp = await createRegex(() => Utils.Tools.getAllKeyWords('preset'))
+const initRegExp = async () => {
+  memeRegExp = createRegex(() => Utils.Tools.getAllKeyWords('meme'))
+  presetRegExp = createRegex(() => Utils.Tools.getAllKeyWords('preset'))
+}
+
+await initRegExp()
 
 export class meme extends plugin {
   constructor () {
@@ -47,8 +51,8 @@ export class meme extends plugin {
    * 更新正则
    */
   async updateRegExp () {
-    memeRegExp = await createRegex(() => Utils.Tools.getAllKeyWords('meme'))
-    presetRegExp = await createRegex(() => Utils.Tools.getAllKeyWords('preset'))
+    memeRegExp = createRegex(() => Utils.Tools.getAllKeyWords('meme'))
+    presetRegExp = createRegex(() => Utils.Tools.getAllKeyWords('preset'))
 
     this.rule = [
       {
@@ -60,7 +64,6 @@ export class meme extends plugin {
         fnc: 'preset'
       }
     ]
-
     return true
   }
 
